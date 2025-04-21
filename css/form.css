@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+form {
+  width: 90%;
+  /* margin: auto; */
+  max-width: 550px;
+}
+
+input,
+form button,
+label {
+  display: block;
+}
+
+form button,
+input,
+textarea {
+  outline: none;
+}
+
+input,
+textarea {
+  border: 1px solid rgb(199, 199, 199);
+  border-radius: 10px;
+  padding-left: 10px;
+  font-size: 90%;
+  width: 100%;
+  height: 30px;
+  color: rgb(53, 53, 53);
+}
+
+textarea {
+  height: 50px;
+}
+
+label {
+  margin-top: 10px;
+}
+
+form button {
+  --accent: rgb(0, 162, 255);
+  margin-top: 20px;
+}
+
+.form-container {
+  width: 90%;
+}
+
+
+
+/* Basic styles to reset the default checkbox appearance */
+.checkbox-container {
+  display: inline-flex;
+  align-items: center;
+  font-size: 16px;
+  cursor: pointer;
+
+}
+
+/* Hide the default checkbox */
+.checkbox-container input[type="checkbox"] {
+  display: none;
+}
+
+/* Create a custom checkbox using the span */
+.checkbox-container .checkbox {
+  width: 30px;
+  height: 30px;
+  /* border: 2px solid #4CAF50; */
+  /* Green border */
+  border-radius: 4px;
+  margin-right: 10px;
+  position: relative;
+  box-shadow: 0px 0px 0.5px 0.5px grey;
+  /* transition: background-color 0.3s, border-color 0.3s; */
+  /* background-color: #4CAF50; */
+
+}
+
+/* Style for when the checkbox is checked */
+.checkbox-container input[type="checkbox"]:checked+.checkbox {
+  background-color: #4CAF50;
+  border-radius: 4px;
+}
+
+/* Add a check mark when the checkbox is checked */
+.checkbox-container input[type="checkbox"]:checked+.checkbox::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 4px;
+  width: 9px;
+  height: 13px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+
+/* Hover effect */
+.checkbox-container .checkbox:hover {
+  /* background-color: #f1f1f1;
+  border-color: #888; */
+}
