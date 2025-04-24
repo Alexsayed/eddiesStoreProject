@@ -31,8 +31,10 @@ const Cart = () => {
           let getTotal = 0;
           // Sum up prices
           for (let i = 0; i < parsedCartItems.length; i++) {
-            getTotal += parsedCartItems[i].price
+            getTotal += (parsedCartItems[i].price * parsedCartItems[i].quantity);
           }
+          console.log('=================parsedCartItems', parsedCartItems)
+
           // Set total price of items.
           setTotal(getTotal);
           // Set localStorage items to useState
@@ -56,6 +58,8 @@ const Cart = () => {
   if (storedItems === null) {
     return <p>Loading...</p>;
   }
+  console.log('=================storedItems', storedItems)
+
   // Removing an Item from shopping cart.
   const removeAnItem = (id: String) => {
     let items: string | null = localStorage.getItem('items');

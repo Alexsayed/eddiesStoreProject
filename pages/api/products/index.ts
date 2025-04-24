@@ -245,8 +245,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             res.status(400).json({ success: false });
             break;
         }
-        //=============================working =========================
-        Product.create({
+        //=============================working/original =========================
+        // Product.create({
+        //   productName: req.body.productName,
+        //   price: req.body.price,
+        //   productImg: req.body.productImg,
+        //   category: req.body.category,
+        //   brand: req.body.brand,
+        //   gender: req.body.gender,
+        //   kids: req.body.kids,
+        //   color: req.body.color,
+        //   // size: req.body.size,
+        //   sizes: createdSizeID,
+        //   author: req.body.author,
+        //   inStock: req.body.inStock,
+        // }).then((createdProduct) => {
+        //   console.log('=======createdProductt from index POST request', createdProduct)
+
+        // }).catch((err) => {
+        //   console.log('=======err from index', err);
+        // })
+        //=============================working/original =========================
+        // console.log('=========req.body', req.body)
+        // console.log('=========createdSizeID', createdSizeID);
+
+        const createProduct = await Product.create({
           productName: req.body.productName,
           price: req.body.price,
           productImg: req.body.productImg,
@@ -259,12 +282,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           sizes: createdSizeID,
           author: req.body.author,
           inStock: req.body.inStock,
-        }).then((createdProduct) => {
-          console.log('=======createdProductt from index POST request', createdProduct)
+        });
+        // console.log('========createProduct', createProduct)
+        // if(){
 
-        }).catch((err) => {
-          console.log('=======err from index', err);
-        })
+        // }
+        return res.status(200).json({ success: true, productID: createProduct._id });
         //=============================working =========================
 
       } catch (error) {
@@ -274,5 +297,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     default: res.status(400).json({ success: false });
       break;
   }
-
+  res.status(405).end(); // Method Not Allowed
 }

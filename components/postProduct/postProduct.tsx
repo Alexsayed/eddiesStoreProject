@@ -265,26 +265,27 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
   }
 
   // Submit product
-  const postProduct = async (newProduct: Products[]) => {
-    try {
-      // const res = await fetch("/api/pets", {
-      const res = await fetch("/api/products", {
-        method: "POST",
-        headers: {
-          Accept: contentType,
-          "Content-Type": contentType,
-        },
-        body: JSON.stringify(newProduct),
-      });
-      // Throw error with status code in case Fetch API req failed
-      if (!res.ok) {
-        throw new Error(res.status.toString());
-      }
-      router.push("/");
-    } catch (error) {
-      setMessage("Failed to add pet");
-    };
-  }
+  // const postProduct = async (newProduct: Products[]) => {
+  //   try {
+  //     // const res = await fetch("/api/pets", {
+  //     const res = await fetch("/api/products", {
+  //       method: "POST",
+  //       headers: {
+  //         Accept: contentType,
+  //         "Content-Type": contentType,
+  //       },
+  //       body: JSON.stringify(newProduct),
+  //     });
+  //     // Throw error with status code in case Fetch API req failed
+  //     if (!res.ok) {
+  //       throw new Error(res.status.toString());
+  //     }
+  //     router.push("/");
+  //   } catch (error) {
+  //     setMessage("Failed to add pet");
+  //   };
+  // }
+
   console.log('==============quantity', quantity)
   // onChange event we are processing the data and setting it.
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,) => {
@@ -465,7 +466,7 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
     const value = found ? (e.target as HTMLInputElement).checked : e.target.value;
     console.log('=======value postProduct', value)
 
-    // set the Poduct state
+    // set the Product state
     setForm((prevState) => {
       return {
         ...prevState,
@@ -474,23 +475,38 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
       };
     });
   };
-
-  // onSubmit we are send data to backend. 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  // next up: when creating new product we should redict after successful creation
+  // onSubmit we are send data to backend.  
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // const errs = formValidate();
+    const res = await fetch("/api/products", {
+      method: "POST",
+      headers: {
+        Accept: contentType,
+        "Content-Type": contentType,
+      },
+      body: JSON.stringify(newProduct),
+    });
+    console.log('=======res', res);
+    const data = await res.json(); // Parse the JSON response
+    console.log('=======data', data);
 
-    // if (Object.keys(errs).length === 0) {
-    //   forNewPet ? postData(form) : putData(form);
-    // } else {
-    //   setErrors({ errs });
-    // }
-    // console.log('=========cnewProduct submit ', newProduct);
-    // console.log('=========colorarray1', colorArray1);
-
-    if (forNewProduct === true) {
-      postProduct(newProduct);
+    // Throw error with status code in case Fetch API req failed
+    if (!res.ok) {
+      throw new Error(res.status.toString());
     }
+    if (data.success) {
+      // redirect to newly created product
+      router.push({
+        pathname: '/' + data.productID,
+      });
+    }
+    // =========================original ===========================
+    // if (forNewProduct === true) {
+    //   postProduct(newProduct);
+    // }
+    // =========================original ===========================
+
   };
   return (
     <>

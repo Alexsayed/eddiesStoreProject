@@ -89,7 +89,7 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
   const [productSize, setSizes] = useState<string[]>([]);
 
   const [cartProductSize, setCartProductSize] = useState<string>('')
-  const [cartProductquantity, setCartProductquantity] = useState<any>();
+  const [cartProductQuantity, setCartProductQuantity] = useState<any>();
 
   console.log('============productData product ', productData.gender);
   console.log('============productData product ', productData.gender);
@@ -138,7 +138,7 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
   }, [productData]);
   // }, []);
   console.log('=========productSize men after', productSize)
-  console.log('=========cartProductquantity ', cartProductquantity)
+  console.log('=========cartProductquantity ', cartProductQuantity)
 
 
 
@@ -165,8 +165,8 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
         setCartProductSize(getValues);
         break;
       case 'quantity':
-        console.log('=========quantity case', typeof getValues)
-        setCartProductquantity(getValues)
+        console.log('=========quantity case', getValues)
+        setCartProductQuantity(Number(getValues))
         break;
       default:
         console.log('=========default case ')
@@ -189,6 +189,7 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
       alert('Please choose a size.');
       return;
     }
+    make the quantity to be required for now it says required but bc its not a form it wont check the requirement
     const item = {
       id: productData._id,
       productName: productData.productName,
@@ -199,10 +200,11 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
       gender: productData.gender,
       color: productColor,
       size: cartProductSize,
-      quantity: 1
+      quantity: cartProductQuantity
     };
     // add to cart above item.
     addToCart(item);
+
   };
   // next up: setup the < input > elements for size and color so user can pick the option
   if (typeof window !== 'undefined' && window.localStorage) {
