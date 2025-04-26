@@ -120,8 +120,13 @@ type Props = {
   // product: Products;
   forNewProduct?: boolean;
 };
+type ColorEntry = {
+  color: string;
+  quantity: number;
+};
 interface ColorArray {
-  colorsData: any[]; // or specify the exact type you expect
+  // colorsData: any[]; // or specify the exact type you expect
+  colorsData: ColorEntry[]; // or specify the exact type you expect
   colorElements: JSX.Element[]; // Specifically an array of JSX elements (the input buttons)
 }
 // Extending variables to all files.
@@ -147,7 +152,7 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
   const contentType = "application/json";
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
-  console.log('====================formId', formId)
+  // console.log('====================formId', formId)
   // console.log('====================product', product)
 
   // const [newProduct, setForm] = useState<any>([]);
@@ -236,34 +241,25 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
   // its working now.next up: clean up the code
   // Remove color elements 
   const deleteColor = (key: Number) => {
-    console.log('=============key postProduct', key)
-
     setColorArray((prevState) => {
-      // Loop over color elements in the page
+      // // Loop over color elements in the page
       prevState.colorElements.forEach((elem, i) => {
         if (elem.key === key.toString()) {
-          // remove a value from color[] based on matching index of the removed color HTML elements 
-          storeColors.splice(i, 1);
+          // remove a value from colorsData[] based on matching index of a removed color HTML elements           
+          prevState.colorsData.splice(i, 1)
         }
       });
       // Returning updated state with filtered elements
       return {
         ...prevState,
-        // update colorData
-        colorsData: storeColors,
         // filter removes an element and returns the updated values
         colorElements: prevState.colorElements.filter((element, index) => {
-          console.log('=============element.key edit', element.key);
-          console.log('=============element edit', element);
-          console.log('=============colorArray edit', colorArray);
-
           // return that does not match the `key`
           return element.key !== key.toString();
         })
       };
     });
-  }
-
+  };
   // Submit product
   // const postProduct = async (newProduct: Products[]) => {
   //   try {
@@ -286,11 +282,11 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
   //   };
   // }
 
-  console.log('==============quantity', quantity)
+  // console.log('==============quantity', quantity)
   // onChange event we are processing the data and setting it.
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,) => {
     let getValues = e.target.value;
-    console.log('================getValues', getValues)
+    console.log('================getValues', getValues);
 
     // next up add all sizes for men and women to HTML
     switch (e.target.name) {
@@ -420,25 +416,44 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
             break;
           // next up: send an error message if user did not select any which will be the default case
           default:
-            console.log('=========default case ')
-
-            alert('default switch')
+            // alert('default switch')
             break;
         }
         break;
       case 'color':
-        console.log('=========color case ', e.target.value)
-
-        // push the values. we are doing it this way so we Post all the array elems otherwise the last value won't be submited        
-        storeColors.push(e.target.value);
+        const selectedColor = e.target.value;
+        // console.log('=========e.target', e.target)
         // We are disabling the input element after getting it's value, so ONLY one value should come per input element.
         e.target.disabled = true;
         // set the color state
-        setColorArray((prevState) => ({
-          ...prevState,  // Retaining existing state properties
-          colorsData: storeColors,  // Setting the new colorsData
-        }));
+        setColorArray((prevState) => {
+          // const updatedColors = [...prevState.colorsData, selectedColor];
+          return {
+            ...prevState,
+            // // =======================on hold ==================================
+
+            //     // colorsData: updatedColors,
+            //     colorsData: [...prevState.colorsData, selectedColor],
+            // // =======================on hold ==================================
+            colorsData: [
+              ...prevState.colorsData,
+              { color: selectedColor, quantity: quantity }
+            ],
+          }
+        });
+        console.log('=========quantity inside color', quantity)
+
+        // so far its working tomorrow i should tested in many ways
+        // =======================on hold ==================================
+        // set the color state
+        // setColorArray((prevState) => ({
+        //   ...prevState,  // Retaining existing state properties
+        //   // colorsData: storeColors,  // Setting the new colorsData
+        //   colorsData: [e.target.value],  // Setting the new colorsData
+        // }));
+        // =======================on hold ==================================       
         break;
+        work on quantity tomorrow: for now the fisrt value is always 0 and second value is the first value
       case 'quantity':
         // console.log('=========quantity case ', e.target.value)
         let value = e.target.value;
@@ -452,19 +467,25 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
         //Check if the value is a valid number and within the max range
         if (!isNaN(numericValue) && numericValue <= 999) {
           setQuantity(numericValue);
+          // setQuantity((prevState) => ({
+          //   ...prevState,
+          //  numericValue
+          // }));
         }
+        console.log('=========quantity inside quantity case', quantity)
+
 
         break;
 
     }
     // merge all sizes arrays
     const concatSizesArray = menShoeSizes.concat(womenShoeSizes, menNumericSizes, womenNumericSizes, alphaSizes);
-
     // find a size value in concatSizesArray[] that is matching the name of <input>
     const found = concatSizesArray.find((element) => element === e.target.name);
     // if Found = true; then treat the elem as a checkbox otherwise as a normal value.
     const value = found ? (e.target as HTMLInputElement).checked : e.target.value;
-    console.log('=======value postProduct', value)
+    // console.log('=======value postProduct', value)
+    // console.log('=======colorArray', colorArray)
 
     // set the Product state
     setForm((prevState) => {
@@ -474,23 +495,27 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
         [e.target.name]: e.target.name === "color" ? colorArray.colorsData : value
       };
     });
+    console.log('============newProduct', newProduct)
+    console.log('============colorArray.colorsData', colorArray.colorsData)
   };
-  // next up: when creating new product we should redict after successful creation
   // onSubmit we are send data to backend.  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // so far its working with below method
+    const formData = {
+      ...newProduct,
+      colors: colorArray.colorsData, // Use latest colors here
+    };
     const res = await fetch("/api/products", {
       method: "POST",
       headers: {
         Accept: contentType,
         "Content-Type": contentType,
       },
-      body: JSON.stringify(newProduct),
+      // body: JSON.stringify(newProduct),
+      body: JSON.stringify(formData),
     });
-    console.log('=======res', res);
-    const data = await res.json(); // Parse the JSON response
-    console.log('=======data', data);
-
+    const data = await res.json(); // Parse the JSON response    
     // Throw error with status code in case Fetch API req failed
     if (!res.ok) {
       throw new Error(res.status.toString());
@@ -558,11 +583,13 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
             <option value="Girls">Girls</option>
           </select>
           <div className="color-picker">
-            <div className="inline">
-              <input type="color" name="color" key={0} ref={colorInput} className="w-1/2 block" onChange={handleChange} required />
-            </div>
+            {/* <div className="inline" >
+              <input type="color" name="color"  ref={colorInput} className="w-1/2 block" onChange={handleChange} required />
+              <button type="button" className="inline-block btn mt-0" onClick={() => deleteColor(Date.now())}>Delete</button>
+
+            </div> */}
             {colorArray.colorElements}
-            <button type="button" className="btn" onClick={addMoreColor}>Add More Color</button>
+            <button type="button" className="btn" onClick={addMoreColor}>Add Color</button>
           </div>
 
           <label htmlFor="author">Author</label>

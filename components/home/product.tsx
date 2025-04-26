@@ -89,7 +89,7 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
   const [productSize, setSizes] = useState<string[]>([]);
 
   const [cartProductSize, setCartProductSize] = useState<string>('')
-  const [cartProductQuantity, setCartProductQuantity] = useState<any>();
+  const [cartProductQuantity, setCartProductQuantity] = useState<number>(0);
 
   console.log('============productData product ', productData.gender);
   console.log('============productData product ', productData.gender);
@@ -146,14 +146,10 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,) => {
     let getValues = e.target.value;
     let getTargetName = e.target.name
-
-
     // set states for color and size when user selecting 
     switch (getTargetName) {
       // set color
       case 'color':
-        console.log('=========color case', getValues)
-
         // setting Cart item color.
         // How it Works: we make sure we select one color per order, So if the added value (productColor) is equal to e.target.value then we empty the setColor state 
         setColor(e.target.value === productColor ? '' : e.target.value);
@@ -161,16 +157,12 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
         break;
       // set Size
       case 'Sizes':
-        console.log('=========size case', getValues)
         setCartProductSize(getValues);
         break;
       case 'quantity':
-        console.log('=========quantity case', getValues)
         setCartProductQuantity(Number(getValues))
         break;
       default:
-        console.log('=========default case ')
-
         alert('You must select size and color')
         break;
     }
@@ -189,7 +181,7 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
       alert('Please choose a size.');
       return;
     }
-    make the quantity to be required for now it says required but bc its not a form it wont check the requirement
+    // make the quantity to be required for now it says required but bc its not a form it wont check the requirement
     const item = {
       id: productData._id,
       productName: productData.productName,
@@ -198,13 +190,12 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
       category: productData.category,
       brand: productData.brand,
       gender: productData.gender,
-      color: productColor,
+      colors: productColor,
       size: cartProductSize,
-      quantity: cartProductQuantity
+      quantity: cartProductQuantity === 0 ? 1 : cartProductQuantity,
     };
     // add to cart above item.
     addToCart(item);
-
   };
   // next up: setup the < input > elements for size and color so user can pick the option
   if (typeof window !== 'undefined' && window.localStorage) {
@@ -295,7 +286,7 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
         <div className="inline-block h-96 align-top ml-2.5 border w-1/3 text-center">
           <p>{productData.brand} {productData.productName}</p>
           <p>{productData.price}</p>
-          <p>Color:{productData.color}</p>
+          <p>Color:{productData.colors}</p>
 
           {/* <p> */}
 
@@ -319,7 +310,7 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
               <option key={index} value={color}>{color}</option>
             )}
           </select> */}
-          {productData.color.map((color, index) =>
+          {productData.colors.map((color, index) =>
             <label key={index} className="checkbox-container">
               <input type="checkbox" name='color' value={color} checked={productColor === color} onChange={handleChange} required />
               <span className="checkbox" style={{ border: `3px solid ${color}` }}></span>
@@ -336,7 +327,7 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
           <div>
             <label htmlFor="quantity" >quantity</label>
             <select name="quantity" className="border rounded-lg " onChange={handleChange} required  >
-              <option value="" >choose quantity</option>
+              {/* <option value="" >choose quantity</option> */}
               {numbers.map((amount, index) =>
                 <option key={index} value={amount}>{amount}</option>
               )}

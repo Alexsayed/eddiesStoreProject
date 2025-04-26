@@ -31,7 +31,7 @@ const editProduct = ({ editFormId, product, }: Props) => {
     brand: product.brand,
     gender: product.gender,
     kids: product.kids,
-    color: product.color,
+    colors: product.colors,
     sizes: product.sizes,
     author: product.author,
     inStock: product.inStock,
@@ -216,7 +216,7 @@ const editProduct = ({ editFormId, product, }: Props) => {
           </select>
           <div className="border rounded">
             <label htmlFor="color">Colors:</label>
-            {editForm.color.map((color, index) => (
+            {editForm.colors.map((color, index) => (
               <div className="inline" key={index} >
                 <input type="color" name="color" key={index} defaultValue={color} className="w-1/2 inline" onChange={(e) => handleChange(e, index)} />
                 <button type="button" className="inline-block btn mt-0" onClick={() => deleteColor(index)}>Delete</button>

@@ -14,7 +14,7 @@ interface CartItem {
   category: string;
   brand: string;
   gender: string;
-  color: string;
+  colors: string;
   size: string;
   quantity: number;
 }

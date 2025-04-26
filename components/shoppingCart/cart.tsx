@@ -126,7 +126,7 @@ const Cart = () => {
                     <p>{item.quantity}</p>
                   </div>
                   <div className='inline-block w-1/6'>
-                    <p>Quantity * Price</p>
+                    <p>{item.price * item.quantity}</p>
                   </div>
                 </div>
               </li>

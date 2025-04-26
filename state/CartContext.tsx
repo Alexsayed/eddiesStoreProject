@@ -17,7 +17,7 @@ interface CartItem {
   category: string;
   brand: string;
   gender: string;
-  color: string;
+  colors: string;
   size: string;
   quantity: number;
 }
@@ -106,7 +106,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       // find the matching ID of stored data and new data.
       // const existingItem = parsedItems.find(cartItem => cartItem.id === item.id);
       const existingItem = parsedItems.find(cartItem => cartItem.id === item.id);
-      const matchingColor = parsedItems.find(cartItem => cartItem.color === item.color);
+      const matchingColor = parsedItems.find(cartItem => cartItem.colors === item.colors);
       const matchingSize = parsedItems.find(cartItem => cartItem.size === item.size);
       console.log('===============matching color', matchingColor)
       console.log('===============matching size', matchingSize)

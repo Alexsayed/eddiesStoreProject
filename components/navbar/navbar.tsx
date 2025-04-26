@@ -126,6 +126,7 @@ const Navbar = () => {
           <Link href={'/'}>menu</Link>
         </div>
         <div className="inline">Project Name</div>
+        <div className="inline"><Link href={'/new'}>Post New Product</Link></div>
         <div className="inline-flex items-center">
           <form action="" className="flex items-center" onSubmit={handleSearchSubmit}>
             <input type="text" className="w-40" maxLength={20} name="search" id="search" placeholder="Search" onChange={handleSearchInputChange} value={query} required />
