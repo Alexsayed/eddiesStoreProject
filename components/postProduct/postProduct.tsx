@@ -115,15 +115,26 @@ import { arrayBuffer } from "stream/consumers";
 //   created: Date;
 //   // quantity: number;
 // }
+type ColorItem = {
+  color: string;
+  index: number;
+};
+type QuantityItem = {
+  quantity1: number;
+  index: number;
+};
 type Props = {
   formId: string;
   // product: Products;
   forNewProduct?: boolean;
 };
+
 type ColorEntry = {
   color: string;
-  quantity: number;
+  quantity?: number;
+  // quantity?: string;
 };
+
 interface ColorArray {
   // colorsData: any[]; // or specify the exact type you expect
   colorsData: ColorEntry[]; // or specify the exact type you expect
@@ -194,7 +205,13 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
     womenTops: [],
   });
   // next up: set up quantity for the product AND find a way to limit the number of item can be add at the < input > and it should not go over 999, for it accepts 999 but visually we can place as many number as we can
-  const [quantity, setQuantity] = useState<number>(0);
+  const [quantity, setQuantity] = useState<number>(Number);
+  // const [newQuantity, setNewQuantity] = useState([{ quantity: Number, index: Number }]);
+  const [newQuantity, setNewQuantity] = useState<QuantityItem[]>([]);
+  // const [newColor, setNewColor] = useState([{ color: String, index: Number }]);
+  const [newColor, setNewColor] = useState<ColorItem[]>([]); // Start with an empty array
+  // console.log('=========quantity  top', quantity)
+
   const [colorArray, setColorArray] = useState<ColorArray>({
     colorsData: [],
     colorElements: [],
@@ -225,10 +242,12 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
     const newKey = Date.now();
     const newColorInput = (
       <div className="inline" key={newKey} >
-        <input type="color" name="color" key={newKey} className="w-1/2 inline" ref={colorInput} onChange={handleChange} />
+        {/* <input type="color" name="colors" key={newKey} className="w-1/2 inline" ref={colorInput} onChange={handleChange} /> */}
+        <input type="color" name="color" key={newKey} className="w-1/2 inline" ref={colorInput} onChange={(e) => handleColorNQuantity(e, newKey)} />
         <button type="button" className="inline-block btn mt-0" onClick={() => deleteColor(newKey)}>Delete</button>
         <label htmlFor="quantity" >quantity</label>
-        <input type="number" name="quantity" id="" onChange={handleChange} />
+        {/* <input type="number" name="quantity" id="" onChange={handleChange} /> */}
+        <input type="number" name="quantity" id="" onChange={(e) => handleColorNQuantity(e, newKey)} />
 
       </div>
     )
@@ -241,6 +260,7 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
   // its working now.next up: clean up the code
   // Remove color elements 
   const deleteColor = (key: Number) => {
+
     setColorArray((prevState) => {
       // // Loop over color elements in the page
       prevState.colorElements.forEach((elem, i) => {
@@ -254,12 +274,92 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
         ...prevState,
         // filter removes an element and returns the updated values
         colorElements: prevState.colorElements.filter((element, index) => {
-          // return that does not match the `key`
+          // return elements that does not match the `key`
           return element.key !== key.toString();
         })
       };
     });
+    setNewQuantity((prevState) => {
+      // const newItems = [...prevState];
+      // const updatedItems = prevState.map((item, i) => {
+
+      //   if (item.index === key) {
+      //     console.log('======,item equal. item.index is: ', item.index + ' key is: ' + key)
+      //     console.log('======,i equal', i)
+      //     prevState.splice(i, 1)
+      //     // } else {
+      //     //   console.log('======,not equal. ')
+
+      //   }
+      //   // item.index === key ? { ...quantity, quantity: quantity.quantity1 + 1 } : quantity
+      // });
+      const updatedItems = prevState.filter(item => item.index !== key);
+
+      console.log('======,prevState', prevState)
+      console.log('======,updatedItems', updatedItems)
+      // const updatedItems = prevState.map(item => 
+      //   item === id ? { ...item, quantity: item.quantity + 1 } : item
+      // );
+      return updatedItems;
+      // return prevState;
+
+    });
+    setNewColor((prevState) => {
+      const updateColor = prevState.filter(color => color.index !== key);
+      return updateColor;
+    })
   };
+  const handleColorNQuantity = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const { name, value } = e.target;
+    // setColorArray((prevState) => {
+    // const updatedColors = [...prevState.colorsData]; // shallow copy of array
+    // let newEntry: ColorEntry = { color: '', quantity: 0 };
+    if (name === 'color') {
+
+      setNewColor((prevState) => [
+        ...prevState,
+        { color: value, index: index }
+      ]);
+      // setNewColor([{ color: value, index }]);
+      e.target.disabled = true;
+      // newEntry.color = value;
+    } else if (name === 'quantity') {
+      console.log('========,value quantity', value)
+      const numericValue = Number(value);
+      console.log('========,numericValue quantity', numericValue)
+
+      if (!isNaN(numericValue) && numericValue <= 999) {
+        setNewQuantity(prevState => [
+          // provent adding multiple objs with the same index value.
+          ...prevState.filter(item => item.index !== index),
+          { quantity1: numericValue, index: index }
+        ]);
+      }
+    }
+
+
+    // setColorArray((prevState) => ({
+    //   ...prevState,
+    //   colorsData: [
+    //     ...prevState.colorsData,
+    //     { color: newColor, quantity: newQuantity }
+    //   ],
+    // }));
+    // return {
+    //   ...prevState,
+    //   // colorsData: updatedColors,
+    //   colorsData: [...prevState.colorsData, newEntry],
+    // };
+    // });
+  }
+
+  // colorsData: [
+  //       ...prevState.colorsData,
+  //       { color: selectedColor, }
+  //     ],
+  console.log('=========newColor', newColor)
+  console.log('=========newQuantity', newQuantity)
+  // console.log('=========colorArray', colorArray)
   // Submit product
   // const postProduct = async (newProduct: Products[]) => {
   //   try {
@@ -286,8 +386,8 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
   // onChange event we are processing the data and setting it.
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,) => {
     let getValues = e.target.value;
-    console.log('================getValues', getValues);
-
+    let updatedColorData: ColorEntry | null = null; // Variable to hold the updated color entry
+    let isUpdated = false; // To track if a change was made
     // next up add all sizes for men and women to HTML
     switch (e.target.name) {
       case 'gender':
@@ -422,27 +522,54 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
         break;
       case 'color':
         const selectedColor = e.target.value;
+
         // console.log('=========e.target', e.target)
+        // // =======================on hold 3 ==================================
+
+        // Use the *latest* value of quantity directly from state or event
+        // const newColorEntry = {
+        //   color: selectedColor,
+        //   quantity: quantity, // 🔥 This is stale unless you set it *before* adding color
+        // };
+        // Push directly
+        // const updatedColors = [...colorArray.colorsData, newColorEntry];
+
+
+
+
+        // // =======================on hold 4 ==================================
+        // setColorArray((prevState) => ({
+        //   ...prevState,
+        //   colorsData: updatedColors,
+        // }));
+        // // =======================on hold 4 ==================================
+
+        // // =======================on hold 3 ==================================
+
         // We are disabling the input element after getting it's value, so ONLY one value should come per input element.
         e.target.disabled = true;
+        // // =======================on hold 2==================================
         // set the color state
-        setColorArray((prevState) => {
-          // const updatedColors = [...prevState.colorsData, selectedColor];
-          return {
-            ...prevState,
-            // // =======================on hold ==================================
+        // setColorArray((prevState) => {
+        //   // const updatedColors = [...prevState.colorsData, selectedColor];
+        //   return {
+        //     ...prevState,
+        //     // // =======================on hold 1==================================
 
-            //     // colorsData: updatedColors,
-            //     colorsData: [...prevState.colorsData, selectedColor],
-            // // =======================on hold ==================================
-            colorsData: [
-              ...prevState.colorsData,
-              { color: selectedColor, quantity: quantity }
-            ],
-          }
-        });
-        console.log('=========quantity inside color', quantity)
-
+        //     //     // colorsData: updatedColors,
+        //     //     colorsData: [...prevState.colorsData, selectedColor],
+        //     // // =======================on hold 1==================================
+        //     colorsData: [
+        //       ...prevState.colorsData,
+        //       { color: selectedColor, }
+        //     ],
+        //   }
+        // });
+        // // =======================on hold 2 ==================================
+        // let updatedColorData: ColorEntry | null = null; // Variable to hold the updated color entry
+        // i guess we conitue tomorrow
+        // console.log('=========quantity inside color', quantity)
+        // isUpdated = true;
         // so far its working tomorrow i should tested in many ways
         // =======================on hold ==================================
         // set the color state
@@ -453,31 +580,52 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
         // }));
         // =======================on hold ==================================       
         break;
-        work on quantity tomorrow: for now the fisrt value is always 0 and second value is the first value
+      // work on quantity tomorrow: for now the fisrt value is always 0 and second value is the first value
       case 'quantity':
         // console.log('=========quantity case ', e.target.value)
-        let value = e.target.value;
+        let quantityValue = e.target.value;
 
         //Convert value to a number and check if it's within the allowed range
         //value = Number(value);
-        const numericValue = Number(value);
-        console.log('=========quantity value case ', value)
+        const numericValue = Number(quantityValue);
+        console.log('=========quantity value case ', quantityValue)
         console.log('=========numericValue case ', numericValue)
 
         //Check if the value is a valid number and within the max range
         if (!isNaN(numericValue) && numericValue <= 999) {
           setQuantity(numericValue);
-          // setQuantity((prevState) => ({
-          //   ...prevState,
-          //  numericValue
-          // }));
+
         }
         console.log('=========quantity inside quantity case', quantity)
 
 
         break;
+      // default:
+      //   // alert('default switch')
+      //   break;
 
-    }
+
+    };
+
+
+    // If the color or quantity was updated, apply the change to the state
+    // if (isUpdated && updatedColorData) {
+    //   // setColorArray((prevState) => ({
+    //   //   ...prevState,
+    //   //   colorsData: prevState.colorsData.map((colorEntry, idx) =>
+    //   //     idx === index ? updatedColorData : colorEntry
+    //   //   ),
+    //   //   colorsData
+    //   // }));
+
+    //   setColorArray((prevState) => ({
+    //     ...prevState,
+    //     colorsData: [
+    //       ...prevState.colorsData,
+    //       updatedColorData
+    //     ],
+    //   }));
+    // }
     // merge all sizes arrays
     const concatSizesArray = menShoeSizes.concat(womenShoeSizes, menNumericSizes, womenNumericSizes, alphaSizes);
     // find a size value in concatSizesArray[] that is matching the name of <input>
@@ -485,47 +633,89 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
     // if Found = true; then treat the elem as a checkbox otherwise as a normal value.
     const value = found ? (e.target as HTMLInputElement).checked : e.target.value;
     // console.log('=======value postProduct', value)
-    // console.log('=======colorArray', colorArray)
+    console.log('=======e.target.name ', e.target.name);
 
     // set the Product state
     setForm((prevState) => {
       return {
         ...prevState,
         // if targeted element name is color then add the colorArray.colorsData else the Value.
-        [e.target.name]: e.target.name === "color" ? colorArray.colorsData : value
+        [e.target.name]: e.target.name === "colors" ? colorArray.colorsData : value
       };
     });
+
+
     console.log('============newProduct', newProduct)
-    console.log('============colorArray.colorsData', colorArray.colorsData)
+
+
   };
+
   // onSubmit we are send data to backend.  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // so far its working with below method
+    //========================on hold =============================
+    // setColorArray({
+    //   colorsData: newColor.map((colorItem) => {
+    //     const matchingQuantity = newQuantity.find(q => q.index === colorItem.index);
+    //     return {
+    //       color: colorItem.color,
+    //       quantity: matchingQuantity ? matchingQuantity.quantity1 : 1,
+    //     };
+    //   }),
+    //   colorElements: [] // populate as needed
+    // });
+    //========================on hold =============================
+
+    // Build colorsData directly
+    const updatedColorsData = newColor.map((colorItem) => {
+      const matchingQuantity = newQuantity.find(q => q.index === colorItem.index);
+      return {
+        color: colorItem.color,
+        quantity: matchingQuantity ? matchingQuantity.quantity1 : undefined,
+      };
+    });
+    // //========================on hold =============================
+
+    // // so far its working with below method
+    // const formData = {
+    //   ...newProduct,
+    //   colors: colorArray.colorsData, // Use latest colors here
+    // };
+    // //========================on hold =============================
+    // setColorArray({
+    //   colorsData: updatedColorsData,
+    //   colorElements: [],
+    // });
     const formData = {
       ...newProduct,
-      colors: colorArray.colorsData, // Use latest colors here
+      colors: updatedColorsData, // Use latest colors here
+      // colors: colorArray.colorsData, // Use latest colors here
     };
-    const res = await fetch("/api/products", {
-      method: "POST",
-      headers: {
-        Accept: contentType,
-        "Content-Type": contentType,
-      },
-      // body: JSON.stringify(newProduct),
-      body: JSON.stringify(formData),
-    });
-    const data = await res.json(); // Parse the JSON response    
-    // Throw error with status code in case Fetch API req failed
-    if (!res.ok) {
-      throw new Error(res.status.toString());
-    }
-    if (data.success) {
-      // redirect to newly created product
-      router.push({
-        pathname: '/' + data.productID,
-      });
-    }
+    console.log('============formData', formData)
+    console.log('============colorArray.colorsData outside', colorArray.colorsData)
+    // =========================ONHOLD =========================== 8********************
+    // const res = await fetch("/api/products", {
+    //   method: "POST",
+    //   headers: {
+    //     Accept: contentType,
+    //     "Content-Type": contentType,
+    //   },
+    //   // body: JSON.stringify(newProduct),
+    //   body: JSON.stringify(formData),
+    // });
+    // const data = await res.json(); // Parse the JSON response    
+    // // Throw error with status code in case Fetch API req failed
+    // if (!res.ok) {
+    //   throw new Error(res.status.toString());
+    // }
+    // if (data.success) {
+    //   // redirect to newly created product
+    //   router.push({
+    //     pathname: '/' + data.productID,
+    //   });
+    // }
+    // =========================ONHOLD ===========================*******************
+
     // =========================original ===========================
     // if (forNewProduct === true) {
     //   postProduct(newProduct);
@@ -533,6 +723,7 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
     // =========================original ===========================
 
   };
+
   return (
     <>
       <div className="grid">
@@ -545,14 +736,14 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
           <label htmlFor="productImg">Product Image</label>
           <input type="text" name="productImg" id="productImg" onChange={handleChange} required />
           <label htmlFor="gender">Gender</label>
-          <select name="gender" id="gender" className="border rounded-lg" onChange={handleChange} required  >
+          <select name="gender" id="gender" className="border rounded-lg" onChange={handleChange}   >
             <option value="" >choose one</option>
             <option value="Men" >Men</option>
             <option value="Women">Women</option>
           </select>
 
           <label htmlFor="category">Category</label>
-          <select name="category" id="category" ref={categories} className="border rounded-lg" onChange={handleChange} required  >
+          <select name="category" id="category" ref={categories} className="border rounded-lg" onChange={handleChange}   >
             <option value="" >Choose Category</option>
             {menCategoryItems}
             {womenCategoryItems}
