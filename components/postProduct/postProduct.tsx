@@ -120,7 +120,7 @@ type ColorItem = {
   index: number;
 };
 type QuantityItem = {
-  quantity1: number;
+  quantity: number;
   index: number;
 };
 type Props = {
@@ -129,28 +129,20 @@ type Props = {
   forNewProduct?: boolean;
 };
 
-type ColorEntry = {
-  color: string;
-  quantity?: number;
-  // quantity?: string;
-};
+// type ColorEntry = {
+//   color: string;
+//   quantity?: number;
+//   // quantity?: string;
+// };
 
 interface ColorArray {
   // colorsData: any[]; // or specify the exact type you expect
-  colorsData: ColorEntry[]; // or specify the exact type you expect
+  // colorsData: ColorEntry[]; // or specify the exact type you expect
   colorElements: JSX.Element[]; // Specifically an array of JSX elements (the input buttons)
 }
 // Extending variables to all files.
 export const globalMenCategories = ['Jackets', 'Jeans', 'Pants', 'Shoes', 'Sweaters', 'Tees'];
 export const globalWomenCategories = ['Dresses', 'Jackets', 'Jeans', 'Pants', 'Shoes', 'Skirts', 'Sweaters', 'Tops',];
-
-
-// type Props = {
-//   formId: string;
-//   product: {};
-//   forNewProduct?: boolean;
-
-// };
 
 // Declaring variable here so it won't reset to zero everytime we make changes in the page.
 let storeColors: string[] = [];
@@ -163,9 +155,6 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
   const contentType = "application/json";
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
-  // console.log('====================formId', formId)
-  // console.log('====================product', product)
-
   // const [newProduct, setForm] = useState<any>([]);
   const [newProduct, setForm] = useState<Products[]>([]);
   const menSizes = useRef<HTMLDivElement>(null);
@@ -205,7 +194,7 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
     womenTops: [],
   });
   // next up: set up quantity for the product AND find a way to limit the number of item can be add at the < input > and it should not go over 999, for it accepts 999 but visually we can place as many number as we can
-  const [quantity, setQuantity] = useState<number>(Number);
+  // const [quantity, setQuantity] = useState<number>(Number);
   // const [newQuantity, setNewQuantity] = useState([{ quantity: Number, index: Number }]);
   const [newQuantity, setNewQuantity] = useState<QuantityItem[]>([]);
   // const [newColor, setNewColor] = useState([{ color: String, index: Number }]);
@@ -213,7 +202,7 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
   // console.log('=========quantity  top', quantity)
 
   const [colorArray, setColorArray] = useState<ColorArray>({
-    colorsData: [],
+    // colorsData: [],
     colorElements: [],
   });
   // Handle setting the sizes
@@ -228,15 +217,8 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
     })
   };
 
-  // const elementsRef = useRef([]);
-  // const [moreColor, setMoreColor] = useState<JSX.Element[]>([]);
-  // const [colorArray1, setColorArray] = useState<String[]>([]);
-
-
-
   const colorInput = useRef<HTMLInputElement | null>(null);
-
-  // const keyRef = useRef(0);
+  // add colors
   const addMoreColor = (e: React.MouseEvent<HTMLButtonElement>) => {
     // we raw current Date as a key of eleemnts
     const newKey = Date.now();
@@ -257,109 +239,61 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
       colorElements: [...prevState.colorElements, newColorInput], // Update only the colorElements array
     }));
   }
-  // its working now.next up: clean up the code
   // Remove color elements 
   const deleteColor = (key: Number) => {
-
     setColorArray((prevState) => {
       // // Loop over color elements in the page
-      prevState.colorElements.forEach((elem, i) => {
-        if (elem.key === key.toString()) {
-          // remove a value from colorsData[] based on matching index of a removed color HTML elements           
-          prevState.colorsData.splice(i, 1)
-        }
-      });
+      // prevState.colorElements.forEach((elem, i) => {
+      //   if (elem.key === key.toString()) {
+      //     // remove a value from colorsData[] based on matching index of a removed color HTML elements           
+      //     prevState.colorsData.splice(i, 1)
+      //   }
+      // });
       // Returning updated state with filtered elements
       return {
         ...prevState,
-        // filter removes an element and returns the updated values
         colorElements: prevState.colorElements.filter((element, index) => {
           // return elements that does not match the `key`
           return element.key !== key.toString();
         })
       };
     });
+    // Remove item that matchs the arg (key) 
     setNewQuantity((prevState) => {
-      // const newItems = [...prevState];
-      // const updatedItems = prevState.map((item, i) => {
-
-      //   if (item.index === key) {
-      //     console.log('======,item equal. item.index is: ', item.index + ' key is: ' + key)
-      //     console.log('======,i equal', i)
-      //     prevState.splice(i, 1)
-      //     // } else {
-      //     //   console.log('======,not equal. ')
-
-      //   }
-      //   // item.index === key ? { ...quantity, quantity: quantity.quantity1 + 1 } : quantity
-      // });
+      // filter all quantity array of obj and return the once that are not matching the arg (key).
       const updatedItems = prevState.filter(item => item.index !== key);
-
-      console.log('======,prevState', prevState)
-      console.log('======,updatedItems', updatedItems)
-      // const updatedItems = prevState.map(item => 
-      //   item === id ? { ...item, quantity: item.quantity + 1 } : item
-      // );
       return updatedItems;
-      // return prevState;
-
     });
+    // Remove item that matchs the arg (key) 
     setNewColor((prevState) => {
+      // filter all color array of obj and return the once that are not matching the arg (key).
       const updateColor = prevState.filter(color => color.index !== key);
       return updateColor;
     })
   };
+  // Setting color and quantity of product
   const handleColorNQuantity = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const { name, value } = e.target;
-    // setColorArray((prevState) => {
-    // const updatedColors = [...prevState.colorsData]; // shallow copy of array
-    // let newEntry: ColorEntry = { color: '', quantity: 0 };
     if (name === 'color') {
-
       setNewColor((prevState) => [
         ...prevState,
         { color: value, index: index }
       ]);
-      // setNewColor([{ color: value, index }]);
+      // we would disable the <input> so we get one color per <input>
       e.target.disabled = true;
-      // newEntry.color = value;
     } else if (name === 'quantity') {
-      console.log('========,value quantity', value)
+      // <input type='number'> values are always string so we need to convert to an integer.  
       const numericValue = Number(value);
-      console.log('========,numericValue quantity', numericValue)
-
+      // if it's not a number ( isNaN() ) and it's less than 999.
       if (!isNaN(numericValue) && numericValue <= 999) {
         setNewQuantity(prevState => [
           // provent adding multiple objs with the same index value.
           ...prevState.filter(item => item.index !== index),
-          { quantity1: numericValue, index: index }
+          { quantity: numericValue, index: index }
         ]);
       }
     }
-
-
-    // setColorArray((prevState) => ({
-    //   ...prevState,
-    //   colorsData: [
-    //     ...prevState.colorsData,
-    //     { color: newColor, quantity: newQuantity }
-    //   ],
-    // }));
-    // return {
-    //   ...prevState,
-    //   // colorsData: updatedColors,
-    //   colorsData: [...prevState.colorsData, newEntry],
-    // };
-    // });
   }
-
-  // colorsData: [
-  //       ...prevState.colorsData,
-  //       { color: selectedColor, }
-  //     ],
-  console.log('=========newColor', newColor)
-  console.log('=========newQuantity', newQuantity)
-  // console.log('=========colorArray', colorArray)
   // Submit product
   // const postProduct = async (newProduct: Products[]) => {
   //   try {
@@ -380,14 +314,10 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
   //   } catch (error) {
   //     setMessage("Failed to add pet");
   //   };
-  // }
-
-  // console.log('==============quantity', quantity)
+  // }  
   // onChange event we are processing the data and setting it.
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,) => {
     let getValues = e.target.value;
-    let updatedColorData: ColorEntry | null = null; // Variable to hold the updated color entry
-    let isUpdated = false; // To track if a change was made
     // next up add all sizes for men and women to HTML
     switch (e.target.name) {
       case 'gender':
@@ -520,7 +450,7 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
             break;
         }
         break;
-      case 'color':
+      case 'colorOnHold':
         const selectedColor = e.target.value;
 
         // console.log('=========e.target', e.target)
@@ -581,22 +511,22 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
         // =======================on hold ==================================       
         break;
       // work on quantity tomorrow: for now the fisrt value is always 0 and second value is the first value
-      case 'quantity':
+      case 'quantityONHOld':
         // console.log('=========quantity case ', e.target.value)
-        let quantityValue = e.target.value;
+        // let quantityValue = e.target.value;
 
-        //Convert value to a number and check if it's within the allowed range
-        //value = Number(value);
-        const numericValue = Number(quantityValue);
-        console.log('=========quantity value case ', quantityValue)
-        console.log('=========numericValue case ', numericValue)
+        // //Convert value to a number and check if it's within the allowed range
+        // //value = Number(value);
+        // const numericValue = Number(quantityValue);
+        // console.log('=========quantity value case ', quantityValue)
+        // console.log('=========numericValue case ', numericValue)
 
-        //Check if the value is a valid number and within the max range
-        if (!isNaN(numericValue) && numericValue <= 999) {
-          setQuantity(numericValue);
+        // //Check if the value is a valid number and within the max range
+        // if (!isNaN(numericValue) && numericValue <= 999) {
+        //   setQuantity(numericValue);
 
-        }
-        console.log('=========quantity inside quantity case', quantity)
+        // }
+        // console.log('=========quantity inside quantity case', quantity)
 
 
         break;
@@ -640,14 +570,10 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
       return {
         ...prevState,
         // if targeted element name is color then add the colorArray.colorsData else the Value.
-        [e.target.name]: e.target.name === "colors" ? colorArray.colorsData : value
+        // [e.target.name]: e.target.name === "colors" ? colorArray.colorsData : value
+        [e.target.name]: value
       };
     });
-
-
-    console.log('============newProduct', newProduct)
-
-
   };
 
   // onSubmit we are send data to backend.  
@@ -659,7 +585,7 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
     //     const matchingQuantity = newQuantity.find(q => q.index === colorItem.index);
     //     return {
     //       color: colorItem.color,
-    //       quantity: matchingQuantity ? matchingQuantity.quantity1 : 1,
+    //       quantity: matchingQuantity ? matchingQuantity.quantity : 1,
     //     };
     //   }),
     //   colorElements: [] // populate as needed
@@ -671,7 +597,7 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
       const matchingQuantity = newQuantity.find(q => q.index === colorItem.index);
       return {
         color: colorItem.color,
-        quantity: matchingQuantity ? matchingQuantity.quantity1 : undefined,
+        quantity: matchingQuantity ? matchingQuantity.quantity : 1,
       };
     });
     // //========================on hold =============================
@@ -691,29 +617,30 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
       colors: updatedColorsData, // Use latest colors here
       // colors: colorArray.colorsData, // Use latest colors here
     };
-    console.log('============formData', formData)
-    console.log('============colorArray.colorsData outside', colorArray.colorsData)
+    console.log('============formData submit', formData)
+    console.log('============newProduct on submit', newProduct)
+
     // =========================ONHOLD =========================== 8********************
-    // const res = await fetch("/api/products", {
-    //   method: "POST",
-    //   headers: {
-    //     Accept: contentType,
-    //     "Content-Type": contentType,
-    //   },
-    //   // body: JSON.stringify(newProduct),
-    //   body: JSON.stringify(formData),
-    // });
-    // const data = await res.json(); // Parse the JSON response    
-    // // Throw error with status code in case Fetch API req failed
-    // if (!res.ok) {
-    //   throw new Error(res.status.toString());
-    // }
-    // if (data.success) {
-    //   // redirect to newly created product
-    //   router.push({
-    //     pathname: '/' + data.productID,
-    //   });
-    // }
+    const res = await fetch("/api/products", {
+      method: "POST",
+      headers: {
+        Accept: contentType,
+        "Content-Type": contentType,
+      },
+      // body: JSON.stringify(newProduct),
+      body: JSON.stringify(formData),
+    });
+    const data = await res.json(); // Parse the JSON response    
+    // Throw error with status code in case Fetch API req failed
+    if (!res.ok) {
+      throw new Error(res.status.toString());
+    }
+    if (data.success) {
+      // redirect to newly created product
+      router.push({
+        pathname: '/' + data.productID,
+      });
+    }
     // =========================ONHOLD ===========================*******************
 
     // =========================original ===========================
@@ -730,11 +657,11 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
         <form id={formId} onSubmit={handleSubmit} className="w-96" >
           <label htmlFor="productName">Name</label>
           {/* <label for="productName">Name</label> */}
-          <input type="text" maxLength={20} name="productName" id="productName" onChange={handleChange} required />
+          <input type="text" maxLength={20} name="productName" id="productName" onChange={handleChange} />
           <label htmlFor="price">Price</label>
-          <input type="number" name="price" id="price" onChange={handleChange} required />
+          <input type="number" name="price" id="price" onChange={handleChange} />
           <label htmlFor="productImg">Product Image</label>
-          <input type="text" name="productImg" id="productImg" onChange={handleChange} required />
+          <input type="text" name="productImg" id="productImg" onChange={handleChange} />
           <label htmlFor="gender">Gender</label>
           <select name="gender" id="gender" className="border rounded-lg" onChange={handleChange}   >
             <option value="" >choose one</option>
@@ -766,7 +693,7 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
             {sizeItemsForAll.menTees}
           </div>
           <label htmlFor="brand">Brand</label>
-          <input type="text" name="brand" id="brand" className="capitalize" onChange={handleChange} required />
+          <input type="text" name="brand" id="brand" className="capitalize" onChange={handleChange} />
           <label htmlFor="kids">Kids</label>
           <select name="kids" id="kids" className="border rounded-lg" onChange={handleChange}   >
             <option value="" >choose one</option>
@@ -775,7 +702,7 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
           </select>
           <div className="color-picker">
             {/* <div className="inline" >
-              <input type="color" name="color"  ref={colorInput} className="w-1/2 block" onChange={handleChange} required />
+              <input type="color" name="color"  ref={colorInput} className="w-1/2 block" onChange={handleChange}  />
               <button type="button" className="inline-block btn mt-0" onClick={() => deleteColor(Date.now())}>Delete</button>
 
             </div> */}
@@ -784,9 +711,9 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
           </div>
 
           <label htmlFor="author">Author</label>
-          <input type="text" name="author" id="author" onChange={handleChange} required />
+          <input type="text" name="author" id="author" onChange={handleChange} />
           <label htmlFor="inStock">In Stock</label>
-          <select name="inStock" id="inStock" className="border rounded-lg" onChange={handleChange} required  >
+          <select name="inStock" id="inStock" className="border rounded-lg" onChange={handleChange}   >
             <option value="" >choose one</option>
             <option value="true" >True </option>
             <option value="false">false</option>

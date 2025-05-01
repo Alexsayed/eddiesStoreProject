@@ -59,7 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // ); /* create a new model in the database */
         // res.status(201).json({ success: true, data: pet });
         // if (req.body.gender === 'Men') {
-        //   console.log('======req.body.gender Men', req.body)
+        console.log('======req.body.gender Men', req.body)
 
         // } else if (req.body.gender === 'Women') {
         //   console.log('====== req.body.gender Women,', req.body)
@@ -109,6 +109,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // function collectData(option) {
         // Variable for all size's ID.
         let createdSizeID;
+        // // =========================ONHOLD =========================== 8********************
         // When Gender men or women selected
         switch (req.body.gender) {
           // if Men is selected
@@ -245,6 +246,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             res.status(400).json({ success: false });
             break;
         }
+        // // =========================ONHOLD =========================== 8********************
+
         //=============================working/original =========================
         // Product.create({
         //   productName: req.body.productName,
@@ -269,6 +272,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // console.log('=========req.body', req.body)
         // console.log('=========createdSizeID', createdSizeID);
 
+        // // =========================ONHOLD =========================== 8********************
+
         const createProduct = await Product.create({
           productName: req.body.productName,
           price: req.body.price,
@@ -277,7 +282,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           brand: req.body.brand,
           gender: req.body.gender,
           kids: req.body.kids,
-          color: req.body.color,
+          colors: req.body.colors,
           // size: req.body.size,
           sizes: createdSizeID,
           author: req.body.author,
@@ -288,7 +293,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         // }
         return res.status(200).json({ success: true, productID: createProduct._id });
-        //=============================working =========================
+        // // =========================ONHOLD =========================== 8********************
+
+
 
       } catch (error) {
         res.status(400).json({ success: false });

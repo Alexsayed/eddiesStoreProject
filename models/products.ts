@@ -23,7 +23,8 @@ export interface Products extends Document {
   brand: string,
   gender: string,
   kids: string,
-  colors: string[],
+  // colors: string[],
+  colors: { color: string, quantity: number }[],
   // sizes: string[],
   sizes: ISizes,
   author: string;
@@ -64,13 +65,16 @@ const productSchema = new mongoose.Schema<Products>({
   category: String,
   brand: String,
   gender: String,
-  // kids: String,
-  // color: [{
-  //   type: String
-  // }],
-  colors: {
-    type: [String],
-  },
+  // kids: String,  
+  // colors: {
+  //   type: [String],
+  // },
+  colors: [{
+    _id: false, // disable automatic _id generation
+    color: String,
+    quantity: Number
+    // type: [String],
+  }],
   // size: String,
   // sizes: [
   //   {
@@ -85,8 +89,6 @@ const productSchema = new mongoose.Schema<Products>({
     type: Date,
     default: Date.now
   },
-
-
 });
 // var User = mongoose.model("Users", userSchema);
 // export default Users;

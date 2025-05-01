@@ -91,14 +91,13 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
   const [cartProductSize, setCartProductSize] = useState<string>('')
   const [cartProductQuantity, setCartProductQuantity] = useState<number>(0);
 
-  console.log('============productData product ', productData.gender);
-  console.log('============productData product ', productData.gender);
+  // console.log('============productData product ', productData.gender);
   useEffect(() => {
     // const trueCategories: { [key: string]: string[] } = {};
     // Array to collect all true sizes
     const trueCategories: string[] = [];
     if (productData.gender === 'Women') {
-      console.log('======women gender')
+      // console.log('======women gender')
 
       // Loop through each women category sizes 
       for (let [category, sizes] of Object.entries(productData.sizes.womenSizes)) {
@@ -110,12 +109,12 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
           // trueCategories[category] = trueSizes.map(([size]) => size);
           // if we want to return only sizes BUT NOT it's Category
           trueCategories.push(...trueSizes.map(([size]) => size));
-          console.log('=========trueCategories women', trueCategories)
+          // console.log('=========trueCategories women', trueCategories)
         }
       }
       setSizes(trueCategories)
     } else {
-      console.log('======men gender')
+      // console.log('======men gender')
       // Loop through each men category sizes 
       for (let [category, sizes] of Object.entries(productData.sizes.menSizes)) {
         // Filter the sizes object to check for `true` values
@@ -124,8 +123,8 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
         if (trueSizes.length > 0) {
           // trueCategories[category] = trueSizes.map(([size]) => size);
           trueCategories.push(...trueSizes.map(([size]) => size));
-          console.log('=========trueCategories men', trueCategories)
-          console.log('=========productSize men', productSize)
+          // console.log('=========trueCategories men', trueCategories)
+          // console.log('=========productSize men', productSize)
           // setSizes([...trueSizes.map(([size]) => size)]);
 
         }
@@ -137,8 +136,8 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
 
   }, [productData]);
   // }, []);
-  console.log('=========productSize men after', productSize)
-  console.log('=========cartProductquantity ', cartProductQuantity)
+  // console.log('=========productSize men after', productSize)
+  // console.log('=========cartProductquantity ', cartProductQuantity)
 
 
 
@@ -150,6 +149,10 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
     switch (getTargetName) {
       // set color
       case 'color':
+        next up: when a color is select by a user, we would display the corresponding quantity to that proticulare color
+        console.log('=========case color ', e.target.value)
+        console.log('============productData  ', productData);
+
         // setting Cart item color.
         // How it Works: we make sure we select one color per order, So if the added value (productColor) is equal to e.target.value then we empty the setColor state 
         setColor(e.target.value === productColor ? '' : e.target.value);
@@ -286,7 +289,7 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
         <div className="inline-block h-96 align-top ml-2.5 border w-1/3 text-center">
           <p>{productData.brand} {productData.productName}</p>
           <p>{productData.price}</p>
-          <p>Color:{productData.colors}</p>
+          <p>Color:{productData.colors[0].color}</p>
 
           {/* <p> */}
 
@@ -310,10 +313,10 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
               <option key={index} value={color}>{color}</option>
             )}
           </select> */}
-          {productData.colors.map((color, index) =>
+          {productData.colors.map((elem, index) =>
             <label key={index} className="checkbox-container">
-              <input type="checkbox" name='color' value={color} checked={productColor === color} onChange={handleChange} required />
-              <span className="checkbox" style={{ border: `3px solid ${color}` }}></span>
+              <input type="checkbox" name='color' value={elem.color} checked={productColor === elem.color} onChange={handleChange} required />
+              <span className="checkbox" style={{ border: `3px solid ${elem.color}` }}></span>
             </label>
           )}
 
@@ -328,9 +331,12 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
             <label htmlFor="quantity" >quantity</label>
             <select name="quantity" className="border rounded-lg " onChange={handleChange} required  >
               {/* <option value="" >choose quantity</option> */}
-              {numbers.map((amount, index) =>
-                <option key={index} value={amount}>{amount}</option>
+              {productData.colors.map((elem, index) =>
+                <option key={index} value={elem.quantity}>{elem.quantity}</option>
               )}
+              {/* {numbers.map((amount, index) =>
+                <option key={index} value={amount}>{amount}</option>
+              )} */}
             </select>
           </div>
           <button className="rounded-sm border bg-green-400" onClick={handleAddToCart}>Add to Cart</button>
