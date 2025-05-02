@@ -74,15 +74,16 @@ type Props = {
 //   return <div>{greet('World')}</div>;
 // }
 
-const totalQuantity = [10];
-const quantityItems = totalQuantity[0];
-const numbers = Array.from({ length: quantityItems }, (_, index) => index + 1);
+// const totalQuantity = [10];
+// const quantityItems = totalQuantity[0];
+// const numbers = Array.from({ length: quantityItems }, (_, index) => index + 1);
 // ******************************original **********************************
 const ProductPage = ({ editFormId, productData, }: Props,) => {
   // const ProductPage: React.FC<ProductProps> = ({ editFormId, productData, }: Props,) => {
   // console.log('===========productData', productData);
   const selectColor = useRef<HTMLSelectElement>(null);
   const [productColor, setColor] = useState<string>('');
+  const [productQuantity, setQuantity] = useState<number>(0);
   // If you want getSize to hold an object of categories with their sizes. Example: Jackets:['S', 'M', 'L', 'XL']
   // const [getSize, setSize] = useState<{ [key: string]: string[] }>({});
   // If you want getSize to be a flat array of sizes (i.e., no categories): Example: ['S', 'M', 'L', 'XL']
@@ -90,8 +91,9 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
 
   const [cartProductSize, setCartProductSize] = useState<string>('')
   const [cartProductQuantity, setCartProductQuantity] = useState<number>(0);
-
-  // console.log('============productData product ', productData.gender);
+  // The Array.from() static method creates a new, shallow-copied Array instance. 
+  // Example: productQuantity = 4; Array.from() would create  [1,2,3,4], so we cal loop through it.
+  const quantity = Array.from({ length: productQuantity }, (unused, index) => index + 1);
   useEffect(() => {
     // const trueCategories: { [key: string]: string[] } = {};
     // Array to collect all true sizes
@@ -123,10 +125,7 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
         if (trueSizes.length > 0) {
           // trueCategories[category] = trueSizes.map(([size]) => size);
           trueCategories.push(...trueSizes.map(([size]) => size));
-          // console.log('=========trueCategories men', trueCategories)
-          // console.log('=========productSize men', productSize)
           // setSizes([...trueSizes.map(([size]) => size)]);
-
         }
       }
       // ==========original ==============
@@ -135,11 +134,11 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
     }
 
   }, [productData]);
-  // }, []);
-  // console.log('=========productSize men after', productSize)
-  // console.log('=========cartProductquantity ', cartProductQuantity)
+  // }, []);  
+  console.log('=========productQuantity ', productQuantity)
 
 
+  console.log('============productColor  top', productColor);
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,) => {
@@ -147,16 +146,34 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
     let getTargetName = e.target.name
     // set states for color and size when user selecting 
     switch (getTargetName) {
-      // set color
+      // setting Cart item color. Can select one color per order.
       case 'color':
-        next up: when a color is select by a user, we would display the corresponding quantity to that proticulare color
-        console.log('=========case color ', e.target.value)
-        console.log('============productData  ', productData);
-
-        // setting Cart item color.
-        // How it Works: we make sure we select one color per order, So if the added value (productColor) is equal to e.target.value then we empty the setColor state 
-        setColor(e.target.value === productColor ? '' : e.target.value);
-        // setColor(oneColor);
+        // setColor(e.target.value === productColor ? '' : e.target.value);
+        // productData.colors.map((elem) => {
+        //   if (elem.color === e.target.value) {
+        //     setQuantity(elem.quantity);
+        //     console.log('============elem  ', elem.quantity);
+        //   }
+        // })
+        // when a color is selected we would search for match color in (productData.colors)
+        const selectedColorObj = productData.colors.find(
+          (elem) => elem.color === getValues
+        );
+        // Initially productColor = ''; so when a use selects a color we would store the selected value to (productColor)
+        // If the bottom statement is equal/true that means the user deselects the select color.  
+        // NOTE: user is allowed to select one color per order.
+        if (getValues === productColor) {
+          // Deselect color if user clicks the same one again          
+          setColor('');
+          setQuantity(0);
+        } else {
+          // Set selected color and corresponding quantity
+          setColor(getValues);
+          // if selected color exist in (productData.colors) then we would get it's quantity.
+          if (selectedColorObj) {
+            setQuantity(selectedColorObj.quantity);
+          }
+        }
         break;
       // set Size
       case 'Sizes':
@@ -169,7 +186,8 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
         alert('You must select size and color')
         break;
     }
-  }
+  };
+
   // next up: let the user to select quantity of the element
   const { addToCart } = useCart();
   const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -327,18 +345,25 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
               <option key={index} value={size}>{size}</option>
             )}
           </select>
-          <div>
-            <label htmlFor="quantity" >quantity</label>
-            <select name="quantity" className="border rounded-lg " onChange={handleChange} required  >
-              {/* <option value="" >choose quantity</option> */}
-              {productData.colors.map((elem, index) =>
+          {productQuantity > 0 && (
+            <div>
+              <label htmlFor="quantity" >quantity</label>
+              <select name="quantity" className="border rounded-lg " onChange={handleChange} required  >
+                {/* <option value="" >choose quantity</option> */}
+                {/* {productData.colors.map((elem, index) =>
                 <option key={index} value={elem.quantity}>{elem.quantity}</option>
-              )}
-              {/* {numbers.map((amount, index) =>
+              )} */}
+                {/* {numbers.map((amount, index) =>
                 <option key={index} value={amount}>{amount}</option>
               )} */}
-            </select>
-          </div>
+
+                {quantity.map((elem, index) =>
+                  <option key={index} value={elem}>{elem}</option>
+                )}
+              </select>
+
+            </div>
+          )}
           <button className="rounded-sm border bg-green-400" onClick={handleAddToCart}>Add to Cart</button>
 
           {/* <p>add: {add(1, 3)}</p> */}
