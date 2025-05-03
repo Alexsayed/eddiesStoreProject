@@ -25,6 +25,7 @@ const Cart = () => {
     if (typeof window !== 'undefined' && window.localStorage) {
       console.log('=================if cart.js')
       const getStorage: string | null = localStorage.getItem('items');
+      // localStorage.removeItem("items");
       if (getStorage !== null) {
         try {
           const parsedCartItems = JSON.parse(getStorage);

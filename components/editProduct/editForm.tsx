@@ -16,6 +16,7 @@ interface SizesInterface {
   menSizes: Record<string, SizeCategory>;
   womenSizes: Record<string, SizeCategory>;
 };
+next up: 1. deleting a product 2. start the styling
 // The 2 args (editFormId, product ) is related to pages/[id]/edit. So we define the properties there and display them here.
 const editProduct = ({ editFormId, product, }: Props) => {
   const router = useRouter();
@@ -54,7 +55,6 @@ const editProduct = ({ editFormId, product, }: Props) => {
   useEffect(() => {
     let categoriesWithTrueValue: any = {};
 
-
     if (product.gender === 'Women') {
       for (const category in product.sizes.womenSizes) {
         // Extracting ONLY sizes obj ({XS: false, S: true, M: true, L: true, XL: false, ...etc}) without category name on it.
@@ -77,11 +77,15 @@ const editProduct = ({ editFormId, product, }: Props) => {
       setEditSizes(categoriesWithTrueValue);
     }
   }, [product]);
+  console.log('===============product', product)
+
   // Handle changes. colorIndex: is a optional arg, handleChange in most cases has 1 arg but for editing color we need index of specific input elm so we can update the correct product.color[] 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>, colorIndex?: any) => {
     const { name, type, value, checked } = e.target as HTMLInputElement;
     console.log('===============e', e.target)
     if (type === 'checkbox') {
+      console.log('===============checkbox type: ', type)
+
       // setting the (setEditSizes) for visual confirmation of checkboxes
       setEditSizes((prev: any) => ({
         ...prev,
@@ -119,15 +123,47 @@ const editProduct = ({ editFormId, product, }: Props) => {
         // updatedSizes: holds the new of selected checkboxes       
         return { ...prevState, sizes: updatedSizes };
       });
-    } else if (type === 'color') {
+      // } else if (type === 'color') {
+    } else if (name === 'color') {
+      console.log('=========(type === color name', name);
+      console.log('=========(type === color value', value);
+
       // Editing product color.
       setForm((prevState: any) => {
-        const updatedColors = [...prevState.color]; // Create a shallow copy of the color array       
-        updatedColors[colorIndex] = value; // Update the value at the specified index    
-        return { ...prevState, color: updatedColors };// Return the updated state with the modified color array
+        const updatedColors = [...prevState.colors]; // Create a shallow copy of the color array 
+        console.log('=========updatedColors top', updatedColors);
+        console.log('=========updatedColors top', updatedColors[colorIndex]);
 
+        // updatedColors[colorIndex] = value; // Update the value at the specified index  
+        updatedColors[colorIndex] = { color: value, quantity: updatedColors[colorIndex].quantity }; // Update the value at the specified index  
+        console.log('=========updatedColors bottom', updatedColors);
+
+        return { ...prevState, colors: updatedColors };// Return the updated state with the modified color array
+        // return { ...prevState, updatedColors };// Return the updated state with the modified color array
       });
+      console.log('=========editForm', editForm);
+    } else if (name === 'quantity') {
+      console.log('=========else quantity name:  ', name);
+      console.log('=========else quantity value', value);
+      const numericValue = Math.max(1, Number(value)); // 👈 enforce min of 1. quantity must 1 or greater
+      // if it's not a number ( isNaN() ) and it's less than 999.
+      if (!isNaN(numericValue) && numericValue <= 999) {
+        setForm((prevState: any) => {
+          const updatedQuantity = [...prevState.colors]; // Create a shallow copy of the color array 
+          console.log('=========updatedQuantity top', updatedQuantity);
+          console.log('=========updatedQuantity top', updatedQuantity[colorIndex]);
+          console.log('=========colorIndex', colorIndex);
+          updatedQuantity[colorIndex] = { color: updatedQuantity[colorIndex].color, quantity: numericValue }; // Update the value at the specified index  
+          console.log('=========updatedQuantity bottom', updatedQuantity);
+
+          return { ...prevState, colors: updatedQuantity };// Return the updated state with the modified color array
+        });
+      }
+      // console.log('=========editForm quantity', editForm);
+
     } else {
+      console.log('=========else :  ', name);
+
       // if it's not a checkbox then update the fields 
       setForm((prevState) => ({
         ...prevState,
@@ -137,25 +173,28 @@ const editProduct = ({ editFormId, product, }: Props) => {
   };
   // Handle Adding more colors.
   const addMoreColor = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // To add more colors we would simply update the (setForm) by adding a default color("#000000") which is black in product.color[].
+    // To add more colors we would simply update the (setForm) by adding a default {color:"#000000", quantity: 1} which is black in product.colors[{}].
     setForm((prevState: any) => {
-      const updatedColors = [...prevState.color]; // Create a shallow copy of the color array
-      updatedColors.push("#000000");
-      return { ...prevState, color: updatedColors }
+      const updatedColors = [...prevState.colors]; // Create a shallow copy of the color array
+      console.log('=========updatedColors', updatedColors);
+      updatedColors.push({ color: "#000000", quantity: 1 });
+      return { ...prevState, colors: updatedColors }
     })
   };
   // Function to handle color deletion
   const deleteColor = (key: Number) => {
     setForm((prevState: any) => {
-      const deleteColors = [...prevState.color]; // Create a shallow copy of the color array            
+      const deleteColors = [...prevState.colors]; // Create a shallow copy of the color array            
       return {
         ...prevState,
-        color: deleteColors.filter((elem, index) => {
+        colors: deleteColors.filter((elem, index) => {
           return index !== key; // Remove color at the specified index
         })
       }
     })
   };
+  console.log('=========editForm outside', editForm);
+
   // Function to handle submission
   const handleEditSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -218,7 +257,9 @@ const editProduct = ({ editFormId, product, }: Props) => {
             <label htmlFor="color">Colors:</label>
             {editForm.colors.map((elem, index) => (
               <div className="inline" key={index} >
-                <input type="color" name="color" key={index} defaultValue={elem.color} className="w-1/2 inline" onChange={(e) => handleChange(e, index)} />
+                <input type="color" name="color" key={index} value={elem.color} className="w-1/2 inline" onChange={(e) => handleChange(e, index)} />
+                <input type="number" name="quantity" value={elem.quantity} className="w-32 inline mx-2" onChange={(e) => handleChange(e, index)} />
+
                 <button type="button" className="inline-block btn mt-0" onClick={() => deleteColor(index)}>Delete</button>
               </div>
             ))}

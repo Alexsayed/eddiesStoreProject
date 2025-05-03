@@ -78,7 +78,7 @@ const HomePage = ({ getAllProducts, }: Props) => {
                   <Link href={item._id + '/edit'}>
                     <div className="inline-block absolute right-1/4"> <BsPen /></div>
                   </Link>
-                  <div className="inline-block absolute  right-2/4"> <BsTrash /></div>
+                  {/* <div className="inline-block absolute  right-2/4"> <BsTrash /></div> */}
                 </div>
               )}
               <Link href={item._id}>

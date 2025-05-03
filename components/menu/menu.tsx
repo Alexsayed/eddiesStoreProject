@@ -11,7 +11,7 @@ type Props = {
 }
 const globalBrands = ['any', 'H&M', 'Zara', 'Topshop', 'Paragon', 'Nike', 'Puma', 'Urban Outfitters'];
 const MenuBar = ({ menuData }: Props) => {
-  console.log('====globalMenCategories', globalMenCategories)
+  // console.log('====globalMenCategories', globalMenCategories)
   return (
     <>
       {/* <div className="h-12"> */}

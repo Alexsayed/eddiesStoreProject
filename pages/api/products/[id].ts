@@ -61,7 +61,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     case "PUT" /* Edit a model by its ID */:
       try {
-        console.log('==========method from api/pet/[id] PUT HIT', method);
+        // console.log('==========method from api/pet/[id] PUT HIT', method);
+        // console.log('==========req.body', req.body);
 
         // Product.findById({ _id: id },
         //   Product.findById(id)
@@ -84,7 +85,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             brand: req.body.brand,
             gender: req.body.gender,
             kids: req.body.kids,
-            color: req.body.color,
+            colors: req.body.colors,
             // size: req.body.size,
             author: req.body.author,
             inStock: req.body.inStock,
