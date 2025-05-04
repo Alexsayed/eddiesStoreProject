@@ -16,7 +16,7 @@ interface SizesInterface {
   menSizes: Record<string, SizeCategory>;
   womenSizes: Record<string, SizeCategory>;
 };
-next up: 1. deleting a product 2. start the styling
+// next up: 1. deleting a product 2. start the styling
 // The 2 args (editFormId, product ) is related to pages/[id]/edit. So we define the properties there and display them here.
 const editProduct = ({ editFormId, product, }: Props) => {
   const router = useRouter();

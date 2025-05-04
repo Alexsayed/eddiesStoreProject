@@ -20,6 +20,8 @@ type Props = {
 // next up: dropdown menu.
 // Handle home page
 const HomePage = ({ getAllProducts, }: Props) => {
+  const contentType = "application/json";
+  const router = useRouter();
   // const { data: Session1, status } = useSession();
   const { data, status } = useSession();
   console.log('===============================,status landing', status)
@@ -63,8 +65,22 @@ const HomePage = ({ getAllProducts, }: Props) => {
   //   fetchData();
   // }, []);
   // // =======================================Original ============================================
-
-
+  // handle Delete a product
+  const deletePost = async (id: string) => {
+    const res = await fetch('/api/products/' + id, {
+      method: "DELETE",
+      headers: {
+        Accept: contentType,
+        "Content-Type": contentType,
+      },
+      body: JSON.stringify({ id: id }),
+    });
+    if (!res.ok) {
+      throw new Error(res.status.toString());
+    }
+    router.push('/');
+  }
+next up: adding export sort function here 
   return (
 
     <>
@@ -74,11 +90,12 @@ const HomePage = ({ getAllProducts, }: Props) => {
           {getAllProducts.map((item: any, i: any) => (
             <li key={i} className="border h-72 m-1.5 inline-block rounded-lg sm:w-2/5 md:w-1/4 lg:w-1/5 truncate" >
               {status === 'authenticated' && (
-                <div className="relative w-0 h-0 float-right">
+                <div className="relative w-0 h-0 float-right ">
                   <Link href={item._id + '/edit'}>
-                    <div className="inline-block absolute right-1/4"> <BsPen /></div>
+                    <div className="inline-block absolute right-1/4 bg-lime-500 rounded-full w-6 h-6 justify-items-center content-evenly "> <BsPen /></div>
                   </Link>
                   {/* <div className="inline-block absolute  right-2/4"> <BsTrash /></div> */}
+                  <div className="inline-block absolute  bg-lime-500 rounded-full w-6 h-6 justify-items-center content-evenly mr-2 cursor-pointer text-red-500" style={{ right: '24px' }} onClick={() => deletePost(item._id)}> <BsTrash /></div>
                 </div>
               )}
               <Link href={item._id}>
@@ -97,6 +114,7 @@ const HomePage = ({ getAllProducts, }: Props) => {
                   </div>
                 </div>
               </Link>
+
             </li>
           ))}
 

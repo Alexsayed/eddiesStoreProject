@@ -13,8 +13,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // console.log('========req', req.query)
   // console.log('========req.method', req.method)
   const { query: { id }, method } = req;
-  console.log('==========iddddd from products', id);
-  // console.log('==========User', User);
+
+
+
 
 
 
@@ -45,7 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // *********************ORIGINAL *********************************
         // console.log('========== api/pet/[id] GET HIT tregerd', id);
 
-        const productFromAPI = await Product.findById(id).populate({ path: 'sizes', model: Size }).exec();;
+        const productFromAPI = await Product.findById(id).populate({ path: 'sizes', model: Size }).exec();
         if (!productFromAPI) {
           return res.status(400).json({ success: false });
         }
@@ -111,13 +112,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     case "DELETE" /* Delete a model by its ID */:
       try {
-        console.log('==========method from api/pet/[id] Delete HIT', method);
-
-        const deletedPet = await Pet.deleteOne({ _id: id });
-        if (!deletedPet) {
+        // handle delete a product
+        const deletedProduct = await Product.findByIdAndDelete({ _id: req.body.id });
+        // Delete product related sizes
+        const deleteSize = await Size.findByIdAndDelete({ _id: deletedProduct.sizes });
+        if (!deletedProduct || !deleteSize) {
           return res.status(400).json({ success: false });
         }
-        res.status(200).json({ success: true, data: {} });
+        res.status(200).json({ success: true, });
       } catch (error) {
         res.status(400).json({ success: false });
       }
