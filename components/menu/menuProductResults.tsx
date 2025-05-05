@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Product, { Products } from "../../models/products";
+import { sortProducts, SortOption } from "../../utils/sortProducts";
 type Props = {
   menuProductData: Products[];
   queryName: string;
@@ -9,7 +10,7 @@ type Props = {
 const formatqueryName = (name: string) => {
   // if name starts with letter m, it means it's Men product and if it's starts with w, it mean Women product
   if (name.startsWith('m')) {
-    // Lets say we have (name = mtees). 1. Below adding Men at the begging of the string 2. converting t to upper case T.
+    // Lets say we have (name = mtees). 1. Below adding Men at the beginning of the string 2. converting t to upper case T.
     // 3. name.slice(2) gives the rest of the string starting from index 2 onward.
     // The final return value would be 'Men Tees' for the input 'mtees'.
     return 'Men ' + name.charAt(1).toUpperCase() + name.slice(2);
@@ -23,38 +24,51 @@ const formatqueryName = (name: string) => {
 };
 const MenuProductResults = ({ menuProductData, queryName }: Props) => {
   // set seleted option
-  const [selectedSortOption, setSelectSortOption] = useState('');
+  // const [selectedSortOption, setSelectSortOption] = useState('');
+  const [selectedSortOption, setSelectSortOption] = useState<SortOption>("default");
   // setting the sorted/mutated product data.
   const [sortedProductData, setSortedProductData] = useState<Products[]>(menuProductData);
+  // handle sort options
   useEffect(() => {
-    // Sorting logic based on selected sort option
-    const sortedData = [...menuProductData]; // Create a copy of the product data to avoid direct mutation
-    switch (selectedSortOption) {
-      case 'priceAscending':
-        sortedData.sort((a, b) => a.price - b.price);
-        break;
-      case 'priceDescending':
-        sortedData.sort((a, b) => b.price - a.price);
-        break;
-      case 'newest':
-        sortedData.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
-        break;
-      case 'nameAscending':
-        sortedData.sort((a, b) => a.productName.localeCompare(b.productName));
-        break;
-      case 'nameDescending':
-        sortedData.sort((a, b) => b.productName.localeCompare(a.productName));
-        break;
-      default:
-        setSortedProductData(menuProductData); // Fallback to unsorted or default list
-        return;
-    }
-    setSortedProductData(sortedData);
+    // OnChange event we would select a sort value, pass it to /utils/sortProducts file. sortProducts file we would execute sort function.
+    // HOW IT WORKS: we will send all product data (menuProductData) and sort option (selectedSortOption),sortProducts function will preform sort and will return the sorted data back.
+    const sorted = sortProducts(menuProductData, selectedSortOption);
+    // Setting the sorted data 
+    setSortedProductData(sorted);
   }, [selectedSortOption, menuProductData]);
+  // // =========================on hold =========================================
+  // useEffect(() => {
+  //   // Sorting logic based on selected sort option
+  //   const sortedData = [...menuProductData]; // Create a copy of the product data to avoid direct mutation
+  //   switch (selectedSortOption) {
+  //     case 'priceAscending':
+  //       sortedData.sort((a, b) => a.price - b.price);
+  //       break;
+  //     case 'priceDescending':
+  //       sortedData.sort((a, b) => b.price - a.price);
+  //       break;
+  //     case 'newest':
+  //       sortedData.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+  //       break;
+  //     case 'nameAscending':
+  //       sortedData.sort((a, b) => a.productName.localeCompare(b.productName));
+  //       break;
+  //     case 'nameDescending':
+  //       sortedData.sort((a, b) => b.productName.localeCompare(a.productName));
+  //       break;
+  //     default:
+  //       setSortedProductData(menuProductData); // Fallback to unsorted or default list
+  //       return;
+  //   }
+  //   setSortedProductData(sortedData);
+  // }, [selectedSortOption, menuProductData]);
+  // // =========================on hold =========================================
+
   // handle sort changes.
   // HOW IT WORKS: we are setting the (setSelectSortOption) and then the data will be sort with userEffect() method.
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectSortOption(e.target.value);
+    // setSelectSortOption(e.target.value);
+    setSelectSortOption(e.target.value as SortOption);
   };
   return (
     <>
