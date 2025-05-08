@@ -28,7 +28,7 @@ const stripePubKey = process.env.NEXT_PUBLIC_STRIPE_PUB_KEY;
 
 // const stripePromise = loadStripe('pk_test_51R7dtDP7KMWoVOpUwgyMlk8vE2vhsAZURoWou00e99kZZxvlSbQ6KnQkmcQPW4yY3vdykw8Vx7y11JpwJLgiIRoz00DagqU5k9');
 
-// console.log('=====stripePromise', stripePromise);
+
 console.log('===== process.env.NEXT_PUBLIC_ADMIN_USERNAME', process.env.NEXT_PUBLIC_STRIPE_PUB_KEY);
 // console.log('=======stripePromise', stripePromise)
 // console.log('=====Footer', Footer);
@@ -46,6 +46,7 @@ console.log('===== process.env.NEXT_PUBLIC_ADMIN_USERNAME', process.env.NEXT_PUB
 function MyApp({ Component, pageProps }: AppProps) {
   // ***********************************Original **********************************
 
+  // console.log('=====Product from App', pageProps);
   // const [stripeReady, setStripeReady] = useState(false);
   // const [stripe, setStripe] = useState<Stripe | null>(null);
   // useEffect(() => {

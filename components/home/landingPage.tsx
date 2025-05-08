@@ -10,12 +10,14 @@ import { sortProducts, SortOption } from "../../utils/sortProducts"
 type Props = {
   getAllProducts: Products[],
 };
+// next up: start css
 // Handle home page
 const HomePage = ({ getAllProducts, }: Props) => {
   const contentType = "application/json";
   const router = useRouter();
   // const { data: Session1, status } = useSession();
   const { data, status } = useSession();
+  console.log('=======data for useSession', data)
   const [selectedSortOption, setSelectSortOption] = useState<SortOption>("default");
   const [sortedProductData, setSortedProductData] = useState<Products[]>(getAllProducts);
   const [productsData, setProductsData] = useState<Products[]>(getAllProducts);
