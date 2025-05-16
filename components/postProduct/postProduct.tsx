@@ -318,6 +318,7 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
   // onChange event we are processing the data and setting it.
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,) => {
     let getValues = e.target.value;
+    console.log('============getValues', getValues)
     // next up add all sizes for men and women to HTML
     switch (e.target.name) {
       case 'gender':
@@ -561,10 +562,13 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
     // find a size value in concatSizesArray[] that is matching the name of <input>
     const found = concatSizesArray.find((element) => element === e.target.name);
     // if Found = true; then treat the elem as a checkbox otherwise as a normal value.
-    const value = found ? (e.target as HTMLInputElement).checked : e.target.value;
-    // console.log('=======value postProduct', value)
-    console.log('=======e.target.name ', e.target.name);
-
+    // const value = found ? (e.target as HTMLInputElement).checked : e.target.value;    
+    let value = found ? (e.target as HTMLInputElement).checked : e.target.value;
+    // Capitalize the first letter of below input fields
+    const capitalizeFields = ['productName', 'brand', 'author'];
+    if (capitalizeFields.includes(e.target.name) && typeof value === 'string') {
+      value = value.charAt(0).toUpperCase() + value.slice(1);
+    };
     // set the Product state
     setForm((prevState) => {
       return {
@@ -657,7 +661,7 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
         <form id={formId} onSubmit={handleSubmit} className="w-96" >
           <label htmlFor="productName">Name</label>
           {/* <label for="productName">Name</label> */}
-          <input type="text" maxLength={20} name="productName" id="productName" onChange={handleChange} />
+          <input type="text" maxLength={20} name="productName" id="productName" className="capitalize" onChange={handleChange} />
           <label htmlFor="price">Price</label>
           <input type="number" name="price" id="price" onChange={handleChange} />
           <label htmlFor="productImg">Product Image</label>
@@ -711,7 +715,7 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
           </div>
 
           <label htmlFor="author">Author</label>
-          <input type="text" name="author" id="author" onChange={handleChange} />
+          <input type="text" name="author" id="author" className="capitalize" onChange={handleChange} />
           <label htmlFor="inStock">In Stock</label>
           <select name="inStock" id="inStock" className="border rounded-lg" onChange={handleChange}   >
             <option value="" >choose one</option>

@@ -17,7 +17,7 @@ const HomePage = ({ getAllProducts, }: Props) => {
   const router = useRouter();
   // const { data: Session1, status } = useSession();
   const { data, status } = useSession();
-  console.log('=======data for useSession', data)
+  // console.log('=======data for useSession', data)
   const [selectedSortOption, setSelectSortOption] = useState<SortOption>("default");
   const [sortedProductData, setSortedProductData] = useState<Products[]>(getAllProducts);
   const [productsData, setProductsData] = useState<Products[]>(getAllProducts);
@@ -80,7 +80,7 @@ const HomePage = ({ getAllProducts, }: Props) => {
               )}
               <Link href={item._id}>
                 <div className="h-56 w-full">
-                  <img className=" h-56 w-full object-fill" src={item.productImg} />
+                  <img className=" h-56 w-full object-scale-down" src={item.productImg} />
                 </div>
                 <div className="mt-1">
                   <p>{item.productName}</p>

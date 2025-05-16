@@ -302,7 +302,7 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
           </ul>
         </div>
         <div className="w-1/2 ml-2.5 inline-block">
-          <img className="h-96 w-full" src={productData.productImg} alt="" />
+          <img className="h-96 w-full object-scale-down" src={productData.productImg} alt="" />
         </div>
         <div className="inline-block h-96 align-top ml-2.5 border w-1/3 text-center">
           <p>{productData.brand} {productData.productName}</p>

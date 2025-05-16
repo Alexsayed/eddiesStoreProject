@@ -2,11 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-form {
+/* form {
   width: 90%;
-  /* margin: auto; */
+  margin: auto;
   max-width: 550px;
-}
+} */
 
 input,
 form button,

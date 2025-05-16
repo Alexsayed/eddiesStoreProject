@@ -19,11 +19,12 @@ const SearchResults = () => {
   const [filteredResults, setFilteredResults] = useState<Products[]>([]); // Filtered results state
   console.log('===========query', query)
 
+
   // First we are getting all products DB.
   useEffect(() => {
     if (query) {
       const fetchData = async () => {
-        const response = await fetch('http://localhost:3000/api/products');
+        const response = await fetch('/api/products');
         const json = await response.json();
         setAllProducts(json.data);
       };
@@ -36,6 +37,7 @@ const SearchResults = () => {
     // Filter the results whenever 'allProducts' or 'query' changes
     if (query && query.length >= 3 && typeof query === 'string' && allProducts.length > 0) {
       try {
+        // alert(query)
         // filter products by it's Name, Brand and Category and return (filtered).   
         const filtered = allProducts.filter(item =>
         (item.productName.toLowerCase().includes(query.toLowerCase()) ||
@@ -51,7 +53,6 @@ const SearchResults = () => {
   // next upp: make the search broader like seaching by category or brand etc...
   return (
     <div className="border w-full">
-      {/* <h1>Search Results for "{query}"</h1> */}
       {filteredResults.length > 0 ? (
         <ul className="text-center">
           {filteredResults.map((result, i) => (
@@ -82,6 +83,7 @@ const SearchResults = () => {
         </ul>
       ) : (
         <p>No results found</p>
+
       )}
     </div>
   )

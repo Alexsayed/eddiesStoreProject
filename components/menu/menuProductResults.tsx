@@ -23,6 +23,7 @@ const formatqueryName = (name: string) => {
   }
 };
 const MenuProductResults = ({ menuProductData, queryName }: Props) => {
+  console.log('================queryName from menuPResualt', queryName)
   // set seleted option
   // const [selectedSortOption, setSelectSortOption] = useState('');
   const [selectedSortOption, setSelectSortOption] = useState<SortOption>("default");

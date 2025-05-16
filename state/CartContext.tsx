@@ -57,27 +57,48 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [storedItems, setStoredItems] = useState<CartItem[]>([]);
 
   // ================== ON HOLD =============================
+  // useEffect(() => {
+  //   // Check if we are in the browser
+  //   if (typeof window !== 'undefined' && window.localStorage) {
+  //     let getStorage: string | null = localStorage.getItem('items');
+  //     // const getStorage: string | null = localStorage.getItem('items');
+  //     // const parsedItems = getStorage ? JSON.parse(getStorage) : [];
+  //     // console.log('===== getStorage', JSON.parse(getStorage));
+
+
+  //     if (getStorage) {
+  //       // console.log('No items in cart', JSON.parse(getStorage));
+  //       //   console.log('items in cart top', getStorage);
+  //       //   // Store it in the state
+  //       //   // setStoredItems(JSON.parse(getStorage));
+
+  //       // setCart([JSON.parse(getStorage)]);
+  //       setCart(JSON.parse(getStorage));
+  //     }
+  //   }
+
+  // }, []);
+  // ================== ON HOLD =============================
+
   useEffect(() => {
     // Check if we are in the browser
-    if (typeof window !== 'undefined' && window.localStorage) {
-      let getStorage: string | null = localStorage.getItem('items');
-      // const getStorage: string | null = localStorage.getItem('items');
-      // const parsedItems = getStorage ? JSON.parse(getStorage) : [];
-      // console.log('===== getStorage', JSON.parse(getStorage));
-
-
-      if (getStorage) {
-        // console.log('No items in cart', JSON.parse(getStorage));
-        //   console.log('items in cart top', getStorage);
-        //   // Store it in the state
-        //   // setStoredItems(JSON.parse(getStorage));
-
-        // setCart([JSON.parse(getStorage)]);
-        setCart(JSON.parse(getStorage));
+    if (typeof window !== 'undefined') {
+      try {
+        // Get items from localStorage
+        const storedItems = localStorage.getItem('items');
+        if (storedItems) {
+          // Convert JavaScript value or object 
+          const parsedItems = JSON.parse(storedItems);
+          setCart(parsedItems);
+        }
+      } catch (error) {
+        console.error('Failed to load items from localStorage:', error);
       }
     }
-
   }, []);
+
+
+
   // next up: handle so a use can select only 1 color and 1 size per addToCart, if a user want multi size or color then they have add to car new order
   // Add items to Shopping cart.
   const addToCart = (item: CartItem) => {

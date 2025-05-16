@@ -1,6 +1,7 @@
 import React from 'react';
 import "../css/style.css";
 import "../css/form.css";
+import "../css/navBar.css";
 // import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState, useContext } from 'react';
 import { useEffect } from 'react';
