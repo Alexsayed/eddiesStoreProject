@@ -57,7 +57,7 @@ const Navbar = () => {
         </div>
         {/* <div className="w-full  order-4 md:order-2 md:w-auto"> */}
         {/* <div className=" w-full order-4 md:order-2  md:w-auto border "> */}
-        <div className=" order-4 w-full overflow-hidden  md:order-2  md:w-auto sm:w-full sm:ml-0      mt-auto ml-auto flex justify-end border">
+        <div className=" order-4 w-full overflow-hidden  md:order-2  md:w-auto sm:w-full sm:ml-0      mt-auto ml-auto flex justify-end ">
           {/* <form action="" className="flex w-full items-center " onSubmit={handleSearchSubmit}> */}
           <form action="" className="flex float-right" onSubmit={handleSearchSubmit}>
             {/* <input type="text" className="w-full md:w-32 lg:w-56 h-8 rounded-md pl-2" maxLength={20} name="search" id="search" ref={inputRef} placeholder="Search Products" onChange={handleSearchInputChange} value={query} required /> */}
