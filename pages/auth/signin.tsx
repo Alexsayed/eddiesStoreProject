@@ -79,13 +79,13 @@ const SignInPage = ({ csrfToken }: Props) => {
           <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
           <div>
             <label htmlFor="username">Username</label>
-            <input name="username" type="text" required />
+            <input name="username" type="text" className="border border-gray-400" required />
           </div>
           <div>
             <label htmlFor="password">Password</label>
-            <input name="password" type="password" required />
+            <input name="password" type="password" className="border border-gray-400" required />
           </div>
-          <button type='submit'>Sign in</button>
+          <button className="border w-32" type='submit'>Sign in</button>
         </form>
       </div>
     );

@@ -50,13 +50,13 @@ const HomePage = ({ getAllProducts, }: Props) => {
     }
     router.push('/');
   }
-  // next up: adding export sort function here 
+  next up: work on this page
   return (
 
     <>
-      <div className="text-right inline-block  mx-4 absolute right-2">
-        <label htmlFor="sort" className="m-0 inline-flex tracking-wider">Sort:</label>
-        <select name="sort" id="sort" className="border " value={selectedSortOption} onChange={handleSortChange}>
+      <div className="float-right mx-4 my-2 h-7 ">
+        <label htmlFor="sort" className="m-0 inline ">Sort:</label>
+        <select name="sort" id="sort" className="border w-24 rounded-md bg-white pl-0.5 ml-1 place-content-center" value={selectedSortOption} onChange={handleSortChange}>
           <option value="default">Featured</option>
           <option value="priceAscending">Price: Low to High</option>
           <option value="priceDescending">Price: High to Low</option>
@@ -65,7 +65,7 @@ const HomePage = ({ getAllProducts, }: Props) => {
           <option value="nameDescending">Z-A</option>
         </select>
       </div>
-      <div className="border w-full relative top-7">
+      <div className="border w-full inline-block">
         <ul className="text-center">
           {productsData.map((item: any, i: any) => (
             <li key={i} className="border h-72 m-1.5 inline-block rounded-lg sm:w-2/5 md:w-1/4 lg:w-1/5 truncate" >
