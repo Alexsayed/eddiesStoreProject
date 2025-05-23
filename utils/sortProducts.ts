@@ -1,10 +1,10 @@
 import { Products } from "../models/products";
 export type SortOption = | "priceAscending" | "priceDescending" | "newest" | "nameAscending" | "nameDescending" | "default";
-
+// Handle Sort products
 export const sortProducts = (productsData: Products[], sortOption: SortOption): Products[] => {
-  console.log('=======sorted i triggerd productsData: ', productsData)
-  console.log('=======sorted i triggerd sortOption: ', sortOption);
+  // Store shalow copy of productsData
   const sorted = [...productsData];
+  // Handle sort options
   switch (sortOption) {
     case "priceAscending":
       return sorted.sort((a, b) => a.price - b.price);

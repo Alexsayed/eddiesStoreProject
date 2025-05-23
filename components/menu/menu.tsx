@@ -123,8 +123,9 @@ const MenuBar = ({ menuData }: Props) => {
   return (
     <>
       {isDesktopView ? (
+
         <div className="block p-1.5 h-10 border-b">
-          <ul className="flex items-center">
+          <ul className="flex ">
             <li className="inline ml-4 mr-16 w-14 hover:border-t-2 border-slate-400"><Link href={'/menu/newItems'}>New In</Link></li>
             <li className="inline mr-16 group w-12 hover:border-t-2 border-slate-400">
               <span>Men's</span>
@@ -195,6 +196,7 @@ const MenuBar = ({ menuData }: Props) => {
             )}
           </ul>
         </div>
+
       ) : (
         <>
           <div className='menuContainer '>
@@ -250,10 +252,10 @@ const MenuBar = ({ menuData }: Props) => {
             )}
           </div>
           {status === 'authenticated' && (
-            <div className=" border rounded-md absolute left-[45%] top-[66px] h-7  w-auto -translate-x-1/2 pl-1 pr-2">
+            <div className=" border rounded-md absolute left-[45%] top-[62px] h-6.5  w-auto -translate-x-1/2 pl-1 pr-2 ">
 
-              <Link href={'/new'} className="flex py-0.5 items-center ">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 border rounded-full  mr-1 ">
+              <Link href={'/new'} className="flex  items-center ">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 border rounded-full  mr-1  ">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
                 New

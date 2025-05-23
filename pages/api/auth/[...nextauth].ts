@@ -10,7 +10,7 @@ if (!envUsername || !envPassword || envUsername.trim() === '' || envPassword.tri
 }
 const users = { id: '1', username: envUsername, password: envPassword, role: 'admin', };
 // export default NextAuth({
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -71,7 +71,7 @@ const authOptions: NextAuthOptions = {
       if (user) {
         token.name = user.name ?? ''; // Add username to the token           
         token.id = user.id ?? ''; // Add id to the token
-        token.role = users.role ?? ''; // Add user role to the token (optional)        
+        token.role = users.role ?? ''; // Add user role to the token (optional)                    
       }
       return token;
     },
@@ -82,6 +82,10 @@ const authOptions: NextAuthOptions = {
         // session.user.id = token.id as string; // Add id to session object if needed
         session.user.name = token.name as string;
         // session.user.role = token.role as string; // Add role to session object if needed
+
+        // session.user.id = token.id as string;
+        // session.user.name = token.name as string;
+        // session.user.role = token.role as string;
       }
       return session;
     }

@@ -73,21 +73,26 @@ const SignInPage = ({ csrfToken }: Props) => {
   };
   if (status === 'unauthenticated') {
     return (
-      <div className="grid">
-        <h1>Sign In</h1>
-        <form method="POST" onSubmit={handleSubmit} >
-          <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
-          <div>
-            <label htmlFor="username">Username</label>
-            <input name="username" type="text" className="border border-gray-400" required />
-          </div>
-          <div>
-            <label htmlFor="password">Password</label>
-            <input name="password" type="password" className="border border-gray-400" required />
-          </div>
-          <button className="border w-32" type='submit'>Sign in</button>
-        </form>
-      </div>
+      <>
+        <div>
+          <h1 className="text-2xl">Sign in has issue with lowercase meaning i should do  lowercase upppercase check</h1>
+        </div>
+        <div className="grid">
+          <h1>Sign In</h1>
+          <form method="POST" onSubmit={handleSubmit} >
+            <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
+            <div>
+              <label htmlFor="username">Username</label>
+              <input name="username" type="text" className="border border-gray-400" required />
+            </div>
+            <div>
+              <label htmlFor="password">Password</label>
+              <input name="password" type="password" className="border border-gray-400" required />
+            </div>
+            <button className="border w-32" type='submit'>Sign in</button>
+          </form>
+        </div>
+      </>
     );
   }
 };

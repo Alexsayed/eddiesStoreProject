@@ -4,14 +4,17 @@ import Pet from "../../../models/Pet";
 import User from "../../../models/Users";
 import Product from "../../../models/products";
 import Size from "../../../models/sizes";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]";
 
 // import User from "../../models/Users";
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+
   // console.log('========req', req)
-  // console.log('========req', req.query)
-  // console.log('========req.method', req.method)
+  // console.log('========res', res)
+
   const { query: { id }, method } = req;
 
 
