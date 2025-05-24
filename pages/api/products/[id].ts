@@ -114,6 +114,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       break;
 
     case "DELETE" /* Delete a model by its ID */:
+      console.log('====delete hit')
       try {
         // handle delete a product
         const deletedProduct = await Product.findByIdAndDelete({ _id: req.body.id });

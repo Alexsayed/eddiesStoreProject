@@ -19,6 +19,8 @@ const HomePage = ({ getAllProducts, }: Props) => {
   const [selectedSortOption, setSelectSortOption] = useState<SortOption>("default");
   // const [sortedProductData, setSortedProductData] = useState<Products[]>(getAllProducts);
   const [productsData, setProductsData] = useState<Products[]>(getAllProducts);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   // handle sort options
   useEffect(() => {
     // OnChange event we would select a sort value, pass it to /utils/sortProducts file. sortProducts file we would execute sort function and return sorted data back.
@@ -32,26 +34,39 @@ const HomePage = ({ getAllProducts, }: Props) => {
     // setSelectSortOption(e.target.value);
     setSelectSortOption(e.target.value as SortOption);
   };
+  // Initiate Delete 
+  const handleDeleteClick = (id: string) => {
+    // Store the product ID
+    setSelectedId(id);
+    // set to True to show delete popup.
+    setShowDeletePopup(true);
+  };
 
   // handle Delete a product
-  const deletePost = async (id: string) => {
-    const res = await fetch('/api/products/' + id, {
+  const confirmDelete = async () => {
+    // if now ID is stored/selected
+    if (!selectedId) return;
+    const res = await fetch(`/api/products/${selectedId}`, {
       method: "DELETE",
       headers: {
-        Accept: contentType,
-        "Content-Type": contentType,
+        Accept: "application/json",
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ id: id }),
+      body: JSON.stringify({ id: selectedId }),
     });
+    // Set to fasle to hide delete popup.
+    setShowDeletePopup(false);
+    // Remove/clear the ID.
+    setSelectedId(null);
     if (!res.ok) {
-      throw new Error(res.status.toString());
+      console.error("Failed to delete");
+      return;
     }
     router.push('/');
-  }
+  };
 
   return (
     <>
-      {/* <div className="float-right mx-4 my-2 h-7 inline "> */}
       <div className="w-full  flex justify-end px-4  py-1 sm:py-2 md:py-2 ">
         <div className="">
           <label htmlFor="sort" className="m-0 inline ">Sort:</label>
@@ -65,33 +80,26 @@ const HomePage = ({ getAllProducts, }: Props) => {
           </select>
         </div>
       </div>
-      {/* <div className="border   pt-2 inline-block "> */}
       <div className="border  pt-2 ">
-        {/* <ul className=" text-center mx-auto"> */}
         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto justify-items-center px-4">
-          {/* <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 justify-items-center"> */}
           {productsData.map((item: any, i: any) => (
-            // <li key={i} className="border h-72 m-1.5 inline-block rounded-lg sm:w-2/5 md:w-1/4 lg:w-1/5 truncate" >
             <li key={i} className="border h-72 w-full max-w-xs rounded-lg truncate" >
-              {/* {status === 'authenticated' && ( */}
-              <div className="relative w-0 h-0 float-right ">
-                <Link href={item._id + '/edit'}>
-                  <div className="inline-block absolute right-1/4 bg-lime-500 rounded-full w-6 h-6 justify-items-center content-evenly "> <BsPen /></div>
-                </Link>
-                {/* <div className="inline-block absolute  right-2/4"> <BsTrash /></div> */}
-                <div className="inline-block absolute  bg-lime-500 rounded-full w-6 h-6 justify-items-center content-evenly mr-2 cursor-pointer text-red-500" style={{ right: '24px' }} onClick={() => deletePost(item._id)}> <BsTrash /></div>
-              </div>
-              {/* )} */}
+              {status === 'authenticated' && (
+                <div className="relative w-0 h-0 float-right ">
+                  <div className="absolute bg-slate-50 rounded-full w-6 h-6 cursor-pointer text-indigo-500 right-1/4 flex items-center justify-center" >
+                    <Link href={item._id + '/edit'} className="">
+                      <BsPen />
+                    </Link>
+                  </div>
+                  <div className="absolute bg-slate-50 rounded-full w-6 h-6  mr-2 cursor-pointer text-red-500 flex items-center justify-center right-[24px]" onClick={() => handleDeleteClick(item._id)}> <BsTrash /></div>
+                </div>
+              )}
               <Link href={item._id}>
-                {/* <div className="h-56 w-full"> */}
                 <div className="h-4/5 w-full aspect-[4/3] overflow-hidden">
-
-                  {/* <img className=" h-56 w-[98%] object-scale-down" src={item.productImg} /> */}
                   <img className="w-full h-full object-cover" src={item.productImg} alt={item.productName} />
                 </div>
-                <h1 className="text-2xl">Continue here tomorrow</h1>
-                <div className="mt-1">
-                  <p>{item.productName}</p>
+                <div className="mt-1 mx-2">
+                  <p>H&M Slim {item.productName}</p>
                 </div>
                 <div className="mx-2 block  text-start  ">
                   <div className="inline">
@@ -102,14 +110,27 @@ const HomePage = ({ getAllProducts, }: Props) => {
                   </div>
                 </div>
               </Link>
-
             </li>
           ))}
         </ul>
-
       </div >
+      {showDeletePopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ">
+          <div className="bg-white p-4 rounded  w-full max-w-sm">
+            <h2 className="font-bold text-base mb-2">Confirm Deletion</h2>
+            <p className="mb-4 text-sm">Are you sure you want to delete this product?</p>
+            <div className="flex justify-end space-x-3 h-8">
+              <button onClick={() => setShowDeletePopup(false)} className="px-3 bg-gray-300 rounded hover:bg-gray-400">
+                Cancel
+              </button>
+              <button onClick={confirmDelete} className="px-3  bg-red-600 text-white rounded hover:bg-red-700">
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }
-
 export default HomePage;

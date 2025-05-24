@@ -146,7 +146,7 @@ export const globalWomenCategories = ['Dresses', 'Jackets', 'Jeans', 'Pants', 'S
 
 // Declaring variable here so it won't reset to zero everytime we make changes in the page.
 let storeColors: string[] = [];
-
+next up: selecting img file
 // next up: we need to set color as array so there will be multi color array of < options > and admin selecting one or many
 // Handle Post product.
 // const Form = ({ formId, product, forNewProduct = true, }: Props) => {
@@ -211,7 +211,7 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
       return (
         < div key={i} className="inline-block w-20 ">
           <label htmlFor={elem} className="inline-block">{elem}</label>
-          <input type="checkbox" name={elem} className="inline-block w-10 ahahha" onChange={handleChange} />
+          <input type="checkbox" name={elem} className="inline-block w-10 ahahha" onChange={handleChange} required />
         </div>
       )
     })
@@ -225,11 +225,11 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
     const newColorInput = (
       <div className="inline" key={newKey} >
         {/* <input type="color" name="colors" key={newKey} className="w-1/2 inline" ref={colorInput} onChange={handleChange} /> */}
-        <input type="color" name="color" key={newKey} className="w-1/2 inline" ref={colorInput} onChange={(e) => handleColorNQuantity(e, newKey)} />
+        <input type="color" name="color" key={newKey} className="w-1/2 inline border" ref={colorInput} onChange={(e) => handleColorNQuantity(e, newKey)} required />
         <button type="button" className="inline-block btn mt-0" onClick={() => deleteColor(newKey)}>Delete</button>
         <label htmlFor="quantity" >quantity</label>
         {/* <input type="number" name="quantity" id="" onChange={handleChange} /> */}
-        <input type="number" name="quantity" id="" onChange={(e) => handleColorNQuantity(e, newKey)} />
+        <input type="number" name="quantity" id="" className="border" onChange={(e) => handleColorNQuantity(e, newKey)} required />
 
       </div>
     )
@@ -661,20 +661,20 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
         <form id={formId} onSubmit={handleSubmit} className="w-96" >
           <label htmlFor="productName">Name</label>
           {/* <label for="productName">Name</label> */}
-          <input type="text" maxLength={20} name="productName" id="productName" className="capitalize" onChange={handleChange} />
+          <input type="text" maxLength={20} name="productName" id="productName" className="capitalize border" onChange={handleChange} required />
           <label htmlFor="price">Price</label>
-          <input type="number" name="price" id="price" onChange={handleChange} />
+          <input type="number" name="price" id="price" className="border" onChange={handleChange} required />
           <label htmlFor="productImg">Product Image</label>
-          <input type="text" name="productImg" id="productImg" onChange={handleChange} />
+          <input type="text" name="productImg" id="productImg" className="border" onChange={handleChange} required />
           <label htmlFor="gender">Gender</label>
-          <select name="gender" id="gender" className="border rounded-lg" onChange={handleChange}   >
+          <select name="gender" id="gender" className="border rounded-lg" onChange={handleChange} required  >
             <option value="" >choose one</option>
             <option value="Men" >Men</option>
             <option value="Women">Women</option>
           </select>
 
           <label htmlFor="category">Category</label>
-          <select name="category" id="category" ref={categories} className="border rounded-lg" onChange={handleChange}   >
+          <select name="category" id="category" ref={categories} className="border rounded-lg" onChange={handleChange} required >
             <option value="" >Choose Category</option>
             {menCategoryItems}
             {womenCategoryItems}
@@ -697,7 +697,7 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
             {sizeItemsForAll.menTees}
           </div>
           <label htmlFor="brand">Brand</label>
-          <input type="text" name="brand" id="brand" className="capitalize" onChange={handleChange} />
+          <input type="text" name="brand" id="brand" className="capitalize border" onChange={handleChange} required />
           <label htmlFor="kids">Kids</label>
           <select name="kids" id="kids" className="border rounded-lg" onChange={handleChange}   >
             <option value="" >choose one</option>
@@ -715,9 +715,9 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
           </div>
 
           <label htmlFor="author">Author</label>
-          <input type="text" name="author" id="author" className="capitalize" onChange={handleChange} />
+          <input type="text" name="author" id="author" className="capitalize border" onChange={handleChange} />
           <label htmlFor="inStock">In Stock</label>
-          <select name="inStock" id="inStock" className="border rounded-lg" onChange={handleChange}   >
+          <select name="inStock" id="inStock" className="border rounded-lg" onChange={handleChange} required  >
             <option value="" >choose one</option>
             <option value="true" >True </option>
             <option value="false">false</option>
