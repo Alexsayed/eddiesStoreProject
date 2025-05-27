@@ -25,7 +25,7 @@ import { useCart } from '../../state/CartContext';
 // }
 // type bsProp = ProductProps;
 type Props = {
-  editFormId: string;
+  // editFormId: string;
   productData: Products;
   // bsProp: ProductProps
   // updateText: (event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -78,7 +78,7 @@ type Props = {
 // const quantityItems = totalQuantity[0];
 // const numbers = Array.from({ length: quantityItems }, (_, index) => index + 1);
 // ******************************original **********************************
-const ProductPage = ({ editFormId, productData, }: Props,) => {
+const ProductPage = ({ productData, }: Props,) => {
   // const ProductPage: React.FC<ProductProps> = ({ editFormId, productData, }: Props,) => {
   // console.log('===========productData', productData);
   const selectColor = useRef<HTMLSelectElement>(null);
@@ -287,68 +287,90 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
 
   // fuck this shit man.find a way to update Cart icon when a button is clicked
   return (
-
+    // continue tomorrow
     <>
       {/* <div>{greet('World')}</div> */}
       {/* <Navbar updateText={updateCount} /> */}
-      <div id={editFormId} className="w-full">
-        <div className="inline-block w-20 align-top  ml-2.5 text-center">
-          <ul>
-            <li className="h-16 w-16  border mb-1 rounded-sm"><img src={productData.productImg} alt="" /></li>
-            <li className="h-16 w-16 border mb-1 rounded-sm"><img src={productData.productImg} alt="" /></li>
-            <li className="h-16 w-16 border mb-1 rounded-sm"><img src={productData.productImg} alt="" /></li>
-            <li className="h-16 w-16 border mb-1 rounded-sm"><img src={productData.productImg} alt="" /></li>
-            <li className="h-16 w-16 border mb-1 rounded-sm"><img src={productData.productImg} alt="" /></li>
+      <div className="w-full mt-9 md:mt-0 border-t pt-2 flex flex-wrap">
+        <div className=" w-[20%] sm:w-[13.5%] px-1.5 sm:px-3  order-1 border rounded text-center">
+          <ul className=' '>
+            <li className="mb-1">
+              <div className="w-full aspect-[1/1] flex items-center justify-center">
+                <img className="h-full w-full object-cover rounded" src={productData.productImg} alt="" />
+              </div>
+            </li>
+            <li className="mb-1">
+              <div className="w-full aspect-[1/1] flex items-center justify-center">
+                <img className="h-full w-full object-cover rounded" src={productData.productImg} alt="" />
+              </div>
+            </li>
+            <li className="mb-1">
+              <div className="w-full aspect-[1/1] flex items-center justify-center">
+                <img className="h-full w-full object-cover rounded" src={productData.productImg} alt="" />
+              </div>
+            </li>
+            <li className="mb-1">
+              <div className="w-full aspect-[1/1] flex items-center justify-center">
+                <img className="h-full w-full object-cover rounded" src={productData.productImg} alt="" />
+              </div>
+            </li>
+            <li className="mb-1">
+              <div className="w-full aspect-[1/1] flex items-center justify-center">
+                <img className="h-full w-full object-cover rounded" src={productData.productImg} alt="" />
+              </div>
+            </li>
+            {/* <li className="h-20 w-full  mb-1  flex justify-center items-center"><img className="h-full w-full object-contain" src={productData.productImg} alt="" /></li>
+            <li className="h-20 w-full  mb-1  flex justify-center items-center"><img className="h-full w-full object-contain" src={productData.productImg} alt="" /></li>
+            <li className="h-20 w-full  mb-1  flex justify-center items-center"><img className="h-full w-full object-contain" src={productData.productImg} alt="" /></li>
+            <li className="h-20 w-full  mb-1  flex justify-center items-center"><img className="h-full w-full object-contain" src={productData.productImg} alt="" /></li>
+            <li className="h-20 w-full  mb-1  flex justify-center items-center"><img className="h-full w-full object-contain" src={productData.productImg} alt="" /></li> */}
           </ul>
         </div>
-        <div className="w-1/2 ml-2.5 inline-block">
-          <img className="h-96 w-full object-scale-down" src={productData.productImg} alt="" />
+        <div className="w-[75%] sm:w-[62.5%]  mx-auto  overflow-hidden  border border-rose-600 order-2 rounded ">
+          <img className="w-full h-full object-cover " src={productData.productImg} alt="" />
         </div>
-        <div className="inline-block h-96 align-top ml-2.5 border w-1/3 text-center">
-          <p>{productData.brand} {productData.productName}</p>
-          <p>{productData.price}</p>
-          <p>Color:{productData.colors[0].color}</p>
-
-          {/* <p> */}
+        <div className=" h-96 align-top   w-full sm:w-[20%]  order-3 sm:order-3 rounded px-2 ">
+          <h1 className='text-xl mb-1 '>{productData.brand} {productData.productName}</h1>
+          {/* <p>{productData.brand} {productData.productName}</p> */}
 
 
-          <ul>
-            {/* {Object.entries(productData.sizes.womenSizes.sweaters).map(([size, flag]) => (
+
+          {/*<ul>
+             {Object.entries(productData.sizes.womenSizes.sweaters).map(([size, flag]) => (
               <li key={size}>{`${size}: ${flag ? 'True' : 'False'}`} {size}: {flag.toString()}</li>
-            ))} */}
-          </ul>
+            ))} 
+          </ul> */}
           {/* {productData.sizes.womenSizes.sweaters.XS.toString()}Sssize */}
           {/* </p> */}
-          <p>{!productData}</p>
           {/* <p>Size: {productData.sizes.menSizes.sweaters.XS.toString()}</p> */}
           {/* <p>Size: {productData.sizes.menSizes.sweaters.L.toString()}</p> */}
-          <p>inStock: {productData.inStock}</p>
-          {/* <button onClick={ }>Click Me please</button> */}
-          <label htmlFor="Color">Color</label>
+          {productData.inStock ? (
+            <p className='text-green-500 text-sm mb-3'>In Stock</p>
+          ) : (
+            <p className='text-red-500 text-sm mb-3'>Out of Stock</p>
+          )}
+          <p className='text-xl mb-2 '>${productData.price}.00</p>
+          <hr />
+
+
           {/* <select name="Color" className="border rounded-lg" onChange={handleChange} required  >
             <option value="" >choose color</option>
             {productData.color.map((color, index) =>
               <option key={index} value={color}>{color}</option>
             )}
           </select> */}
+          <h1>Keep working here</h1>
+          <label htmlFor="Color">Color</label>
           {productData.colors.map((elem, index) =>
-            <label key={index} className="checkbox-container">
+            <label key={index} className="checkbox-container ">
               <input type="checkbox" name='color' value={elem.color} checked={productColor === elem.color} onChange={handleChange} required />
               <span className="checkbox" style={{ border: `3px solid ${elem.color}` }}></span>
             </label>
           )}
-
-          <label htmlFor="Sizes">Sizes</label>
-          <select name="Sizes" className="border rounded-lg" onChange={handleChange} required  >
-            <option value="" >choose a size</option>
-            {productSize.map((size, index) =>
-              <option key={index} value={size}>{size}</option>
-            )}
-          </select>
           {productQuantity > 0 && (
             <div>
-              <label htmlFor="quantity" >quantity</label>
-              <select name="quantity" className="border rounded-lg " onChange={handleChange} required  >
+              <label htmlFor="quantity" >quantity:</label>
+              <select name="quantity" id='quantity' className="border rounded-lg w-5/6 bg-white pl-1.5 " onChange={handleChange} required  >
                 {/* <option value="" >choose quantity</option> */}
                 {/* {productData.colors.map((elem, index) =>
                 <option key={index} value={elem.quantity}>{elem.quantity}</option>
@@ -364,7 +386,15 @@ const ProductPage = ({ editFormId, productData, }: Props,) => {
 
             </div>
           )}
-          <button className="rounded-sm border bg-green-400" onClick={handleAddToCart}>Add to Cart</button>
+          <label htmlFor="Sizes">Sizes</label>
+          <select name="Sizes" className="border rounded-lg w-5/6 bg-white pl-1.5" onChange={handleChange} required  >
+            <option value="" >Size</option>
+            {productSize.map((size, index) =>
+              <option key={index} value={size}>{size}</option>
+            )}
+          </select>
+
+          <button className="rounded-sm border bg-green-400 mt-4" onClick={handleAddToCart}>Add to Cart</button>
 
           {/* <p>add: {add(1, 3)}</p> */}
           {/* <button onClick={() => add(1, 3)}>Click Me</button> */}

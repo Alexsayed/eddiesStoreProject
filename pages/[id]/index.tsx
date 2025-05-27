@@ -49,14 +49,15 @@ const PetPage = ({ getProduct, }: Props) => {
   //     setMessage("Failed to delete the pet.");
   //   }
   // };
-  console.log('==============getProduct from [id]/index', getProduct)
+  // console.log('==============getProduct from [id]/index', getProduct)
 
 
   return (
 
     // <CurrentUserContext.Provider value={currentUser}> 
     <>
-      < ProductPage editFormId="edit-pet-form12" productData={getProduct} />
+      {/* < ProductPage editFormId="edit-pet-form12" productData={getProduct} /> */}
+      < ProductPage productData={getProduct} />
 
 
 

@@ -67,7 +67,7 @@ const HomePage = ({ getAllProducts, }: Props) => {
 
   return (
     <>
-      <div className="w-full  flex justify-end px-4  py-1 sm:py-2 md:py-2 ">
+      <div className="w-full  flex justify-end px-4  py-1.5  ">
         <div className="">
           <label htmlFor="sort" className="m-0 inline ">Sort:</label>
           <select name="sort" id="sort" className="border w-24 rounded-md bg-white pl-0.5 ml-1 " value={selectedSortOption} onChange={handleSortChange}>

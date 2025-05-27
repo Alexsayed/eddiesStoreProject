@@ -146,7 +146,7 @@ export const globalWomenCategories = ['Dresses', 'Jackets', 'Jeans', 'Pants', 'S
 
 // Declaring variable here so it won't reset to zero everytime we make changes in the page.
 let storeColors: string[] = [];
-next up: selecting img file
+
 // next up: we need to set color as array so there will be multi color array of < options > and admin selecting one or many
 // Handle Post product.
 // const Form = ({ formId, product, forNewProduct = true, }: Props) => {
