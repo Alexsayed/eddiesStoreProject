@@ -129,7 +129,7 @@ export const getServerSideProps: GetServerSideProps<Props, Params> = async ({ pa
       notFound: true,
     };
   }
-  console.log('========params.id;', params.id)
+  // console.log('========params.id;', params.id)
   // if (params.id === 'newItems' || 'mens' || 'womens' || 'brands') {
   //   console.log('========params.id inside;', params.id)
   //   const productResult1 = await Product.find({ $or: [{ id: params.id }, { productName: params.id }, { brand: params.id }, { gender: params.id }] });
@@ -158,8 +158,6 @@ export const getServerSideProps: GetServerSideProps<Props, Params> = async ({ pa
 
   // Find product by it's ID
   const productResult = await Product.findById({ _id: params.id });
-
-  console.log('========productResult form index', productResult)
   if (!productResult) {
     return {
       notFound: true,
@@ -177,7 +175,7 @@ export const getServerSideProps: GetServerSideProps<Props, Params> = async ({ pa
   const stringifyProduct = JSON.parse(JSON.stringify(productResult));
   /* Ensures all objectIds and nested objectIds are serialized as JSON data */
   // const serializedPet = JSON.parse(JSON.stringify(pet));
-  console.log('==============stringifyProduct index.tsx', stringifyProduct)
+
 
 
 

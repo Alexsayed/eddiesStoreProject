@@ -91,7 +91,10 @@ const ProductPage = ({ productData, }: Props,) => {
 
   const [cartProductSize, setCartProductSize] = useState<string>('')
   const [cartProductQuantity, setCartProductQuantity] = useState<number>(0);
-  // The Array.from() static method creates a new, shallow-copied Array instance. 
+  // Previewing product images. By default the first image will be selected.
+  const [imagePreview, setImagePreview] = useState<string>(productData.productImg);
+  // console.log('=====productData', productData.productImg)
+  // The Array.from() static method creates a new, shallow-copied Array instance. veiw 
   // Example: productQuantity = 4; Array.from() would create  [1,2,3,4], so we cal loop through it.
   const quantity = Array.from({ length: productQuantity }, (unused, index) => index + 1);
   useEffect(() => {
@@ -135,16 +138,16 @@ const ProductPage = ({ productData, }: Props,) => {
 
   }, [productData]);
   // }, []);  
-  console.log('=========productQuantity ', productQuantity)
+  // console.log('=========productQuantity ', productQuantity)
 
 
-  console.log('============productColor  top', productColor);
+  // console.log('============productColor  top', productColor);
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,) => {
     let getValues = e.target.value;
     let getTargetName = e.target.name
-    // set states for color and size when user selecting 
+    // set states for color and size when user selecting     
     switch (getTargetName) {
       // setting Cart item color. Can select one color per order.
       case 'color':
@@ -176,7 +179,9 @@ const ProductPage = ({ productData, }: Props,) => {
         }
         break;
       // set Size
-      case 'Sizes':
+      case 'sizes':
+        console.log('============pgetTargetName if Sizes', getTargetName);
+
         setCartProductSize(getValues);
         break;
       case 'quantity':
@@ -224,7 +229,18 @@ const ProductPage = ({ productData, }: Props,) => {
     // localStorage.removeItem("items");
     // console.log('===== items  LoaclStorge from Product.tsx', JSON.parse(getStorage))
   }
-
+  // Handle preview product images.
+  const previewImage = (e: React.MouseEvent<HTMLImageElement>) => {
+    const img = e.target as HTMLImageElement;
+    // get clicked image.src
+    const clickedImage = img.currentSrc;
+    if (!clickedImage) return;
+    if (imagePreview === clickedImage) return;
+    // Toggle between product images.
+    setImagePreview(prev =>
+      prev === clickedImage ? productData.productImg : clickedImage
+    );
+  }
   // useEffect(() => {
   // const items = JSON.parse(localStorage.getItem('items'));
   // if (items) {
@@ -285,38 +301,71 @@ const ProductPage = ({ productData, }: Props,) => {
 
   // console.log('=======addToCart  cartItems', cartItems)
 
-  // fuck this shit man.find a way to update Cart icon when a button is clicked
+  // next up: create cloudinary and then clean up here
   return (
     // continue tomorrow
     <>
       {/* <div>{greet('World')}</div> */}
       {/* <Navbar updateText={updateCount} /> */}
-      <div className="w-full mt-9 md:mt-0 border-t pt-2 flex flex-wrap">
-        <div className=" w-[20%] sm:w-[13.5%] px-1.5 sm:px-3  order-1 border rounded text-center">
+      <div className="w-full mt-9 md:mt-0 border-t pt-2 flex flex-wrap   ">
+        <div className=" w-[20%] sm:w-[13.5%] px-1.5 sm:px-3  order-1  rounded text-center overflow-x-scroll max-h-[450px]">
           <ul className=' '>
             <li className="mb-1">
-              <div className="w-full aspect-[1/1] flex items-center justify-center">
-                <img className="h-full w-full object-cover rounded" src={productData.productImg} alt="" />
+              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
+                <img onClick={previewImage} className="h-full w-full object-cover rounded" src={productData.productImg} alt="" />
               </div>
             </li>
             <li className="mb-1">
-              <div className="w-full aspect-[1/1] flex items-center justify-center">
-                <img className="h-full w-full object-cover rounded" src={productData.productImg} alt="" />
+              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
+                <img onClick={previewImage} className="h-full w-full object-cover rounded" src="https://i.pinimg.com/736x/e7/34/5e/e7345eec947e9418ad8844d50a0a6f2c.jpg" alt="" />
               </div>
             </li>
             <li className="mb-1">
-              <div className="w-full aspect-[1/1] flex items-center justify-center">
-                <img className="h-full w-full object-cover rounded" src={productData.productImg} alt="" />
+              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
+                <img onClick={previewImage} className="h-full w-full object-cover rounded" src="https://www.promgirl.com/cdn/shop/products/deep-red-dress-LF-22-30439-a_1000x1666.jpg?v=1664975154" alt="" />
               </div>
             </li>
             <li className="mb-1">
-              <div className="w-full aspect-[1/1] flex items-center justify-center">
-                <img className="h-full w-full object-cover rounded" src={productData.productImg} alt="" />
+              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
+                <img onClick={previewImage} className="h-full w-full object-cover rounded" src="https://us.ohpolly.com/cdn/shop/products/5891_3_Teal-Cut-Out-Maxi-Dress_39687738-3e71-4760-8d26-2a6d283048c3.jpg?v=1689364855&width=1244" alt="" />
               </div>
             </li>
             <li className="mb-1">
-              <div className="w-full aspect-[1/1] flex items-center justify-center">
-                <img className="h-full w-full object-cover rounded" src={productData.productImg} alt="" />
+              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
+                <img onClick={previewImage} className="h-full w-full object-cover rounded" src="https://i5.walmartimages.com/asr/3a149a9b-51b0-44cf-b2af-f2c048dbba9b.8af8ea75d44405328f29cae6fd92f505.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF" alt="" />
+              </div>
+            </li>
+
+
+
+            <li className="mb-1">
+              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
+                <img onClick={previewImage} className="h-full w-full object-cover rounded" src="https://i5.walmartimages.com/asr/3a149a9b-51b0-44cf-b2af-f2c048dbba9b.8af8ea75d44405328f29cae6fd92f505.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF" alt="" />
+              </div>
+            </li>
+            <li className="mb-1">
+              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
+                <img onClick={previewImage} className="h-full w-full object-cover rounded" src="https://i5.walmartimages.com/asr/3a149a9b-51b0-44cf-b2af-f2c048dbba9b.8af8ea75d44405328f29cae6fd92f505.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF" alt="" />
+              </div>
+            </li>
+            <li className="mb-1">
+              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
+                <img onClick={previewImage} className="h-full w-full object-cover rounded" src="https://i5.walmartimages.com/asr/3a149a9b-51b0-44cf-b2af-f2c048dbba9b.8af8ea75d44405328f29cae6fd92f505.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF" alt="" />
+              </div>
+            </li>
+            <li className="mb-1">
+              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
+                <img onClick={previewImage} className="h-full w-full object-cover rounded" src="https://i5.walmartimages.com/asr/3a149a9b-51b0-44cf-b2af-f2c048dbba9b.8af8ea75d44405328f29cae6fd92f505.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF" alt="" />
+              </div>
+            </li>
+            <li className="mb-1">
+              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
+                <img onClick={previewImage} className="h-full w-full object-cover rounded" src="https://i5.walmartimages.com/asr/3a149a9b-51b0-44cf-b2af-f2c048dbba9b.8af8ea75d44405328f29cae6fd92f505.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF" alt="" />
+              </div>
+            </li>
+            <li className="mb-1">
+              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
+                <img onClick={previewImage} className="h-full w-full object-cover rounded" src="https://i5.walmartimages.com/asr/3a149a9b-51b0-44cf-b2af-f2c048dbba9b.8af8ea75d44405328f29cae6fd92f505.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF" alt="" />
               </div>
             </li>
             {/* <li className="h-20 w-full  mb-1  flex justify-center items-center"><img className="h-full w-full object-contain" src={productData.productImg} alt="" /></li>
@@ -326,11 +375,12 @@ const ProductPage = ({ productData, }: Props,) => {
             <li className="h-20 w-full  mb-1  flex justify-center items-center"><img className="h-full w-full object-contain" src={productData.productImg} alt="" /></li> */}
           </ul>
         </div>
-        <div className="w-[75%] sm:w-[62.5%]  mx-auto  overflow-hidden  border border-rose-600 order-2 rounded ">
-          <img className="w-full h-full object-cover " src={productData.productImg} alt="" />
+        <div className="w-[75%] sm:w-[62.5%]  mx-auto  border border-rose-600 order-2 rounded ">
+          <img className="w-full h-full object-cover " src={imagePreview} alt="" />
         </div>
-        <div className=" h-96 align-top   w-full sm:w-[20%]  order-3 sm:order-3 rounded px-2 ">
-          <h1 className='text-xl mb-1 '>{productData.brand} {productData.productName}</h1>
+        {/* <div className=" h-96 align-top   w-full sm:w-[20%]  order-3 sm:order-3 rounded px-3 "> */}
+        <div className="w-full sm:w-[20%]  order-3 sm:order-3 rounded px-3 ">
+          <h1 className='text-xl  '>{productData.brand} {productData.productName}</h1>
           {/* <p>{productData.brand} {productData.productName}</p> */}
 
 
@@ -349,7 +399,7 @@ const ProductPage = ({ productData, }: Props,) => {
           ) : (
             <p className='text-red-500 text-sm mb-3'>Out of Stock</p>
           )}
-          <p className='text-xl mb-2 '>${productData.price}.00</p>
+          <p className='text-xl mb-1 '>${productData.price}.00</p>
           <hr />
 
 
@@ -359,18 +409,19 @@ const ProductPage = ({ productData, }: Props,) => {
               <option key={index} value={color}>{color}</option>
             )}
           </select> */}
-          <h1>Keep working here</h1>
-          <label htmlFor="Color">Color</label>
-          {productData.colors.map((elem, index) =>
-            <label key={index} className="checkbox-container ">
-              <input type="checkbox" name='color' value={elem.color} checked={productColor === elem.color} onChange={handleChange} required />
-              <span className="checkbox" style={{ border: `3px solid ${elem.color}` }}></span>
-            </label>
-          )}
+          <div className='w-11/12'>
+            <label htmlFor="Color" className='mt-'>Color:</label>
+            {productData.colors.map((elem, index) =>
+              <label key={index} className="checkbox-container mt-0">
+                <input type="checkbox" name='color' value={elem.color} checked={productColor === elem.color} onChange={handleChange} required />
+                <span className="checkbox" style={{ border: `3px solid ${elem.color}` }}></span>
+              </label>
+            )}
+          </div>
           {productQuantity > 0 && (
-            <div>
-              <label htmlFor="quantity" >quantity:</label>
-              <select name="quantity" id='quantity' className="border rounded-lg w-5/6 bg-white pl-1.5 " onChange={handleChange} required  >
+            <div className=''>
+              <label htmlFor="quantity" className=''>quantity:</label>
+              <select name="quantity" id='quantity' className="border rounded-lg bg-white pl-1.5 w-11/12" onChange={handleChange} required  >
                 {/* <option value="" >choose quantity</option> */}
                 {/* {productData.colors.map((elem, index) =>
                 <option key={index} value={elem.quantity}>{elem.quantity}</option>
@@ -386,15 +437,16 @@ const ProductPage = ({ productData, }: Props,) => {
 
             </div>
           )}
-          <label htmlFor="Sizes">Sizes</label>
-          <select name="Sizes" className="border rounded-lg w-5/6 bg-white pl-1.5" onChange={handleChange} required  >
-            <option value="" >Size</option>
-            {productSize.map((size, index) =>
-              <option key={index} value={size}>{size}</option>
-            )}
-          </select>
-
-          <button className="rounded-sm border bg-green-400 mt-4" onClick={handleAddToCart}>Add to Cart</button>
+          <div>
+            <label htmlFor="sizes" className=''>Sizes:</label>
+            <select name="sizes" id='sizes' className="border rounded-lg w-11/12 bg-white pl-1.5" onChange={handleChange} required  >
+              <option value="" >Size</option>
+              {productSize.map((size, index) =>
+                <option key={index} value={size}>{size}</option>
+              )}
+            </select>
+          </div>
+          <button className="rounded w-24 h-8 border bg-black text-white mt-2.5" onClick={handleAddToCart}>Add to Cart</button>
 
           {/* <p>add: {add(1, 3)}</p> */}
           {/* <button onClick={() => add(1, 3)}>Click Me</button> */}
