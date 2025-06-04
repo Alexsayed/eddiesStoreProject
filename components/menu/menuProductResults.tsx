@@ -96,7 +96,7 @@ const MenuProductResults = ({ menuProductData, queryName }: Props) => {
             <li key={i} className="border h-72 m-1.5 inline-block rounded-lg sm:w-2/5 md:w-1/4 lg:w-1/5 truncate" >
               <Link href={'../' + product._id}>
                 <div className="h-56 w-full">
-                  <img className=" h-56 w-full object-fill" src={product.productImg} />
+                  <img className=" h-56 w-full object-fill" src={product.productImg[0]} />
                 </div>
                 <div className="mt-1">
                   <p>{product.productName}</p>

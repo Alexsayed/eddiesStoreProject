@@ -140,6 +140,22 @@ interface ColorArray {
   // colorsData: ColorEntry[]; // or specify the exact type you expect
   colorElements: JSX.Element[]; // Specifically an array of JSX elements (the input buttons)
 }
+
+interface ProductForm {
+  productName: string;
+  price: number;
+  productImg: string[];
+  category: string;
+  brand: string;
+  gender: string;
+  // kids: string;
+  colors: { color: string; quantity: number }[];
+  // sizes: string;
+  // sizes: {}[];
+  sizes: { [size: string]: boolean };
+  author: string;
+  inStock: boolean;
+}
 // Extending variables to all files.
 export const globalMenCategories = ['Jackets', 'Jeans', 'Pants', 'Shoes', 'Sweaters', 'Tees'];
 export const globalWomenCategories = ['Dresses', 'Jackets', 'Jeans', 'Pants', 'Shoes', 'Skirts', 'Sweaters', 'Tops',];
@@ -156,7 +172,22 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
   // const [newProduct, setForm] = useState<any>([]);
-  const [newProduct, setForm] = useState<Products[]>([]);
+  // const [newProduct, setForm] = useState<Products[]>([]);
+
+  const [newProduct, setForm] = useState<ProductForm>({
+    productName: '',
+    price: 0,
+    productImg: [],
+    category: '',
+    brand: '',
+    gender: '',
+    // kids: '',
+    colors: [],
+    // sizes: '',
+    sizes: {},
+    author: '',
+    inStock: false,
+  });
   const menSizes = useRef<HTMLDivElement>(null);
   const womenSizes = useRef<HTMLDivElement>(null);
   const categories = useRef<HTMLSelectElement>(null);
@@ -199,7 +230,8 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
   const [newQuantity, setNewQuantity] = useState<QuantityItem[]>([]);
   // const [newColor, setNewColor] = useState([{ color: String, index: Number }]);
   const [newColor, setNewColor] = useState<ColorItem[]>([]); // Start with an empty array
-  // console.log('=========quantity  top', quantity)
+  // const [imgFile, setImgFile] = useState<FileList | null>(null);
+  const [imgFile, setImgFile] = useState<File[]>([]);
 
   const [colorArray, setColorArray] = useState<ColorArray>({
     // colorsData: [],
@@ -211,7 +243,7 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
       return (
         < div key={i} className="inline-block w-20 ">
           <label htmlFor={elem} className="inline-block">{elem}</label>
-          <input type="checkbox" name={elem} className="inline-block w-10 ahahha" onChange={handleChange} required />
+          <input type="checkbox" name={elem} className="inline-block w-10 ahahha" onChange={handleChange} />
         </div>
       )
     })
@@ -318,9 +350,17 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
   // onChange event we are processing the data and setting it.
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,) => {
     let getValues = e.target.value;
-    console.log('============getValues', getValues)
+    // console.log('============getValues', getValues)
     // next up add all sizes for men and women to HTML
     switch (e.target.name) {
+      // case 'productImg':
+      //   // console.log('============getValues', getValues)
+      //   const input = e.target as HTMLInputElement;
+      //   const files = input.files;
+      //   setImgFile(files);
+      //   console.log('============files', files)
+
+      //   break;
       case 'gender':
         switch (getValues) {
           case 'Men':
@@ -561,28 +601,85 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
     const concatSizesArray = menShoeSizes.concat(womenShoeSizes, menNumericSizes, womenNumericSizes, alphaSizes);
     // find a size value in concatSizesArray[] that is matching the name of <input>
     const found = concatSizesArray.find((element) => element === e.target.name);
+    console.log('==========found for size', found?.toString());
     // if Found = true; then treat the elem as a checkbox otherwise as a normal value.
     // const value = found ? (e.target as HTMLInputElement).checked : e.target.value;    
     let value = found ? (e.target as HTMLInputElement).checked : e.target.value;
+    // console.log('==========value for size', value);
+
+
     // Capitalize the first letter of below input fields
     const capitalizeFields = ['productName', 'brand', 'author'];
     if (capitalizeFields.includes(e.target.name) && typeof value === 'string') {
       value = value.charAt(0).toUpperCase() + value.slice(1);
     };
+
     // set the Product state
     setForm((prevState) => {
-      return {
-        ...prevState,
-        // if targeted element name is color then add the colorArray.colorsData else the Value.
-        // [e.target.name]: e.target.name === "colors" ? colorArray.colorsData : value
-        [e.target.name]: value
-      };
+      console.log('==========value for size inside', value);
+      if (typeof value === 'string') {
+        console.log('The value is a string', value);
+        return {
+          ...prevState,
+          [e.target.name]: value // Directly assign boolean to inStock
+        };
+      } else if (typeof value === 'boolean') {
+        console.log('The value is a boolean', value);
+        if (e.target.name !== "inStock") {
+          return {
+            ...prevState,
+            sizes: {
+              ...prevState.sizes,
+              [e.target.name]: value, // Add/update size dynamically
+            },
+          }
+        } else {
+          return {
+            ...prevState,
+            [e.target.name]: value // Directly assign boolean to inStock
+          };
+        }
+
+      }
+      return prevState;
+      // ======================Onhold original =========
+
+      // return {
+      //   ...prevState,
+      //   // if targeted element name is color then add the colorArray.colorsData else the Value.
+      //   // [e.target.name]: e.target.name === "colors" ? colorArray.colorsData : value       
+      //   [e.target.name]: value
+      // };
+      // ======================Onhold original =========                
+
     });
   };
+
+  console.log('============newProduct', newProduct)
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      // const input = e.target as HTMLInputElement;
+      // const files = input.files;
+      const fileArray = Array.from(e.target.files); // Convert FileList to File[]
+      setImgFile(fileArray);
+      // setImgFile(e.target.files[0]);
+    }
+  };
+
 
   // onSubmit we are send data to backend.  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // if (imgFile) {
+
+    //   Array.from(imgFile).forEach((file, index) => {
+    //     formDataToSend.append('productImg', file); // You can use 'files[]' or 'file' based on your backend
+    //   });
+    // }
+
+
     //========================on hold =============================
     // setColorArray({
     //   colorsData: newColor.map((colorItem) => {
@@ -616,42 +713,76 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
     //   colorsData: updatedColorsData,
     //   colorElements: [],
     // });
+    // //========================on hold important=============================
+
     const formData = {
       ...newProduct,
       colors: updatedColorsData, // Use latest colors here
       // colors: colorArray.colorsData, // Use latest colors here
     };
-    console.log('============formData submit', formData)
-    console.log('============newProduct on submit', newProduct)
 
-    // =========================ONHOLD =========================== 8********************
-    const res = await fetch("/api/products", {
-      method: "POST",
-      headers: {
-        Accept: contentType,
-        "Content-Type": contentType,
-      },
-      // body: JSON.stringify(newProduct),
-      body: JSON.stringify(formData),
+    // //========================on hold =============================
+    const formDataToSend = new FormData();
+    formDataToSend.append('productName', newProduct.productName);
+    formDataToSend.append('price', newProduct.price.toString());
+    // //========================on hold =============================
+
+    imgFile.forEach((file, index) => {
+      formDataToSend.append('productImg', file); // Or 'productImgs[]' if your backend expects an array
     });
-    const data = await res.json(); // Parse the JSON response    
-    // Throw error with status code in case Fetch API req failed
-    if (!res.ok) {
-      throw new Error(res.status.toString());
-    }
-    if (data.success) {
-      // redirect to newly created product
-      router.push({
-        pathname: '/' + data.productID,
-      });
-    }
-    // =========================ONHOLD ===========================*******************
+    // //========================on hold =============================
+    // formDataToSend.append('productImg', newProduct.productImg);
+    formDataToSend.append('category', newProduct.category)
+    formDataToSend.append('brand', newProduct.brand)
+    formDataToSend.append('gender', newProduct.gender)
+    formDataToSend.append('colors', JSON.stringify(updatedColorsData));
+    formDataToSend.append('sizes', JSON.stringify(newProduct.sizes))
+    formDataToSend.append('author', newProduct.author)
+    formDataToSend.append('inStock', newProduct.inStock.toString())
 
-    // =========================original ===========================
-    // if (forNewProduct === true) {
-    //   postProduct(newProduct);
+    // // =========================ONHOLD original=========================== 8********************
+    // const res = await fetch("/api/products", {
+    //   method: "POST",
+    //   headers: {
+    //     Accept: contentType,
+    //     "Content-Type": contentType,
+    //   },
+    //   // body: JSON.stringify(newProduct),
+    //   body: JSON.stringify(formData),
+    // });
+    // const data = await res.json(); // Parse the JSON response    
+    // // Throw error with status code in case Fetch API req failed
+    // if (!res.ok) {
+    //   throw new Error(res.status.toString());
     // }
-    // =========================original ===========================
+    // if (data.success) {
+    //   // redirect to newly created product
+    //   router.push({
+    //     pathname: '/' + data.productID,
+    //   });
+    // }
+    // // =========================ONHOLD original===========================*******************
+
+    try {
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        body: formDataToSend,
+      });
+      // Throw error with status code in case Fetch API req failed
+      if (!res.ok) {
+        throw new Error(res.status.toString());
+      }
+      const data = await res.json();
+      console.log('Response:', data);
+      if (data.success) {
+        // redirect to newly created product
+        router.push({
+          pathname: '/' + data.productID,
+        });
+      }
+    } catch (err) {
+      console.error('Error submitting form:', err);
+    }
 
   };
 
@@ -661,11 +792,12 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
         <form id={formId} onSubmit={handleSubmit} className="w-96" >
           <label htmlFor="productName">Name</label>
           {/* <label for="productName">Name</label> */}
-          <input type="text" maxLength={20} name="productName" id="productName" className="capitalize border" onChange={handleChange} required />
+          <input type="text" maxLength={20} name="productName" id="productName" className="capitalize border" onChange={handleChange} />
           <label htmlFor="price">Price</label>
-          <input type="number" name="price" id="price" className="border" onChange={handleChange} required />
+          <input type="number" name="price" id="price" className="border" onChange={handleChange} />
           <label htmlFor="productImg">Product Image</label>
-          <input type="text" name="productImg" id="productImg" className="border" onChange={handleChange} required />
+          {/* <input type="text" name="productImg" id="productImg" className="border" onChange={handleChange} required /> */}
+          <input type="file" name="productImg" id="productImg" onChange={handleFileChange} accept="image/*" multiple />
           <label htmlFor="gender">Gender</label>
           <select name="gender" id="gender" className="border rounded-lg" onChange={handleChange} required  >
             <option value="" >choose one</option>
@@ -697,7 +829,7 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
             {sizeItemsForAll.menTees}
           </div>
           <label htmlFor="brand">Brand</label>
-          <input type="text" name="brand" id="brand" className="capitalize border" onChange={handleChange} required />
+          <input type="text" name="brand" id="brand" className="capitalize border" onChange={handleChange} />
           <label htmlFor="kids">Kids</label>
           <select name="kids" id="kids" className="border rounded-lg" onChange={handleChange}   >
             <option value="" >choose one</option>
@@ -717,7 +849,7 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
           <label htmlFor="author">Author</label>
           <input type="text" name="author" id="author" className="capitalize border" onChange={handleChange} />
           <label htmlFor="inStock">In Stock</label>
-          <select name="inStock" id="inStock" className="border rounded-lg" onChange={handleChange} required  >
+          <select name="inStock" id="inStock" className="border rounded-lg" onChange={handleChange}   >
             <option value="" >choose one</option>
             <option value="true" >True </option>
             <option value="false">false</option>

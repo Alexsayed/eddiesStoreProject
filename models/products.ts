@@ -18,7 +18,7 @@ export interface Products extends Document {
   // quantity: number
   productName: string;
   price: number;
-  productImg: string;
+  productImg: string[];
   category: string,
   brand: string,
   gender: string,
@@ -61,7 +61,7 @@ const productSchema = new mongoose.Schema<Products>({
   // _id: String,
   productName: String,
   price: Number,
-  productImg: String,
+  productImg: [String],
   category: String,
   brand: String,
   gender: String,

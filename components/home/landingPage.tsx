@@ -96,7 +96,7 @@ const HomePage = ({ getAllProducts, }: Props) => {
               )}
               <Link href={item._id}>
                 <div className="h-4/5 w-full aspect-[4/3] overflow-hidden">
-                  <img className="w-full h-full object-cover" src={item.productImg} alt={item.productName} />
+                  <img className="w-full h-full object-cover" src={item.productImg[0]} alt={item.productName[1]} />
                 </div>
                 <div className="mt-1 mx-2">
                   <p>H&M Slim {item.productName}</p>

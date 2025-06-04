@@ -13,6 +13,8 @@
     "@types/react": "^18.2.79",
     "@types/react-dom": "^18.2.25",
     "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.6.1",
+    "formidable": "^3.5.4",
     "mongoose": "^8.3.2",
     "next": "latest",
     "next-auth": "^4.24.11",
@@ -25,6 +27,7 @@
     "typescript": "^5.4.5"
   },
   "devDependencies": {
+    "@types/formidable": "^3.4.5",
     "@types/nodemailer": "^6.4.17",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.1",

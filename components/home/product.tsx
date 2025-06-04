@@ -92,7 +92,7 @@ const ProductPage = ({ productData, }: Props,) => {
   const [cartProductSize, setCartProductSize] = useState<string>('')
   const [cartProductQuantity, setCartProductQuantity] = useState<number>(0);
   // Previewing product images. By default the first image will be selected.
-  const [imagePreview, setImagePreview] = useState<string>(productData.productImg);
+  const [imagePreview, setImagePreview] = useState<string>(productData.productImg[0] || '');
   // console.log('=====productData', productData.productImg)
   // The Array.from() static method creates a new, shallow-copied Array instance. veiw 
   // Example: productQuantity = 4; Array.from() would create  [1,2,3,4], so we cal loop through it.
@@ -212,7 +212,7 @@ const ProductPage = ({ productData, }: Props,) => {
       id: productData._id,
       productName: productData.productName,
       price: productData.price,
-      productImg: productData.productImg,
+      productImg: productData.productImg[0] || '',
       category: productData.category,
       brand: productData.brand,
       gender: productData.gender,
@@ -238,7 +238,7 @@ const ProductPage = ({ productData, }: Props,) => {
     if (imagePreview === clickedImage) return;
     // Toggle between product images.
     setImagePreview(prev =>
-      prev === clickedImage ? productData.productImg : clickedImage
+      prev === clickedImage ? productData.productImg[0] : clickedImage
     );
   }
   // useEffect(() => {
@@ -301,7 +301,7 @@ const ProductPage = ({ productData, }: Props,) => {
 
   // console.log('=======addToCart  cartItems', cartItems)
 
-  // next up: create cloudinary and then clean up here
+  // next up: clean up here
   return (
     // continue tomorrow
     <>
@@ -310,74 +310,19 @@ const ProductPage = ({ productData, }: Props,) => {
       <div className="w-full mt-9 md:mt-0 border-t pt-2 flex flex-wrap   ">
         <div className=" w-[20%] sm:w-[13.5%] px-1.5 sm:px-3  order-1  rounded text-center overflow-x-scroll max-h-[450px]">
           <ul className=' '>
-            <li className="mb-1">
-              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
-                <img onClick={previewImage} className="h-full w-full object-cover rounded" src={productData.productImg} alt="" />
-              </div>
-            </li>
-            <li className="mb-1">
-              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
-                <img onClick={previewImage} className="h-full w-full object-cover rounded" src="https://i.pinimg.com/736x/e7/34/5e/e7345eec947e9418ad8844d50a0a6f2c.jpg" alt="" />
-              </div>
-            </li>
-            <li className="mb-1">
-              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
-                <img onClick={previewImage} className="h-full w-full object-cover rounded" src="https://www.promgirl.com/cdn/shop/products/deep-red-dress-LF-22-30439-a_1000x1666.jpg?v=1664975154" alt="" />
-              </div>
-            </li>
-            <li className="mb-1">
-              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
-                <img onClick={previewImage} className="h-full w-full object-cover rounded" src="https://us.ohpolly.com/cdn/shop/products/5891_3_Teal-Cut-Out-Maxi-Dress_39687738-3e71-4760-8d26-2a6d283048c3.jpg?v=1689364855&width=1244" alt="" />
-              </div>
-            </li>
-            <li className="mb-1">
-              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
-                <img onClick={previewImage} className="h-full w-full object-cover rounded" src="https://i5.walmartimages.com/asr/3a149a9b-51b0-44cf-b2af-f2c048dbba9b.8af8ea75d44405328f29cae6fd92f505.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF" alt="" />
-              </div>
-            </li>
-
-
-
-            <li className="mb-1">
-              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
-                <img onClick={previewImage} className="h-full w-full object-cover rounded" src="https://i5.walmartimages.com/asr/3a149a9b-51b0-44cf-b2af-f2c048dbba9b.8af8ea75d44405328f29cae6fd92f505.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF" alt="" />
-              </div>
-            </li>
-            <li className="mb-1">
-              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
-                <img onClick={previewImage} className="h-full w-full object-cover rounded" src="https://i5.walmartimages.com/asr/3a149a9b-51b0-44cf-b2af-f2c048dbba9b.8af8ea75d44405328f29cae6fd92f505.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF" alt="" />
-              </div>
-            </li>
-            <li className="mb-1">
-              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
-                <img onClick={previewImage} className="h-full w-full object-cover rounded" src="https://i5.walmartimages.com/asr/3a149a9b-51b0-44cf-b2af-f2c048dbba9b.8af8ea75d44405328f29cae6fd92f505.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF" alt="" />
-              </div>
-            </li>
-            <li className="mb-1">
-              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
-                <img onClick={previewImage} className="h-full w-full object-cover rounded" src="https://i5.walmartimages.com/asr/3a149a9b-51b0-44cf-b2af-f2c048dbba9b.8af8ea75d44405328f29cae6fd92f505.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF" alt="" />
-              </div>
-            </li>
-            <li className="mb-1">
-              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
-                <img onClick={previewImage} className="h-full w-full object-cover rounded" src="https://i5.walmartimages.com/asr/3a149a9b-51b0-44cf-b2af-f2c048dbba9b.8af8ea75d44405328f29cae6fd92f505.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF" alt="" />
-              </div>
-            </li>
-            <li className="mb-1">
-              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
-                <img onClick={previewImage} className="h-full w-full object-cover rounded" src="https://i5.walmartimages.com/asr/3a149a9b-51b0-44cf-b2af-f2c048dbba9b.8af8ea75d44405328f29cae6fd92f505.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF" alt="" />
-              </div>
-            </li>
-            {/* <li className="h-20 w-full  mb-1  flex justify-center items-center"><img className="h-full w-full object-contain" src={productData.productImg} alt="" /></li>
-            <li className="h-20 w-full  mb-1  flex justify-center items-center"><img className="h-full w-full object-contain" src={productData.productImg} alt="" /></li>
-            <li className="h-20 w-full  mb-1  flex justify-center items-center"><img className="h-full w-full object-contain" src={productData.productImg} alt="" /></li>
-            <li className="h-20 w-full  mb-1  flex justify-center items-center"><img className="h-full w-full object-contain" src={productData.productImg} alt="" /></li>
-            <li className="h-20 w-full  mb-1  flex justify-center items-center"><img className="h-full w-full object-contain" src={productData.productImg} alt="" /></li> */}
+            {productData.productImg.map((image, index) =>
+              <li className="mb-1" key={index}>
+                <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
+                  <img onClick={previewImage} className="h-full w-full object-cover rounded" src={image} alt="" />
+                </div>
+              </li>
+            )}
           </ul>
         </div>
-        <div className="w-[75%] sm:w-[62.5%]  mx-auto  border border-rose-600 order-2 rounded ">
-          <img className="w-full h-full object-cover " src={imagePreview} alt="" />
+        <div className="w-[75%] sm:w-[62.5%]  mx-auto   overflow-hidden  order-2 rounded max-h-[450px] " >
+          <img className="w-full h-auto sm:h-full object-contain  rounded  " src={imagePreview} alt="" />
         </div>
+
         {/* <div className=" h-96 align-top   w-full sm:w-[20%]  order-3 sm:order-3 rounded px-3 "> */}
         <div className="w-full sm:w-[20%]  order-3 sm:order-3 rounded px-3 ">
           <h1 className='text-xl  '>{productData.brand} {productData.productName}</h1>
