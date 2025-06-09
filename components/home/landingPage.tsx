@@ -34,7 +34,7 @@ const HomePage = ({ getAllProducts, }: Props) => {
     // setSelectSortOption(e.target.value);
     setSelectSortOption(e.target.value as SortOption);
   };
-  // Initiate Delete 
+  // Initiate product Delete 
   const handleDeleteClick = (id: string) => {
     // Store the product ID
     setSelectedId(id);
@@ -67,7 +67,7 @@ const HomePage = ({ getAllProducts, }: Props) => {
 
   return (
     <>
-      <div className="w-full  flex justify-end px-4  py-1.5  ">
+      <div className="w-full  flex justify-end px-4  py-1.5 border-b ">
         <div className="">
           <label htmlFor="sort" className="m-0 inline ">Sort:</label>
           <select name="sort" id="sort" className="border w-24 rounded-md bg-white pl-0.5 ml-1 " value={selectedSortOption} onChange={handleSortChange}>
@@ -80,20 +80,22 @@ const HomePage = ({ getAllProducts, }: Props) => {
           </select>
         </div>
       </div>
-      <div className="border  pt-2 ">
+      <div className="  pt-2 ">
         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto justify-items-center px-4">
           {productsData.map((item: any, i: any) => (
             <li key={i} className="border h-72 w-full max-w-xs rounded-lg truncate" >
-              {status === 'authenticated' && (
-                <div className="relative w-0 h-0 float-right ">
-                  <div className="absolute bg-slate-50 rounded-full w-6 h-6 cursor-pointer text-indigo-500 right-1/4 flex items-center justify-center" >
-                    <Link href={item._id + '/edit'} className="">
-                      <BsPen />
-                    </Link>
-                  </div>
-                  <div className="absolute bg-slate-50 rounded-full w-6 h-6  mr-2 cursor-pointer text-red-500 flex items-center justify-center right-[24px]" onClick={() => handleDeleteClick(item._id)}> <BsTrash /></div>
+              {/* {status === 'authenticated' && ( */}
+              <div className="relative w-0 h-0 float-right ">
+                <div className="absolute bg-slate-50 rounded-full w-6 h-6 cursor-pointer text-indigo-500 right-1/4 flex items-center justify-center" >
+                  <Link href={`${item._id}/edit`} className="">
+                    <BsPen />
+                  </Link>
                 </div>
-              )}
+                <div className="absolute bg-slate-50 rounded-full w-6 h-6  mr-2 cursor-pointer text-red-500 flex items-center justify-center right-[24px]" onClick={() => handleDeleteClick(item._id)}>
+                  <BsTrash />
+                </div>
+              </div>
+              {/* )} */}
               <Link href={item._id}>
                 <div className="h-4/5 w-full aspect-[4/3] overflow-hidden">
                   <img className="w-full h-full object-cover" src={item.productImg[0]} alt={item.productName[1]} />

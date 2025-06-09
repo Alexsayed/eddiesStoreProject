@@ -120,6 +120,7 @@ const MenuBar = ({ menuData }: Props) => {
       return newIndex;
     });
   };
+
   return (
     <>
       {isDesktopView ? (
@@ -237,7 +238,6 @@ const MenuBar = ({ menuData }: Props) => {
                 <li className="border-t py-3 pr-7 pl-4 cursor-pointer " onClick={() => toggleMenuContent('Brands')}>
                   <span className="underline-offset-2 decoration-slate-400 decoration-2 hover:underline">Brands</span>
                   <span className="float-right text-2xl leading-6 ">{activeContent === 'Brands' ? '−' : '+'}</span>
-                  {/* <ul className="hidden group-hover:block group-hover:relative  bg-white w-48 z-10 top-1.5 p-2 border rounded text-sm"> */}
                   <ul className={`${activeContent === 'Brands' ? ' ' : "hidden"}  bg-white w-48 z-10 top-1.5 p-2 border rounded text-sm `}>
 
                     {productBrands.map((elem, index) => (
@@ -252,10 +252,9 @@ const MenuBar = ({ menuData }: Props) => {
             )}
           </div>
           {status === 'authenticated' && (
-            <div className=" border rounded-md absolute left-[45%] top-[62px] h-6.5  w-auto -translate-x-1/2 pl-1 pr-2 ">
-
+            <div className=" border rounded-md absolute left-[45%] top-[64.5px]  w-auto -translate-x-1/2 pl-1 pr-2 pt-px ">
               <Link href={'/new'} className="flex  items-center ">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 border rounded-full  mr-1  ">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 border rounded-full  mr-1  ">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
                 New
@@ -266,6 +265,5 @@ const MenuBar = ({ menuData }: Props) => {
       )}
     </>
   )
-
 }
 export default MenuBar;

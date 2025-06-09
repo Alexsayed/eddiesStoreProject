@@ -196,7 +196,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           ></img>
         </div> */}
           {/* <div className="wrapper grid w-full"> */}
-          <div className="wrapper  w-full">
+          <div className="wrapper  w-full ">
             {/* <SessionProvider session={pageProps.session}> */}
             {/* <Elements stripe={stripe}> */}
             {/* <Elements stripe={stripePromise} > */}

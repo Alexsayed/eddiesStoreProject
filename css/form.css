@@ -41,7 +41,7 @@ label {
 
 form button {
   --accent: rgb(0, 162, 255);
-  margin-top: 20px;
+  /* margin-top: 20px; */
 }
 
 .form-container {

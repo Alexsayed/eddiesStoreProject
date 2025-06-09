@@ -61,10 +61,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   } else {
     productResults = await Product.find({ brand: slug });
   }
-  console.log('=====slug from [slug]', slug)
+  // console.log('=====slug from [slug]', slug)
   // parses a JSON string data and then convert a JavaScript value to a JSON string. 
   const stringifyProduct = JSON.parse(JSON.stringify(productResults));
-  console.log('=====stringifyProduct from [slug]', stringifyProduct)
+  // console.log('=====stringifyProduct from [slug]', stringifyProduct)
 
   // const cleanedBrand = slug.trim();
   // console.log('=====cleanedBrand from [slug]', cleanedBrand)

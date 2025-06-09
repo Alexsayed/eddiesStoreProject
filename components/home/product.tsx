@@ -64,6 +64,24 @@ const ProductPage = ({ productData, }: Props,) => {
 
   }, [productData]);
 
+  // Handle matching height of Preview image and the side array of images.
+  useEffect(() => {
+    const updateHeight = () => {
+      if (window.innerWidth < 640 && imageRef.current && thumbRef.current) {
+        // getting the height of imagePreview/main image
+        const height = imageRef.current.offsetHeight;
+        // set the height of side images to height of imagePreview/main image.
+        thumbRef.current.style.height = `${height}px`;
+      } else if (thumbRef.current) {
+        thumbRef.current.style.height = ''; // Reset on larger screens
+      }
+    };
+    updateHeight();
+    // update on window resize
+    window.addEventListener('resize', updateHeight);
+    return () => window.removeEventListener('resize', updateHeight);
+  }, [imagePreview]);
+
   // handle setting Cart values. Color, size and quantity.
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,) => {
     let getValues = e.target.value;
@@ -148,28 +166,11 @@ const ProductPage = ({ productData, }: Props,) => {
       prev === clickedImage ? productData.productImg[0] : clickedImage
     );
   }
-  // Handle matching height of Preview image and the side array of images.
-  useEffect(() => {
-    const updateHeight = () => {
-      if (window.innerWidth < 640 && imageRef.current && thumbRef.current) {
-        // getting the height of imagePreview/main image
-        const height = imageRef.current.offsetHeight;
-        // set the height of side images to height of imagePreview/main image.
-        thumbRef.current.style.height = `${height}px`;
-      } else if (thumbRef.current) {
-        thumbRef.current.style.height = ''; // Reset on larger screens
-      }
-    };
-    updateHeight();
-    // update on window resize
-    window.addEventListener('resize', updateHeight);
-    return () => window.removeEventListener('resize', updateHeight);
-  }, [imagePreview]);
 
   return (
     <>
       <div className="w-full mt-9 md:mt-0 border-t pt-2 flex flex-wrap   ">
-        <div ref={thumbRef} className=" w-[20%] sm:w-[13.5%] px-1.5 sm:px-3  order-1  rounded text-center overflow-x-scroll sm:overflow-auto max-h-[450px] ">
+        <div ref={thumbRef} className=" w-[20%] sm:w-[13.5%] px-1.5 sm:px-3  order-1  rounded text-center overflow-x-scroll  sm:overflow-auto max-h-[450px] " >
           <ul className=' '>
             {productData.productImg.map((image, index) =>
               <li className="mb-1" key={index}>

@@ -158,15 +158,15 @@ const EditPet = ({ getProduct }: Props) => {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   // Step 1: Get the session to check if the user is authenticated
   const session = await getSession(context);
-  console.log('=============================== session', session)
+  // console.log('=============================== session', session)
 
   // Step 2: If no session, redirect the user to the signin page
   if (!session) {
-    console.log('=============================== context.resolvedUrl', context.resolvedUrl)
+    // console.log('=============================== context.resolvedUrl', context.resolvedUrl)
 
     const callbackUrl = encodeURIComponent(context.resolvedUrl);
     // const callbackUrl = context.resolvedUrl;
-    console.log('=============================== callbackUrl /edit', callbackUrl)
+    // console.log('=============================== callbackUrl /edit', callbackUrl)
 
     return {
       redirect: {
@@ -178,12 +178,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   // Step 3: Connect to the database
   await dbConnect();
   const { id } = context.params!;
-  console.log('=============================== id edit page', id)
+  // console.log('=============================== id edit page', id)
   const productResult = await Product.findById({ _id: id });
-  console.log('=============================== productResult', productResult)
+  // console.log('=============================== productResult', productResult)
 
   if (!productResult) {
-    console.log('======if edit ')
+    // console.log('======if edit ')
 
     return {
       notFound: true,
