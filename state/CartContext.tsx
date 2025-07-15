@@ -31,7 +31,7 @@ type Props = {
 interface CartContextType {
   cart: CartItem[];
   // cart: Products[];
-  addToCart: (item: CartItem) => void;
+  addToCart: (item: CartItem) => void; // ORIGINAL ------------------
   // addToCart: (item: Products) => void;
   setCart: (items: any[]) => void;
 }
@@ -100,10 +100,12 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
 
   // next up: handle so a use can select only 1 color and 1 size per addToCart, if a user want multi size or color then they have add to car new order
+  // ======================== NEW HOLD for payment +++++++++++++++++++++++++++++++++++
+
   // Add items to Shopping cart.
-  const addToCart = (item: CartItem) => {
-    // const addToCart = (item: Products) => {
+  const addToCart = (item: CartItem) => { // ORIGINAL ------------------  
     console.log('=======item', item);
+
     // Get data from localStorage
     let currentItems: string | null = localStorage.getItem('items');
     // localStorage is storing data as String, so below we need to return it to an Obj. 
@@ -199,12 +201,10 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     // });
     // // ================== ON HOLD =============================
 
-
-
-
-
-
   };
+  // ======================== NEW HOLD for payment +++++++++++++++++++++++++++++++++++
+
+
   return (
     <CartContext.Provider value={{ cart, addToCart, setCart }}>
       {children}

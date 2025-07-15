@@ -4,14 +4,14 @@ import Link from "next/link";
 // import Product, { Products } from "../../models/products";
 import { Products } from "../../models/products";
 import { useSession } from 'next-auth/react';
-import { globalMenCategories, globalWomenCategories } from '../postProduct/postProduct'
+// import { menCategories, womenCategories } from '../postProduct/postProduct'
 import { signOut } from 'next-auth/react';
+import usaStates, { staticMenCategories, staticWomenCategories, staticMenShoeSizes, staticWomenShoeSizes, staticMenNumericSizes, staticWomenNumericSizes, staticAlphaSizes } from "../../staticData/usStates";
+
 type Props = {
   menuData: string
 }
 const contentType = "application/json";
-const globalBrands = ['  any', 'H&M', 'Zara', 'Topshop', 'Paragon', 'Nike', 'Puma', 'Urban Outfitters', '   1hahahha', '2hahahha', '3hahahha', '4hahahha', '5hahahha', '6hahahha', '7hahahha', '8hahahha', '9hahahha'];
-// const globalBrands = ['any', 'H&M', 'Zara', 'Topshop', 'Paragon', 'Nike', 'Puma', 'Urban Outfitters', '1hahahha', '2hahahha', '3hahahha', '4hahahha', '5hahahha', '6hahahha',];
 const MenuBar = ({ menuData }: Props) => {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -25,7 +25,8 @@ const MenuBar = ({ menuData }: Props) => {
   const [isHidden, setIsHidden] = useState(true);
   const hamburgerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLUListElement>(null);
-
+  const [menCategories, setMenCategories] = useState<string[]>(staticMenCategories);
+  const [womenCategories, setWomenCategories] = useState<string[]>(staticWomenCategories);
   // A Set automatically ignores duplicates, so a value in the set may only occur once; 
   // const seen = new Set<string>();
   const findDuplicate = new Set<string>();
@@ -132,7 +133,7 @@ const MenuBar = ({ menuData }: Props) => {
               <span>Men's</span>
               <ul className=" hidden group-hover:block group-hover:relative bg-white w-48  z-10 top-1.5 p-2 border rounded ">
                 <p className="font-bold text-lg mb-2">Shop by Category</p>
-                {globalMenCategories.map((elem, index) => (
+                {menCategories.map((elem, index) => (
                   <li key={index} className="p-0.5 m-1 hover:text-slate-400">
                     <Link href={'/menu/' + 'm' + elem.toLowerCase()}> {elem}
                     </Link>
@@ -144,7 +145,7 @@ const MenuBar = ({ menuData }: Props) => {
               <span>Women's</span>
               <ul className="hidden group-hover:block group-hover:relative bg-white w-48 z-10 top-1.5 p-2 border rounded ">
                 <p className="font-bold text-lg mb-2">Shop by Category</p>
-                {globalWomenCategories.map((elem, index) => (
+                {womenCategories.map((elem, index) => (
                   <li key={index} className=" p-0.5 m-1 hover:text-slate-400">
                     <Link href={'/menu/' + 'w' + elem.toLowerCase()}> {elem}
                     </Link>
@@ -164,7 +165,7 @@ const MenuBar = ({ menuData }: Props) => {
                       <ul>
                         {firstColumn.map((elem, index) => (
                           <li key={index} className=" p-0.5 m-1 hover:text-slate-400">
-                            <Link href={`/menu/${encodeURIComponent(elem.trim())}`}>{elem}</Link>
+                            <Link href={`/menu/${encodeURIComponent(elem.trim())}`}>{elem} {encodeURIComponent(elem.trim())}</Link>
                           </li>
                         ))}
                       </ul>
@@ -186,7 +187,7 @@ const MenuBar = ({ menuData }: Props) => {
               </div>
             </li>
             {status === 'authenticated' && (
-              <li className="ml-auto border rounded-md px-2 float-right mr-3 ">
+              <li className="ml-auto border rounded-md px-2 float-right mr-3 h-6">
                 <Link href={'/new'} className="flex items-center ">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 border rounded-full  mr-1">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -215,7 +216,7 @@ const MenuBar = ({ menuData }: Props) => {
                   <span className="underline-offset-2 decoration-slate-400 decoration-2 hover:underline">Men's</span>
                   <span className="float-right  text-2xl leading-6 ">{activeContent === 'Mens' ? '−' : '+'}</span>
                   <ul className={`${activeContent === 'Mens' ? ' ' : "hidden"}  bg-white w-48 z-10 top-1.5 p-2 border rounded text-sm`}>
-                    {globalMenCategories.map((elem, index) => (
+                    {menCategories.map((elem, index) => (
                       <li key={index} className="m-1 hover:text-slate-400 p-1.5 border-b">
                         <Link href={'/menu/' + 'm' + elem.toLowerCase()}> {elem}
                         </Link>
@@ -227,7 +228,7 @@ const MenuBar = ({ menuData }: Props) => {
                   <span className="underline-offset-2 decoration-slate-400 decoration-2 hover:underline">Women's</span>
                   <span className="float-right text-2xl leading-6 ">{activeContent === 'Womens' ? '−' : '+'}</span>
                   <ul className={`${activeContent === 'Womens' ? ' ' : "hidden"}  bg-white w-48 z-10 top-1.5 p-2 border rounded text-sm`}>
-                    {globalWomenCategories.map((elem, index) => (
+                    {womenCategories.map((elem, index) => (
                       <li key={index} className="m-1 hover:text-slate-400 p-1.5 border-b">
                         <Link href={'/menu/' + 'w' + elem.toLowerCase()}> {elem}
                         </Link>
@@ -242,7 +243,7 @@ const MenuBar = ({ menuData }: Props) => {
 
                     {productBrands.map((elem, index) => (
                       <li key={index} className="m-1 hover:text-slate-400 p-1.5 border-b ">
-                        <Link href={'/menu/' + 'm' + elem.toLowerCase()}> {elem}
+                        <Link href={`/menu/${encodeURIComponent(elem.trim())}`}> {elem}
                         </Link>
                       </li>
                     ))}

@@ -12,39 +12,30 @@ type Props = {
 const SignInPage = ({ csrfToken }: Props) => {
   const router = useRouter();
   const { data: session, status } = useSession();
-  // const { callbackUrl: queryCallbackUrl } = router.query;
-  // const callbackUrl2 = router.query;
-  // const finalCallbackUrl = (queryCallbackUrl || callbackUrl || '/');
-  // const finalCallbackUrl = (typeof queryCallbackUrl === 'string') ? queryCallbackUrl : callbackUrl || '/';
 
   // Extract callbackUrl from query params/browser URL section (if not provided, fallback to '/');
-  //HOW IT WORKS: when we are attempting to visit restrected pages like: edit, delete... post, we will attach callbackUrl to it's params. 
-  //              callbackUrl: comes from pages/[id]/edit.tsx (Line: destination: `/auth/signin?callbackUrl=${callbackUrl}`) if we are editting the post and for detele would work same way but delete page.  
-  // const redirectURL = (typeof router.query.callbackUrl === 'string') ? router.query.callbackUrl : '/';
+  //HOW IT WORKS: when we are attempting to visit restrected pages like: edit, delete or new post, we will attach callbackUrl to it's params. 
+  //              callbackUrl: comes from pages/[id]/edit.tsx or pages/new.tsx (Line: destination: `/auth/signin?callbackUrl=${callbackUrl}`) if we are editting the post or adding new product.    
   const redirectURL = typeof router.query.callbackUrl === 'string' && router.query.callbackUrl.startsWith('/')
     ? router.query.callbackUrl
-    : '/'; // default to '/'
-  console.log('=======================redirectURL signin', redirectURL)
-  // console.log('=======================redirectURL2 signin', redirectURL2)
-  console.log('=======================session signin', session)
-  console.log('=======================status signin', status)
+    : '/'; // default to '/' 
 
   if (status === "loading") {
     return <div>Loading...</div>;
   }
+  console.log('=======================status ', status)
+
+  // if user is already signed in 
   if (status === 'authenticated') {
     router.push(redirectURL as string);
   }
 
-  console.log('=======================status unauthenticated  signin', status)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
     const username = formData.get("username") as string; // get username input
-    const password = formData.get("password") as string; // get password input
-    console.log('=======================username signin', username)
-    console.log('=======================password signin', password)
+    const password = formData.get("password") as string; // get password input    
     // Ensure that username and password are non-null.
     if (!username || !password) {
       console.log('Username or password is missing');
@@ -55,10 +46,7 @@ const SignInPage = ({ csrfToken }: Props) => {
       redirect: false, // The option redirect: false is a way to prevent the automatic redirect behavior after a successful or failed login.
       username,
       password,
-      // callbackUrl: finalCallbackUrl, // Provide the callbackUrl  
-      // callbackUrl: (typeof callbackUrl2.callbackUrl === 'string') ? callbackUrl2.callbackUrl : '/', // Provide the callbackUrl  
-      // callbackUrl: (typeof router.query.callbackUrl === 'string') ? router.query.callbackUrl : '/', // Provide the redirect URL/callbackUrl  
-      callbackUrl: redirectURL, // Provide the redirect URL/callbackUrl  
+      callbackUrl: redirectURL, // Provide the redirect URL 
     });
     if (res?.error) {
       // Handle error if needed
@@ -66,39 +54,37 @@ const SignInPage = ({ csrfToken }: Props) => {
     } else {
       // Redirect after successful login
       router.push(redirectURL as string);
-      // Other way to redirect.
-      // router.push(router.query.callbackUrl as string);
-      // router.push((typeof router.query.callbackUrl === 'string') ? router.query.callbackUrl : '/' as string);
     }
   };
+so the fucking footer is bitch.on small sceen is hidden under the sign in page and on lorge sceen its fine.i need to send mf footer at the fing bottom
   if (status === 'unauthenticated') {
     return (
       <>
-        <div>
-          <h1 className="text-2xl">Sign in has issue with lowercase meaning i should do  lowercase upppercase check</h1>
+        <div className=" relative top-[40px] md:top-0 md:top-0  border-t md:border-none pt-4 h-[300px] border">
+          <div className="w-[90%] md:w-[60%] mx-auto ">
+            <h1 className="text-xl font-semibold text-center">Sign In</h1>
+            <form method="POST" onSubmit={handleSubmit} className="flex flex-col gap-4 mt-3">
+              <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
+              <div className="flex items-center">
+                <label htmlFor="username" className="w-24">Username:</label>
+                <input type="text" id="username" name="username" placeholder="Username" className="border flex-1 pl-2" required />
+              </div>
+              <div className="flex items-center">
+                <label htmlFor="password" className="w-24">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Password" className="border flex-1 pl-2" required />
+              </div>
+              <button type="submit" className="btn bg-slate-700 text-white border-none w-1/2 mx-auto ">Sign in</button>
+            </form>
+          </div>
         </div>
-        <div className="grid">
-          <h1>Sign In</h1>
-          <form method="POST" onSubmit={handleSubmit} >
-            <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
-            <div>
-              <label htmlFor="username">Username</label>
-              <input name="username" type="text" className="border border-gray-400" required />
-            </div>
-            <div>
-              <label htmlFor="password">Password</label>
-              <input name="password" type="password" className="border border-gray-400" required />
-            </div>
-            <button className="border w-32" type='submit'>Sign in</button>
-          </form>
-        </div>
+
       </>
     );
   }
 };
 // `getServerSideProps` to fetch csrfToken and callbackUrl
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  // console.log('================context', context)
+  console.log('================context sign in', context)
   // csrfToken come the server-side.
   const csrfToken = await getCsrfToken(context); // Fetch CSRF token
   // const callbackUrl = (context.query.callbackUrl as string) || '/'; // Default to '/' if no callbackUrl

@@ -10,12 +10,12 @@ const Footer = () => {
   const { data: session, status } = useSession();
   return (
     <>
-      <div className="h-16 mx-auto mt-10 w-11/12">
+      <div className="h-20 border inline-block w-full">
         <p className=" p-2 inline">hey There im foooter</p>
         <div className=" inline float-right">
           {status === 'authenticated' ? (
             <>
-              <button onClick={() => signOut()}>Sign Out</button>
+              <button onClick={() => signOut({ callbackUrl: '/' })}>Sign Out</button>
               <Link href={'/new'} className="ml-2">
                 Post New Product
               </Link>

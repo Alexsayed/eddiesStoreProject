@@ -4,57 +4,59 @@ import { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "../../../lib/dbConnect";
 import Product from "../../../models/products";
 import Orders from "../../../models/orderHistory";
-
-
-const stripeSecretkey = process.env.STRIPE_SECRET_KEY
+import stripe from '../../../utils/stripe'
 const emailPass = process.env.EMAILPW
-const stripe = new Stripe(stripeSecretkey as string, {
-  apiVersion: '2025-02-24.acacia', // Ensure you're using the correct Stripe API version.
-});
 
-
+// Handle payment intent api
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await dbConnect();
-  if (req.method === 'POST') {
-    try {
-      const { paymentMethodId, amount, shippingInfo, billingInfo, storageItemsIDs } = req.body;
-      // Check is any of below variables ar not presented  
-      if (!paymentMethodId || !amount || !billingInfo) {
-        console.log('=======================shippingInfo condition', shippingInfo)
-        console.log('=======================paymentMethodId condition', paymentMethodId)
-        return res.status(400).json({ success: false, message: 'Missing paymentMethodId' });
-      }
-      // 1. Create Stripe PaymentIntent
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: amount * 100, // Amount calculates in cents. Example: amount: 1000, means $10.00. that's why we are multiplying it by 100.       
-        currency: 'usd',
-        payment_method: paymentMethodId,
-        confirm: false,
-        metadata: {
-          shippingName: `${shippingInfo.shippingFirstname} ${shippingInfo.shippingLastname}`,
-          shippingAddress: `${shippingInfo.shippingAddress}, ${shippingInfo.shippingCity}, ${shippingInfo.shippingState} ${shippingInfo.shippingZipCode}`,
-          shippingEmail: shippingInfo.shippingEmail,
-          billingName: `${billingInfo.billingFirstname} ${billingInfo.billingLastname}`,
-          billingAddress: `${billingInfo.billingAddress}, ${billingInfo.billingCity}, ${billingInfo.billingState}`,
-          billingEmail: billingInfo.billingEmail,
-          productIds: JSON.stringify(storageItemsIDs || []),
-        },
-        receipt_email: shippingInfo.shippingEmail,
+  // if not a POST request  
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method Not Allowed' });
+  }
+  try {
+    const { amount, shippingInfo, billingInfo, storageItemsIDs, storedAmount } = req.body;
+    if (!amount && (!shippingInfo || !billingInfo)) {  // ⚠️ Validate required fields
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid request body. Provide either amount or shipping/billing info.',
       });
-
-      // check if payment is NOT created 
+    }
+    // Handle creating payment intent 
+    if (amount && !shippingInfo && !billingInfo) {
+      console.log(' amount Info old way:', amount);
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount * 100, // amount is in cents       
+        currency: 'usd',
+        // automatic_payment_methods: { enabled: true }, // if you would like to have old payment method option like: amazon pay, apple pay etc.
+        payment_method_types: ['card'], // This uses ONLY card payments and disables all others payment methods like: amazon pay, apple pay etc.
+        payment_method_options: {
+          card: {
+            request_three_d_secure: 'automatic'
+          }
+        }
+      });
+      // check if payment intent is NOT created 
       if (!paymentIntent.client_secret) {
         return res.status(400).json({ success: false, message: 'No client secret returned' });
       };
-      // 2. Store order in DB
+      // Return paymentIntent.client_secret to frontend.
+      return res.status(200).json({
+        success: true,
+        clientSecret: paymentIntent.client_secret,
+      });
+    }
+    // Handle order creation + email 
+    if (shippingInfo && billingInfo && storageItemsIDs && storedAmount) {
+      // Store order info in DB
       const createdOrder = await Orders.create({
         product: storageItemsIDs,
-        totalAmount: amount,
-        viewed: false,
+        totalAmount: storedAmount,
+        paid: true,
         shippingInfo: { ...shippingInfo },
         billingInfo: { ...billingInfo }
       });
-      // 3. Send confirmation email via nodemailer
+      // Send confirmation email via nodemailer
       const smtpTransport = nodemailer.createTransport({
         host: 'smtp.mail.yahoo.com',
         port: 465,
@@ -76,42 +78,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // Body of email.
         text: `Hello ${shippingInfo.shippingFirstname}, \n\n This is a confirmation that we recieved your order.\n Your order number is: ${createdOrder._id}.\n Thank you for shopping with us!\n`
       };
-      // 3. finally send the email.
+      // finally send the email.
       await smtpTransport.sendMail(mailOptions);
-      // Final response to client after all 3 steps are complete
+      // Final response to client 
       return res.status(200).json({
         success: true,
-        clientSecret: paymentIntent.client_secret,
+        clientEmail: createdOrder.shippingInfo.shippingEmail,
         orderID: createdOrder._id
       });
-
-
-
-
-      // const paymentIntentRetrieve = await stripe.paymentIntents.retrieve(paymentIntent.id);
-
-
-      // console.log('================paymentIntentRetrieve.status', paymentIntentRetrieve.status)
-      // const paymentIntentConfirm = await stripe.paymentIntents.confirm(
-      //   paymentIntent.id,
-      //   { payment_method: paymentMethodId }
-      // );
-      // console.log('================ppaymentIntentConfirm', paymentIntentConfirm)
-
-      // console.log('================paymentIntent.client_secret', paymentIntent.client_secret); // Check the value
-      // res.status(200).json({ clientSecret: paymentIntent.client_secret });
-      // return res.status(200).json({
-      //   success: true,
-      //   clientSecret: paymentIntent.client_secret,
-      //   orderID: createdOrder._id
-      // });
-    } catch (error: any) {
-      console.error('Error during PaymentIntent creation:', error);
-      res.status(400).json({ success: false });
-      // res.status(400).json({ error: error.message });
     }
-  } else {
-    console.log('====================this should not log')
-    return res.status(405).json({ error: 'Method Not Allowed' });
+    //Invalid POST body 
+    return res.status(400).json({
+      success: false,
+      message: 'Invalid request body. Provide either amount or shipping/billing info.',
+    });
+  } catch (error: any) {
+    console.error(' Server Error:', error);
+    return res.status(500).json({ success: false, message: error.message || 'Internal Server Error' });
   }
 }

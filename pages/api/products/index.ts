@@ -13,6 +13,10 @@ export const config = {
     bodyParser: false,
   },
 };
+interface ImageUpload {
+  secure_url: string;
+  public_id: string;
+}
 // Configure Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -25,6 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   await dbConnect();
   switch (method) {
     case "GET":
+      console.log('================api/products/index/GET method')
       try {
         // Get/find all products and populate sizes 
         const productResult = await Product.find({}).populate({ path: 'sizes', model: Size }).exec();
@@ -34,6 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
       break;
     case "POST":
+      let productImages: { imageURL: string; imagePub_id: string }[] = [];
       // Formidable is a Node.js library used to parse multipart/form-data, which is the content type used when you upload files via HTML forms.
       const form = formidable({ multiples: true, keepExtensions: true });
       // Parses an incoming Node.js request containing form data. If callback is provided, all fields and files are collected and passed to the callback.
@@ -62,6 +68,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return res.status(400).json({ error: 'Invalid JSON in colors or sizes' });
           }
           let urls: string[] = [];
+          let pub_IDs: string[] = [];
           try {
             // Make sure the file is an array. 
             const fileArray = Array.isArray(files.productImg)
@@ -73,28 +80,50 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               // Upload image file to Cloudinary and adjust the size of the image. 
               return cloudinary.uploader.upload(file.filepath, { width: 600, height: 800, crop: "limit", folder: 'testFolder' })
             });
+            console.log('================uploadPromises================:', uploadPromises);
+
             // Promise.all(...) is a way to run all promises in parallel and wait for all of them to finish.
             const results = await Promise.all(uploadPromises);
+            console.log('================results================:', results);
+            // +++++++++++++++++++++++++++++++++on hold for fixing images +++++++++++++++++++++++++++++++
             // get URL/s of the uploaded images so we can send them to mongoDB.
-            urls = results.map((r) => {
-              if (!r) return
-              console.log('==============r:', r);
+            // urls = results.map((r) => {
+            //   if (!r) return
+            //   console.log('==============r:', r);
 
-              return r.secure_url
-              // filter((url): It removes any undefined or non-string values from the array.
-            }).filter((url): url is string => typeof url === 'string');
+            //   return r.secure_url
+            //   // filter((url): It removes any undefined or non-string values from the array.
+            // }).filter((url): url is string => typeof url === 'string');
+            // +++++++++++++++++++++++++++++++++on hold for fixing images +++++++++++++++++++++++++++++++
 
-            // urls = results
-            //   .map(r => r?.url)
-            //   .filter((url): url is string => typeof url === 'string');
-            console.log('urls:', urls);
+
+            // results.forEach((r) => {
+            //   if (!r) return
+            //   console.log('==============r:', r);
+            //   // return urls = r.secure_url, pub_ID = r.public_id;
+            //   if (typeof r.secure_url === 'string') urls.push(r.secure_url);
+            //   if (typeof r.public_id === 'string') pub_IDs.push(r.public_id);
+            //   // return r.secure_url
+            //   // filter((url): It removes any undefined or non-string values from the array.
+            // })
+            // .filter((url): url is string => typeof url === 'string');
+
+            productImages = results
+              .filter((r) => r && typeof r.secure_url === 'string' && typeof r.public_id === 'string')
+              .map((r: any) => ({
+
+                imageURL: r.secure_url,
+                imagePub_id: r.public_id,
+              }));
+            console.log('================productImages================:', productImages);
+
           } catch (error) {
             console.error('Cloudinary upload error:', error);
             res.status(500).json({ error: 'Upload failed' });
           }
 
 
-
+          // +++++++++++++++++++++++++++++++++on hold for fixing images +++++++++++++++++++++++++++++++
           let createdSizeID;
           try {
             switch (flatFields.gender) {
@@ -212,10 +241,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           // next up: save the sizes to product schema and after work on cloudinary
           // Create a Product
           try {
+            // const createProduct = await Product.create({
+            //   productName: flatFields.productName,
+            //   price: flatFields.price,
+            //   productImg: urls,
+            //   category: flatFields.category,
+            //   brand: flatFields.brand,
+            //   gender: flatFields.gender,
+            //   // kids: req.body.kids,
+            //   // colors: JSON.parse(flatFields.colors),
+            //   colors: colors,
+            //   // size: req.body.size,
+            //   sizes: createdSizeID,
+            //   author: flatFields.author,
+            //   inStock: flatFields.inStock,
+            // });
+            // console.log('======createProduct', createProduct)
+
+            // return res.status(200).json({ success: true, productID: createProduct._id });
+            // +++++++++++++++++++++++++++++++++on hold for fixing images +++++++++++++++++++++++++++++++
+            // coninue here tomorrow
             const createProduct = await Product.create({
               productName: flatFields.productName,
               price: flatFields.price,
-              productImg: urls,
+              productImg: productImages,
               category: flatFields.category,
               brand: flatFields.brand,
               gender: flatFields.gender,
@@ -227,7 +276,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               author: flatFields.author,
               inStock: flatFields.inStock,
             });
-            console.log('======createProduct', createProduct)
+            console.log('================createProduct================:', createProduct);
+
 
             return res.status(200).json({ success: true, productID: createProduct._id });
             // return res.status(200).json({ success: true, productID: 'da334someBSID' });

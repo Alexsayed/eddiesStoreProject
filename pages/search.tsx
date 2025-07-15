@@ -82,7 +82,7 @@ const SearchResults = () => {
           ))}
         </ul>
       ) : (
-        <p>No results found</p>
+        <p>No results found and length is: {filteredResults.length}, allProducts is :{allProducts.length}</p>
 
       )}
     </div>

@@ -18,7 +18,8 @@ export interface Products extends Document {
   // quantity: number
   productName: string;
   price: number;
-  productImg: string[];
+  // productImg: string[];
+  productImg: { imageURL: string, imagePub_id: string }[];
   category: string,
   brand: string,
   gender: string,
@@ -61,7 +62,12 @@ const productSchema = new mongoose.Schema<Products>({
   // _id: String,
   productName: String,
   price: Number,
-  productImg: [String],
+  // productImg: [String],
+  productImg: [{
+    _id: false, // disable automatic _id generation
+    imageURL: String,
+    imagePub_id: String
+  }],
   category: String,
   brand: String,
   gender: String,

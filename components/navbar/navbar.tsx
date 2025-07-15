@@ -6,10 +6,6 @@ import { useCart } from '../../state/CartContext';
 import { useSession } from 'next-auth/react';
 import { signOut } from 'next-auth/react';
 
-// interface NavBarProps {
-//   onSearch: (query: string) => void;
-// }
-
 // handle navBar
 const Navbar = () => {
   // get Cart instance 

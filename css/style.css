@@ -151,7 +151,7 @@ li {
   --accent: grey;
   cursor: pointer;
   background: transparent;
-  border: 1.5px solid var(--accent);
+  border: 1px solid var(--accent);
   color: var(--accent);
   border-radius: 10px;
   padding: 10px 15px;

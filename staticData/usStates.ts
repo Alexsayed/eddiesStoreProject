@@ -59,5 +59,19 @@ export const usaStates: Record<string, string> = {
   "WI": "Wisconsin",
   "WY": "Wyoming"
 };
+export const staticMenCategories = ['Jackets', 'Jeans', 'Pants', 'Shoes', 'Sweaters', 'Tees'];
+export const staticWomenCategories = ['Dresses', 'Jackets', 'Jeans', 'Pants', 'Shoes', 'Skirts', 'Sweaters', 'Tops',];
+export const staticMenShoeSizes = ['8', '9', '9_5', '10', '10_5', '11', '12'];
+export const staticWomenShoeSizes = ['6', '7', '8', '9', '10'];
+export const staticMenNumericSizes = ['28', '30', '32', '34', '36', '38'];
+export const staticWomenNumericSizes = ['24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34',];
+export const staticAlphaSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+
+
+
+
+
 export type USAStates = typeof usaStates;
+
+
 export default usaStates;

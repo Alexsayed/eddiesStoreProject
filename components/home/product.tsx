@@ -6,7 +6,6 @@ import Navbar from '../navbar/navbar';
 import { useCart } from '../../state/CartContext';
 
 type Props = {
-  // editFormId: string;
   productData: Products;
 };
 
@@ -20,7 +19,7 @@ const ProductPage = ({ productData, }: Props,) => {
   const [cartProductSize, setCartProductSize] = useState<string>('')
   const [cartProductQuantity, setCartProductQuantity] = useState<number>(0);
   // Previewing product images. By default the first image will be selected.
-  const [imagePreview, setImagePreview] = useState<string>(productData.productImg[0] || '');
+  const [imagePreview, setImagePreview] = useState<string>(productData.productImg[0].imageURL || '');
   const imageRef = useRef<HTMLImageElement | null>(null);
   const thumbRef = useRef<HTMLDivElement | null>(null);
   // The Array.from() static method creates a new, shallow-copied Array instance.
@@ -142,13 +141,15 @@ const ProductPage = ({ productData, }: Props,) => {
       id: productData._id,
       productName: productData.productName,
       price: productData.price,
-      productImg: productData.productImg[0] || '',
+      productImg: productData.productImg[0].imageURL || '',
       category: productData.category,
       brand: productData.brand,
       gender: productData.gender,
       colors: productColor,
       size: cartProductSize,
       quantity: cartProductQuantity === 0 ? 1 : cartProductQuantity,
+      inStock: productData.inStock,
+
     };
     // add to cart above item.
     addToCart(item);
@@ -163,7 +164,7 @@ const ProductPage = ({ productData, }: Props,) => {
     if (imagePreview === clickedImage) return;
     // Toggle between product images.
     setImagePreview(prev =>
-      prev === clickedImage ? productData.productImg[0] : clickedImage
+      prev === clickedImage ? productData.productImg[0].imageURL : clickedImage
     );
   }
 
@@ -175,10 +176,26 @@ const ProductPage = ({ productData, }: Props,) => {
             {productData.productImg.map((image, index) =>
               <li className="mb-1" key={index}>
                 <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
-                  <img onClick={previewImage} className=" h-full w-full object-cover rounded" src={image} alt="" />
+                  <img onClick={previewImage} className=" h-full w-full object-cover rounded" src={image.imageURL} alt="" />
                 </div>
               </li>
             )}
+            <li className="mb-1" >
+              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
+                <img onClick={previewImage} className=" h-full w-full object-cover rounded" src="https://n.nordstrommedia.com/it/1b64d345-fd65-4db9-a635-b966b30e9497.jpeg?h=368&w=240&dpr=2" alt="" />
+              </div>
+            </li>
+            <li className="mb-1" >
+              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
+                <img onClick={previewImage} className=" h-full w-full object-cover rounded" src="https://www.ohpolly.com/cdn/shop/files/6172_8_Sloane-Black-Thigh-Split-MaxiDress.jpg?v=1683187303&width=920" alt="" />
+              </div>
+            </li>
+            <li className="mb-1" >
+              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
+                <img onClick={previewImage} className=" h-full w-full object-cover rounded" src="https://us.ohpolly.com/cdn/shop/products/5891_3_Teal-Cut-Out-Maxi-Dress_39687738-3e71-4760-8d26-2a6d283048c3.jpg?v=1689364855&width=1244" alt="" />
+              </div>
+            </li>
+
           </ul>
         </div>
         <div className="w-[75%] sm:w-[62.5%]  mx-auto   overflow-hidden  order-2 rounded max-h-[450px]" >
@@ -222,7 +239,7 @@ const ProductPage = ({ productData, }: Props,) => {
               )}
             </select>
           </div>
-          <button className="rounded w-24 h-8 border bg-black text-white mt-2.5" onClick={handleAddToCart}>Add to Cart</button>
+          <button className="rounded-lg w-24 h-8 border bg-black text-white mt-4" onClick={handleAddToCart}>Add to Cart</button>
         </div>
       </div >
     </>

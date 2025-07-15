@@ -44,7 +44,7 @@ const HomePage = ({ getAllProducts, }: Props) => {
 
   // handle Delete a product
   const confirmDelete = async () => {
-    // if now ID is stored/selected
+    // if no ID is stored/selected
     if (!selectedId) return;
     const res = await fetch(`/api/products/${selectedId}`, {
       method: "DELETE",
@@ -64,7 +64,8 @@ const HomePage = ({ getAllProducts, }: Props) => {
     }
     router.push('/');
   };
-
+  // console.log('=========window.location.origin', window.location.origin)
+  // console.log('=========window.location', window.location)
   return (
     <>
       <div className="w-full  flex justify-end px-4  py-1.5 border-b ">
@@ -98,7 +99,7 @@ const HomePage = ({ getAllProducts, }: Props) => {
               {/* )} */}
               <Link href={item._id}>
                 <div className="h-4/5 w-full aspect-[4/3] overflow-hidden">
-                  <img className="w-full h-full object-cover" src={item.productImg[0]} alt={item.productName[1]} />
+                  <img className="w-full h-full object-cover" src={item.productImg[0].imageURL} alt={item.productName[1].imageURL} />
                 </div>
                 <div className="mt-1 mx-2">
                   <p>H&M Slim {item.productName}</p>

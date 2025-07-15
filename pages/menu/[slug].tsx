@@ -5,7 +5,6 @@ import React from 'react';
 import dbConnect from "../../lib/dbConnect";
 import Link from "next/link";
 import Product, { Products } from "../../models/products";
-// import { globalMenCategories, globalWomenCategories } from '../../components/postProduct/postProduct';
 import { ParsedUrlQuery } from "querystring";
 import MenuProductResults from "../../components/menu/menuProductResults";
 interface Params extends ParsedUrlQuery {

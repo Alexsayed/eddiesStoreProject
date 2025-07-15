@@ -1,42 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { OrderHistoryInterface } from "../../models/orderHistory";
-// import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-// import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { useStripe, useElements, PaymentElement, Elements, CardElement } from '@stripe/react-stripe-js';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 // get USA states data
 import usaStates, { USAStates } from "../../staticData/usStates";
-const stripePubKey = process.env.NEXT_PUBLIC_STRIPE_PUB_KEY;
-const stripePromise = loadStripe(stripePubKey as string);
-
-const CARD_OPTIONS = {
-  // iconStyle: "solid",
-  style: {
-    base: {
-      // iconColor: "#c4f0ff",
-      iconColor: "red",
-      // color: "#fff",
-      color: "red",
-      // border: 'solid 1px black',
-      fontWeight: 500,
-      fontFamily: "Roboto, Open Sans, Segoe UI, sans-serif",
-      fontSize: "16px",
-      fontSmoothing: "antialiased",
-      ":-webkit-autofill": { color: "#fce883" },
-      "::placeholder": { color: "#87bbfd" },
-    },
-    // When the card number, expiration date or CVC values are incorrect
-    invalid: {
-      iconColor: "#ffc7ee",
-      color: "#ffc7ee",
-    },
-    complete: {
-      // color: '#42f5a7', // Green when card input is complete
-      color: '#42f5a7', // Green when card input is complete
-    },
-  },
-};
 
 interface CartItem {
   id: string;
@@ -61,34 +29,38 @@ type CountrySummary = {
   name: string;
   code: string;
 };
-// still not working.what we soild do it to copy all stripe pages and paste to Chat and find what is wrong
+type FormData = {
+  shippingInfo: OrderHistoryInterface['shippingInfo'];
+  billingInfo: OrderHistoryInterface['billingInfo'];
+};
+
+// handle payment form
 const PaymentForm = () => {
   const router = useRouter();
   const stripe = useStripe();
   const elements = useElements();
   const contentType = "application/json";
-  const [clientSecretFromState, setClientSecret] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
   const [checkboxError, setCheckboxError] = useState('');
-
-  const [succeeded, setSucceeded] = useState(false);
-  const [checkoutTotal, setTotal] = useState<number>(0);
+  const [checkUncheck, setCheckUncheck] = useState(false);
+  // const [succeeded, setSucceeded] = useState(false);
   const [storageItemsIDs, setStorageItemsIDs] = useState<CartItem[]>([]);
-  // const [isHiddenStates, setIsHiddenStates] = useState(false);
   const [isHiddenBillStates, setIsHiddenBillStates] = useState(false);
   const [isHiddenShipStates, setIsHiddenShipStates] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [isCheckBoxHidden, setIsCheckBoxHidden] = useState(true);
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(true); // Manage <input> required attribute toggling based on weather checkbox is checked or unchecked.
+
   const [countries, setCountries] = useState<CountrySummary[]>([]);
   const [usStates, setUSStates] = useState<USAStates>(usaStates); // adding USA states data here.
   const [usBillStates, setUSBillStates] = useState<USAStates>(usaStates); // adding USA states data for billing here.
   const [isUSASelected, setIsUSASelected] = useState(true); // Manage <Select> required attribute toggling based on weather USA is selected or not.
   const [isUSABillSelected, setIsUSABillSelected] = useState(true); // Manage <Select> required attribute toggling based on weather USA is selected or not for billing info.
-  const [loading, setLoading] = useState(true);
-  const [selectedCountry, setselectedCountry] = useState('US'); // <-- Default country select option is USA
-  // const [selectedUSAState, setselectedUSAState] = useState({}); // <-- USA states
+  const [loadingCountries, setLoadingCountries] = useState(true);
+  const [loadingCart, setLoadingCart] = useState(true);
+  const [storedAmount, setStoredAmount] = useState<number>(0);
   const [shippingInfo, setShippingInfo] = useState<OrderHistoryInterface['shippingInfo']>({
     shippingFirstname: '',
     shippingLastname: '',
@@ -101,7 +73,6 @@ const PaymentForm = () => {
     shippingZipCode: '',
     shippingPhoneNumber: '',
   });
-
   const [billingInfo, setBillingInfo] = useState<OrderHistoryInterface['billingInfo']>({
     billingFirstname: '',
     billingLastname: '',
@@ -113,94 +84,51 @@ const PaymentForm = () => {
     billingCountry: '',
     // billingZipCode: '', // not needed 
   });
-
-
-
-  // console.log('=========================usaStates', usaStates)
-  // const element1 = elements?.create('card', {
-  //   style: {
-  //     base: {
-  //       iconColor: '#c4f0ff',
-  //       color: '#fff',
-  //       fontWeight: '500',
-  //       fontFamily: 'Roboto, Open Sans, Segoe UI, sans-serif',
-  //       fontSize: '16px',
-  //       fontSmoothing: 'antialiased',
-  //       ':-webkit-autofill': {
-  //         color: '#fce883',
-  //       },
-  //       '::placeholder': {
-  //         color: '#87BBFD',
-  //       },
-  //     },
-  //     invalid: {
-  //       iconColor: '#FFC7EE',
-  //       color: '#FFC7EE',
-  //     },
-  //   },
-  // });
-  // console.log('===========element1,', element1);
-  // if (!stripe || !elements) {
-  //   return; // Make sure Stripe.js is loaded
-  // }
-
-
-
-  // Fetch the client secret from your server (e.g., via an API route in Next.js)
-  // useEffect(() => {
-  //   const fetchClientSecret = async () => {
-  //     const res = await fetch('/api/payment/paymentIntent', {
-  //       method: 'POST',
-  //       headers: {
-  //         Accept: contentType,
-  //         "Content-Type": contentType,
-  //       },
-  //       body: JSON.stringify({ paymentMethodId: paymentMethod.id }),
-  //     });
-  //     const data = await res.json();
-  //     console.log('============data from oaymentForm top', data)
-  //     setClientSecret(data.clientSecret);
-  //   };
-
-  //   fetchClientSecret();
-  // }, []);
-
-  // next up: set up a order list history model with its and story all order history in DB
+  // Derived overall loading. we will be waiting for Countries API and window.localStorage/CartItems to be loaded.
+  const isLoading = loadingCart || loadingCountries;
+  // Getting Cart items product IDs.
   useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
-      // console.log('=================if cart.js')
-      const getStorage: string | null = localStorage.getItem('items');
-      if (getStorage !== null) {
-        try {
-          const parsedCartItems = JSON.parse(getStorage);
-          let getTotal = 0;
-          let getProductIDS = [];
-          // Sum up prices
-          for (let i = 0; i < parsedCartItems.length; i++) {
-            getTotal += parsedCartItems[i].price;
-            getProductIDS.push(parsedCartItems[i].id)
+      try {
 
+        const getStorage: string | null = localStorage.getItem('items');
+        if (getStorage !== null) {
+          const parsedCartItems = JSON.parse(getStorage);
+          let getProductIDS = [];
+          let getTotal = 0;
+          for (let i = 0; i < parsedCartItems.length; i++) {
+            // push IDs to getProductIDS array.
+            getProductIDS.push(parsedCartItems[i].id)
+            // Get total price of Cart items
+            getTotal += (parsedCartItems[i].price * parsedCartItems[i].quantity);
           }
-          // Set total price of items.
-          setTotal(getTotal);
-          // Get IDs of the products          
-          setStorageItemsIDs(getProductIDS);
-        } catch (error) {
-          console.error('Error parsing stored items from localStorage', error);
+          setStorageItemsIDs(getProductIDS); // set IDs of the products          
+          setStoredAmount(getTotal); // Set total price
+
         }
+      } catch (error) {
+        console.error('Error parsing stored items from localStorage', error);
+      } finally {
+        setLoadingCart(false); // Done loading cart
       }
+    } else {
+      setLoadingCart(false); // No localStorage, still done
     }
     // Cleanup function to reset the total when the component unmounts
     return () => {
-      setTotal(0); // Reset the total when leaving the page
-      setStorageItemsIDs([]);
+      setStorageItemsIDs([]); // Reset state when leaving the page
+      // setLoading(false);
+
     };
   }, []);
   // fetching Countries API
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const res = await fetch('https://restcountries.com/v3.1/all');
+        // The below api is not working for now
+        // const res = await fetch('https://restcountries.com/v3.1/all');
+        // The below API is fetching north and south america.
+        const res = await fetch("https://restcountries.com/v3.1/region/america");
         const data = await res.json();
         // Map through counties data.
         const mappedCountries: CountrySummary[] = data.map((country: Country) => ({
@@ -212,8 +140,7 @@ const PaymentForm = () => {
           (country) => country.name === 'United States'
         );
         // Filter out United States and sort the rest
-        const otherCountries = mappedCountries
-          .filter((country) => country.name !== 'United States')
+        const otherCountries = mappedCountries.filter((country) => country.name !== 'United States')
           .sort((a, b) => a.name.localeCompare(b.name));
         // Put United States at the top
         const sortedCountries = unitedStates
@@ -226,11 +153,13 @@ const PaymentForm = () => {
       } catch (err) {
         console.error('Error fetching countries:', err);
       } finally {
-        setLoading(false);
+        // setLoading(false);
+        setLoadingCountries(false)
       }
     };
     fetchCountries();
   }, []);
+
   // Handle change event
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, type, value, checked } = e.target as HTMLInputElement;
@@ -243,28 +172,26 @@ const PaymentForm = () => {
         }));
         // if we are setting countries
         if (e.target.name === 'shippingCountry') {
-          // if its not USA then we would hide select States options. 
-          if (e.target.value !== 'US') {
-            // Remove US States data from the useState.
-            setUSStates({});
-            // Hide USA states <select> element.
-            setIsHiddenShipStates(true);
-            // disable (False) select states (required) attribute.
-            setIsUSASelected(false);
-            // If USA is selected
-          } else if (e.target.value === 'US') {
-            // Add US States data
-            setUSStates(usaStates);
-            // display select States options
-            setIsHiddenShipStates(false);
-            // Enable (True) select states (required) attribute.
-            setIsUSASelected(true)
+          if (e.target.value.length === 0) { // if no country is select            
+            setIsHiddenShipStates(false); // display select States options            
+            setUSStates({});// Remove US States data from the useState.
+          } else if (e.target.value !== 'US') { // if its not USA then we would hide select States options.             
+            setUSStates({}); // Remove US States data from the useState.            
+            setIsHiddenShipStates(true); // Hide USA states <select> element.            
+            setIsUSASelected(false); // disable (False) select states (required) attribute.
+          } else if (e.target.value === 'US') { // If USA is selected                        
+            setUSStates(usaStates); // Add US States data
+            setIsHiddenShipStates(false); // display select States options            
+            setIsUSASelected(true); // Enable (True) select states (required) attribute.
           }
         }
         // if billing inputs. Billing works the same way as Shipping but with different var names.
       } else if (name.startsWith("bill")) {
         if (e.target.name === 'billingCountry') {
-          if (e.target.value !== 'US') {
+          if (e.target.value.length === 0) { // if no country is select            
+            setIsHiddenBillStates(false); // display select States options            
+            setUSBillStates({});// Remove US States data from the useState.
+          } else if (e.target.value !== 'US') {
             setUSBillStates({});
             setIsHiddenBillStates(true);
             setIsUSABillSelected(false);
@@ -299,13 +226,11 @@ const PaymentForm = () => {
         const isShippingComplete = requiredFields.every(
           (field) => shippingInfo[field as keyof typeof shippingInfo]?.trim() !== '',
         );
-        console.log('==========shippingInfo', shippingInfo)
-        console.log('==========requiredFields', requiredFields);
         if (!isShippingComplete) {
-          setCheckboxError("Cannot copy shipping info to billing — some fields are missing.")
+          setCheckboxError("Cannot copy shipping info to billing — some fields are missing.");
+          setCheckUncheck(false); // <--- uncheck the checkbox
           return;
         }
-
         setBillingInfo((prevState) => ({
           ...prevState,
           billingFirstname: shippingInfo.shippingFirstname,
@@ -318,11 +243,12 @@ const PaymentForm = () => {
           billingCountry: shippingInfo.shippingCountry,
           // billingZipCode: shippingInfo.shippingZipCode,
         }));
-        // hide billing input feilds since we are use shipping info.
-        setIsHidden(true);
+        setCheckUncheck(true); // if above conditions are right then we would allow checkbox to be checked.        
+        setIsHidden(true); // hide billing input feilds since we are use shipping info.
         // set the billing <input> required attribute values to FALSE. Since the billing and shipping info is the same
         setIsCheckboxChecked(false);
         // setIsCheckboxChecked(prevState => !prevState);
+        setCheckboxError(""); // Empty out error message.
       } else {
         // Reset billingInfo back to empty string when checkbox is check and then unchecked.
         setBillingInfo({
@@ -344,181 +270,226 @@ const PaymentForm = () => {
       }
     }
   };
+
   // The below function is to toggle between visibality of Billing btn and input checkbox element, which handles the billing info as shipping info
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement | HTMLDivElement>) => {
     // This is a function that takes the previous state (prevState) and returns the opposite of its current value, effectively toggling it between true and false.
     setIsCheckBoxHidden(prevState => !prevState);
   };
 
-  // Submit Form
+  // Submit Form 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!stripe || !elements) {
-      return; // Make sure Stripe.js is loaded
-    }
+    if (!stripe || !elements) return;
     setIsProcessing(true);
-    // ===============================on hold===========================================================
-    const cardElement = elements.getElement(CardElement);
-    if (!cardElement) {
-      // Handle the case where the card element is not available
-      return;
-    }
-    // Create payment methpod. This method ID ( const { id } = paymentMethod; ) will go to server.
-    const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
-      type: "card",
-      billing_details: {
-        address: {
-          line1: billingInfo.billingAddress,
-          line2: billingInfo.billingApt,
-          city: billingInfo.billingCity,
-          state: billingInfo.billingState,
-          country: billingInfo.billingCountry,
-          // postal_code:  // Billing postal_code sets automatically when we are entering card info
-        },
-        email: billingInfo.billingEmail,
-        name: billingInfo.billingFirstname + ' ' + billingInfo.billingLastname,
-        phone: shippingInfo.shippingPhoneNumber
-      },
-      card: cardElement,
-    });
-    if (paymentMethodError) {
-      console.error("Payment method error:", paymentMethodError.message);
-      // setError(paymentMethodError.message || "Payment method error");
-      setIsProcessing(false);
-      return;
-    }
     try {
-      // Get ID of the stripe.createPaymentMethod({})
-      const { id } = paymentMethod;
-      // Post data to server.
       const response = await fetch('/api/payment/paymentIntent', {
         method: 'POST',
         headers: {
           Accept: contentType,
           "Content-Type": contentType,
         },
-        body: JSON.stringify({ paymentMethodId: id, amount: checkoutTotal, shippingInfo, billingInfo, storageItemsIDs }),
+        body: JSON.stringify({ shippingInfo, billingInfo, storageItemsIDs, storedAmount }),
       });
-      const data = await response.json(); // Parse the JSON response
-      // Checking if payment went successfull. NOTE: clientSecret comes from the server.     
-      if (data.clientSecret) {
-        // Confirming the payment
-        const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(data.clientSecret, {
-          payment_method: id,
-        });
-        if (confirmError) {
-          console.error('Payment confirmation error:', confirmError.message);
-          // setError(confirmError.message || 'Payment failed');
-        } else if (paymentIntent.status === 'succeeded') {
-          setSucceeded(true);
-          // Redirect to success page.
-          router.push({
-            pathname: '/success',
-            query: {
-              // data.orderID is ID of newly created order.
-              orderID: data.orderID,
-            },
-          });
-        }
+      const submitData = await response.json(); // Parse the JSON response     
+      if (!response.ok) {
+        throw new Error(`Failed to send data to server. Status: ${response.status}`);
       }
-    } catch (err) {
-      console.error(err);
+      // setLoading(true);
+      const { error } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          // redirect when payment is confirmed 
+          return_url: `${window.location.origin}/success?orderID=${submitData.orderID}&email=${submitData.clientEmail}`,
+          payment_method_data: {
+            billing_details: {
+              address: {
+                line1: billingInfo.billingAddress,
+                line2: billingInfo.billingApt,
+                city: billingInfo.billingCity,
+                state: billingInfo.billingState,
+                country: billingInfo.billingCountry,
+                // postal_code:  // Billing postal_code sets automatically when we are entering card info
+              },
+              // name: billingInfo.billingFirstname + ' ' + billingInfo.billingLastname,
+              name: `${billingInfo.billingFirstname} ${billingInfo.billingLastname}`,
+              email: billingInfo.billingEmail,
+              phone: shippingInfo.shippingPhoneNumber,
+            },
+          },
+        },
+      });
+      if (error) {
+        setMessage('error from bs');
+      } else {
+        setMessage('An unknown error occurred.');
+      }
+    } catch (err: any) {
+      console.error('Error during submission:', err);
+      setMessage('An error occurred: ' + err.message);
     }
     setIsProcessing(false);
-  };
-  // this loading is very important bc it default selects USA where we are selecting countries.
-  // without this load check the default select will be empty string.
-  if (loading) return <p>Loading countries...</p>;
-  // console.log('============selectedCountry', selectedCountry)
-
+  }
+  // wait for page to fully load
+  if (isLoading) return <p>Page is loading please wait...</p>;
 
   return (
     <>
-      <div className='w-full '>
-        <p className='ml-20'>Total: {checkoutTotal}</p>
-        <p className='ml-20'>4242 4242 4242 4242</p>
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="shippingForm">Shipping Address:</label>
-          <div id='shippingForm'>
-            <input type="text" name='shippingFirstname' className="capitalize" placeholder='Firstname' onChange={handleChange} required />
-            <input type="text" name='shippingLastname' className="capitalize" placeholder='Lastname' onChange={handleChange} required />
-            <input type="email" name='shippingEmail' placeholder='Email Address' onChange={handleChange} required />
-            <input type="text" name='shippingAddress' className="capitalize" placeholder='Shipping Address' onChange={handleChange} required />
-            <input type="text" name='shippingApt' className="capitalize" placeholder='Apt Number, Floor, Building Optional' onChange={handleChange} />
-            <select name='shippingCountry' id='shippingCountry' className="border rounded-lg w-full" onChange={handleChange} required>
-              <option value="">Select a country</option>
-              {countries.map((country) => (
-                <React.Fragment key={country.code}>
-                  < option key={country.code} value={country.code} >
-                    {country.name}
-                  </option>
-                  {country.name === 'United States' && (
-                    // key={`${country.code}-divider`}: gives the below <option> its own unique key, so it won't create conflict with real <options>. bc its used for Border-bottom purpose. 
-                    < option key={`${country.code}-divider`} disabled>────────────</option>
-                  )}
-                </React.Fragment>
-              ))}
-            </select>
-            <select name='shippingState' className={isHiddenShipStates ? 'hidden' : "border rounded-lg w-full"} onChange={handleChange} required={isUSASelected}>
-              <option value="">Select a State</option>
-              {Object.entries(usStates).map(([abbr, name]) => (
-                <option key={abbr} value={abbr}>
-                  {name}
-                </option>
-              ))}
-            </select>
-            <input type="text" name='shippingCity' className="capitalize" placeholder='Shipping City' onChange={handleChange} required />
-            <input type="number" name='shippingZipCode' placeholder='Shipping Zip Code' onChange={handleChange} required />
-            <input type="number" name='shippingPhoneNumber' placeholder='Phone Number' onChange={handleChange} required />
-            <div className={isCheckBoxHidden ? 'flex items-center' : 'hidden'}>
-              <p>condition (cant check the box if no shipping is filed out) setCheckboxError</p>
-              <label htmlFor="billingCheckbox" className='  mr-4'>Use shipping info as billing:</label>
-              <input type="checkbox" name='billingCheckbox' id='billingCheckbox' className='w-5 mt-2.5 h-6' onChange={handleChange} />
+      <div className=" relative top-[40px] md:top-0 md:top-0  border-t md:border-none pt-4  overflow-hidden">
+        <div className="w-[90%] md:w-[60%] mx-auto">
+          <h1 className="text-xl font-semibold text-center">Payment Information</h1>
+          <h1 className="text-base font-semibold text-center">Shipping Information</h1>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-3 text-sm">
+            <div className="flex items-center">
+              <label htmlFor="shippingFirstname" className="w-28">Firstname:</label>
+              <input type="text" id="shippingFirstname" name='shippingFirstname' className="border flex-1 pl-2 capitalize focus:outline focus:outline-[#0570ed] focus:outline-[1px]  " placeholder='Firstname' onChange={handleChange} required />
             </div>
-          </div>
-          {checkboxError && <div>{checkboxError}</div>}
-          <div className={isHidden ? 'hidden' : " "}>
-            <button type='button' className='btn' onClick={handleClick}>Billing Address</button>
-            <p>isCheckBoxHidden: {isCheckBoxHidden.toString()}</p>
-            <p>isCheckboxChecked: {isCheckboxChecked.toString()}</p>
-            <div className={isCheckBoxHidden ? 'hidden' : " "} >
-              <input type="text" name='billingFirstname' className="capitalize" placeholder='Firstname' onChange={handleChange} required={isCheckboxChecked} />
-              <input type="text" name='billingLastname' className="capitalize" placeholder='Lastname' onChange={handleChange} required={isCheckboxChecked} />
-              <input type="email" name='billingEmail' placeholder='Email Address' onChange={handleChange} required={isCheckboxChecked} />
-              <input type="text" name='billingAddress' className="capitalize" placeholder='billing Address' onChange={handleChange} required={isCheckboxChecked} />
-              <input type="text" name='billingApt' className="capitalize" placeholder='Apt Number, Floor, Building Optional' onChange={handleChange} />
-              <select name='billingCountry' id='shippingCountry' className="border rounded-lg w-full" onChange={handleChange} required={isCheckboxChecked} >
+            <div className="flex items-center">
+              <label htmlFor="shippingLastname" className="w-28">Lastname:</label>
+              <input type="text" id="shippingLastname" name='shippingLastname' className="border flex-1 pl-2 capitalize focus:outline focus:outline-[#0570ed] focus:outline-[1px]" placeholder='Lastname' onChange={handleChange} required />
+            </div>
+            <div className="flex items-center">
+              <label htmlFor="shippingEmail" className="w-28">Email:</label>
+              <input type="email" id="shippingEmail" name='shippingEmail' className="border flex-1 pl-2 focus:outline focus:outline-[#0570ed] focus:outline-[1px]" placeholder='Email Address' onChange={handleChange} required />
+            </div>
+            <div className="flex items-center">
+              <label htmlFor="shippingAddress" className="w-28">Address:</label>
+              <input type="text" id="shippingAddress" name='shippingAddress' className="border flex-1 pl-2 capitalize focus:outline focus:outline-[#0570ed] focus:outline-[1px]" placeholder='Shipping Address' onChange={handleChange} required />
+            </div>
+            <div className="flex items-center">
+              <label htmlFor="shippingApt" className="w-28">Apt/Floor No:</label>
+              <input type="text" id="shippingApt" name='shippingApt' className="border flex-1 pl-2 capitalize focus:outline focus:outline-[#0570ed] focus:outline-[1px]" placeholder='Apt, Floor. Optional' onChange={handleChange} />
+            </div>
+            <div className="flex items-center">
+              <label htmlFor="shippingCountry" className="w-28">Country:</label>
+              <select name="shippingCountry" id="shippingCountry" className="border rounded-lg flex-1 pl-2 bg-white h-[30px] truncate" onChange={handleChange} required >
                 <option value="">Select a country</option>
                 {countries.map((country) => (
                   <React.Fragment key={country.code}>
-                    <option key={country.code} value={country.code}>
+                    < option key={country.code} value={country.code} >
                       {country.name}
                     </option>
                     {country.name === 'United States' && (
-                      <option key={`${country.code}-divider`} disabled>────────────</option>
+                      // key={`${country.code}-divider`}: gives the below <option> its own unique key, so it won't create conflict with real <options>. bc its used for Border-bottom purpose. 
+                      < option key={`${country.code}-divider`} disabled>────────────</option>
                     )}
                   </React.Fragment>
                 ))}
               </select>
-              <select name='billingState' className={isHiddenBillStates ? 'hidden' : "border rounded-lg w-full"} onChange={handleChange} required={isCheckboxChecked && isUSABillSelected}>
+            </div>
+
+            <div className={isHiddenShipStates ? 'hidden' : "flex items-center"}>
+              <label htmlFor="shippingState" className="w-28">State:</label>
+              <select name="shippingState" id="shippingState" className="border rounded-lg flex-1 pl-2 bg-white h-[30px] truncate" onChange={handleChange} required={isUSASelected}  >
                 <option value="">Select a State</option>
-                {Object.entries(usBillStates).map(([abbr, name]) => (
+                {Object.entries(usStates).map(([abbr, name]) => (
                   <option key={abbr} value={abbr}>
                     {name}
                   </option>
                 ))}
               </select>
-              <input type="text" name='billingCity' className="capitalize" placeholder='billing City' onChange={handleChange} required={isCheckboxChecked} />
             </div>
-          </div>
-          <CardElement options={CARD_OPTIONS} />
-          <button type="submit" disabled={!stripe || isProcessing}>
-            {isProcessing ? 'Processing...' : 'Pay'}
-          </button>
-          {error && <div>{error}</div>}
-          {succeeded && <div>Payment successful!</div>}
-        </form >
-      </div >
+            <div className="flex items-center">
+              <label htmlFor="shippingCity" className="w-28">City:</label>
+              <input type="text" id="shippingCity" name='shippingCity' className="border flex-1 pl-2 capitalize focus:outline focus:outline-[#0570ed] focus:outline-[1px]" placeholder='Shipping City' onChange={handleChange} required />
+            </div>
+            <div className="flex items-center">
+              <label htmlFor="shippingZipCode" className="w-28">Zip Code:</label>
+              <input type="number" id="shippingZipCode" name='shippingZipCode' className="border flex-1 pl-2 capitalize focus:outline focus:outline-[#0570ed] focus:outline-[1px]" placeholder='Shipping Zip Code' onChange={handleChange} required />
+            </div>
+            <div className="flex items-center">
+              <label htmlFor="shippingPhoneNumber" className="w-28">Phone No.:</label>
+              <input type="tel" id="shippingPhoneNumber" maxLength={12} minLength={10} size={12} pattern="[0-9]{3}[0-9]{3}[0-9]{4}" name='shippingPhoneNumber' className="border flex-1 pl-2  focus:outline focus:outline-[#0570ed] focus:outline-[1px]" placeholder='Phone Number' onChange={handleChange} required />
+            </div>
+            <div className={isCheckBoxHidden ? 'flex items-center' : 'hidden'}>
+              <label htmlFor="billingCheckbox" className="w-28 min-w-28 ">Use shipping info as billing: {checkUncheck.toString()}</label>
+              <input type="checkbox" id="billingCheckbox" name='billingCheckbox' className="border flex-1 pl-2 capitalize " onChange={handleChange} checked={checkUncheck} />
+            </div>
+            {checkboxError && <div className='text-red-500'>{checkboxError}</div>}
+            <div className={isHidden ? 'hidden' : ""}>
+              <div className=' flex items-center'>
+                <label htmlFor="displayBillingInfo" className="w-28">Billing info:</label>
+                <div className="   flex-1    flex flex-col  border   rounded-[10px]" id='displayBillingInfo'>
+                  <div className="  order-1 flex-auto flex items-center cursor-pointer h-[30px] rounded-[10px]" onClick={handleClick}>
+                    <div className={isCheckBoxHidden ? ' chevron-down mx-auto chevron-down90Deg mb-1.5  ' : "chevron-down225Deg chevron-down mx-auto mt-1.5"}>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr className={isCheckBoxHidden ? 'hidden' : " border border-slate-700 w-[100%] ml-auto"} />
+            <div className={isCheckBoxHidden ? 'hidden' : "flex flex-col gap-4 fade-in"} >
+              <h1 className="text-base font-semibold text-center" >Billing Information</h1>
+              <div className="flex items-center">
+                <label htmlFor="billingFirstname" className="w-28">Firstname:</label>
+                <input type="text" id="billingFirstname" name='billingFirstname' className="border flex-1 pl-2 capitalize focus:outline focus:outline-[#0570ed] focus:outline-[1px]" placeholder='Firstname' onChange={handleChange} required={isCheckboxChecked} />
+              </div>
+              <div className="flex items-center">
+                <label htmlFor="billingLastname" className="w-28">Lastname:</label>
+                <input type="text" id="billingLastname" name='billingLastname' className="border flex-1 pl-2 capitalize focus:outline focus:outline-[#0570ed] focus:outline-[1px]" placeholder='Lastname' onChange={handleChange} required={isCheckboxChecked} />
+              </div>
+              <div className="flex items-center">
+                <label htmlFor="billingEmail" className="w-28">Email:</label>
+                <input type="text" id="billingEmail" name='billingEmail' className="border flex-1 pl-2 focus:outline focus:outline-[#0570ed] focus:outline-[1px]" placeholder='Email Address' onChange={handleChange} required={isCheckboxChecked} />
+              </div>
+              <div className="flex items-center">
+                <label htmlFor="billingAddress" className="w-28">Address:</label>
+                <input type="text" id="billingAddress" name='billingAddress' className="border flex-1 pl-2 capitalize focus:outline focus:outline-[#0570ed] focus:outline-[1px]" placeholder='Address' onChange={handleChange} required={isCheckboxChecked} />
+              </div>
+              <div className="flex items-center">
+                <label htmlFor="billingApt" className="w-28">Apt/Floor No:</label>
+                <input type="text" id="billingApt" name='billingApt' className="border flex-1 pl-2 capitalize focus:outline focus:outline-[#0570ed] focus:outline-[1px]" placeholder='Apt, Floor optional' onChange={handleChange} />
+              </div>
+              <div className="flex items-center">
+                <label htmlFor="billingCountry" className="w-28">Country:</label>
+                <select name="billingCountry" id="billingCountry" className="border rounded-lg flex-1 pl-2 bg-white h-[30px] truncate" onChange={handleChange} required={isCheckboxChecked} >
+                  <option value="">Select a country</option>
+                  {countries.map((country) => (
+                    <React.Fragment key={country.code}>
+                      < option key={country.code} value={country.code} >
+                        {country.name}
+                      </option>
+                      {country.name === 'United States' && (
+                        // key={`${country.code}-divider`}: gives the below <option> its own unique key, so it won't create conflict with real <options>. bc its used for Border-bottom purpose. 
+                        < option key={`${country.code}-divider`} disabled>────────────</option>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </select>
+              </div>
+              <div className={isHiddenBillStates ? 'hidden' : "flex items-center"}>
+                <label htmlFor="billingState" className="w-28">State:</label>
+                <select name="billingState" id="billingState" className="border rounded-lg flex-1 pl-2 bg-white h-[30px] truncate" onChange={handleChange} required={isCheckboxChecked && isUSABillSelected}  >
+                  <option value="">Select a State</option>
+                  {Object.entries(usBillStates).map(([abbr, name]) => (
+                    <option key={abbr} value={abbr}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex items-center">
+                <label htmlFor="billingCity" className="w-28">City:</label>
+                <input type="text" name='billingCity' id='billingCity' className="border flex-1 pl-2 capitalize focus:outline focus:outline-[#0570ed] focus:outline-[1px]" placeholder='billing City' onChange={handleChange} required={isCheckboxChecked} />
+              </div>
+            </div>
+            <hr className=" border border-slate-700 w-[100%] ml-auto" />
+            <h1 className="text-base font-semibold text-center" >Card Information</h1>
+            <div className="flex items-start ">
+              <div className="w-full "  >
+                <p className='ml-20'>Test Card number: 4242 4242 4242 4242</p>
+                <PaymentElement />
+              </div>
+              {error && <div>{error}</div>}
+            </div>
+            <div className="flex items-start ">
+              <button type="submit" className='btn w-36 mx-auto bg-slate-800 color text-white' disabled={!stripe || isProcessing}>
+                {isProcessing ? 'Processing...' : 'Pay'}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </>
   );
 };

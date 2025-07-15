@@ -5,7 +5,8 @@ export interface OrderHistoryInterface extends Document {
   _id: string,
   product: Products[],
   totalAmount: Number,
-  viewed: boolean,
+  paid: boolean,
+  // viewed: boolean,
   shippingInfo: {
     shippingFirstname: string,
     shippingLastname: string,
@@ -34,8 +35,8 @@ export interface OrderHistoryInterface extends Document {
 const orderHistorySchema = new mongoose.Schema<OrderHistoryInterface>({
   product: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
   totalAmount: Number,
-  // viewed: { type: Boolean, default: false },
-  viewed: Boolean,
+  paid: { type: Boolean, default: false },
+  // viewed: Boolean,
   shippingInfo: {
     shippingFirstname: String,
     shippingLastname: String,

@@ -1,120 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
-// import React, { useEffect, useRef } from "react";
 import ReactDOM from 'react-dom';
-
 import { mutate } from "swr";
 import product, { Products } from "../../models/products";
-// import { Products } from "../../models/products";
 import Size, { ISizes } from "../../models/sizes";
 import { arrayBuffer } from "stream/consumers";
-// import Product from "../../models/products";
-// // ******************************************************ORIGINAL ******************************************************             
-// interface FormData {
-//   productName: string;
-//   price: string;
-//   productImg: string;
-//   author: string,
-//   inStock: boolean;
-//   created: Date;
+import { BsPen, BsTrash } from "react-icons/bs";
+import usaStates, { staticMenCategories, staticWomenCategories, staticMenShoeSizes, staticWomenShoeSizes, staticMenNumericSizes, staticWomenNumericSizes, staticAlphaSizes } from "../../staticData/usStates";
 
-// }
-// type Props = {
-//   formId: string;
-//   productForm: FormData;
-//   forNewProduct?: boolean;
-// };
-// const Form = ({ formId, productForm, forNewProduct = true }: Props) => {
-//   const router = useRouter();
-//   const contentType = "application/json";
-//   const [errors, setErrors] = useState({});
-//   const [message, setMessage] = useState("");
-//   console.log('===========router', router)
-//   // console.log('===========id', id)
-//   // console.log('===========router.query', router.query)
-//   const [newProductForm, setForm] = useState({
-//     productName: productForm.productName,
-//     price: productForm.price,
-//     productImg: productForm.productImg,
-//     author: productForm.author,
-//     inStock: productForm.inStock,
-//     created: productForm.created,
-//   });
-
-// /* The POST method adds a new entry in the mongodb database. */
-// const postProduct = async (newProductForm: FormData) => {
-//   try {
-//     // **********************ORIGINAL *******************
-//     const res = await fetch("/api/pets", {
-//       method: "POST",
-//       headers: {
-//         Accept: contentType,
-//         "Content-Type": contentType,
-//       },
-//       body: JSON.stringify(newProductForm),
-
-//     });
-//     // console.log('==== newProductForm', newProductForm)
-//     console.log('==== res from postProduct', res)
-//     // Throw error with status code in case Fetch API req failed
-//     if (!res.ok) {
-//       throw new Error(res.status.toString());
-//     }
-
-//     router.push("/");
-//   } catch (error) {
-//     setMessage("Failed to add pet");
-//   }
-// };
-// const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,) => {
-//   const target = e.target;
-//   const value = target.name === "inStock"
-//     ? (target as HTMLInputElement).checked
-//     : target.value;
-//   const name = target.name;
-
-//   setForm({ ...newProductForm, [name]: value, });
-// };
-// const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-//   e.preventDefault();
-//   // const errs = formValidate();
-
-//   // if (Object.keys(errs).length === 0) {
-//   //   forNewPet ? postData(form) : putData(form);
-//   // } else {
-//   //   setErrors({ errs });
-//   // }
-//   console.log('======submit fired top ')
-//   if (forNewProduct === true) {
-//     console.log('======submit fired IF')
-//     postProduct(newProductForm)
-//   }
-// };
-// // ******************************************************ORIGINAL ****************************************************** 
-// interface Products {
-//   productName: string;
-//   price: string;
-//   productImg: string;
-//   author: string,
-//   inStock: boolean;
-//   created: Date;
-
-// }
-// interface Products {
-//   // id: string;
-//   productName: string;
-//   price: number;
-//   productImg: string;
-//   category: string;
-//   brand: string;
-//   gender: string[];
-//   color: string;
-//   size: string;
-//   author: string,
-//   inStock: boolean;
-//   created: Date;
-//   // quantity: number;
-// }
 type ColorItem = {
   color: string;
   index: number;
@@ -123,24 +16,9 @@ type QuantityItem = {
   quantity: number;
   index: number;
 };
-type Props = {
-  formId: string;
-  // product: Products;
-  forNewProduct?: boolean;
-};
-
-// type ColorEntry = {
-//   color: string;
-//   quantity?: number;
-//   // quantity?: string;
-// };
-
 interface ColorArray {
-  // colorsData: any[]; // or specify the exact type you expect
-  // colorsData: ColorEntry[]; // or specify the exact type you expect
   colorElements: JSX.Element[]; // Specifically an array of JSX elements (the input buttons)
 }
-
 interface ProductForm {
   productName: string;
   price: number;
@@ -148,32 +26,26 @@ interface ProductForm {
   category: string;
   brand: string;
   gender: string;
-  // kids: string;
   colors: { color: string; quantity: number }[];
-  // sizes: string;
-  // sizes: {}[];
   sizes: { [size: string]: boolean };
   author: string;
   inStock: boolean;
 }
-// Extending variables to all files.
-export const globalMenCategories = ['Jackets', 'Jeans', 'Pants', 'Shoes', 'Sweaters', 'Tees'];
-export const globalWomenCategories = ['Dresses', 'Jackets', 'Jeans', 'Pants', 'Shoes', 'Skirts', 'Sweaters', 'Tops',];
 
-// Declaring variable here so it won't reset to zero everytime we make changes in the page.
-let storeColors: string[] = [];
-
-// next up: we need to set color as array so there will be multi color array of < options > and admin selecting one or many
-// Handle Post product.
-// const Form = ({ formId, product, forNewProduct = true, }: Props) => {
-const Form = ({ formId, forNewProduct = true, }: Props) => {
+// Handle Post new product.
+const Form = () => {
   const router = useRouter();
   const contentType = "application/json";
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
-  // const [newProduct, setForm] = useState<any>([]);
-  // const [newProduct, setForm] = useState<Products[]>([]);
-
+  const [menCategories, setMenCategories] = useState<string[]>(staticMenCategories);
+  const [womenCategories, setWomenCategories] = useState<string[]>(staticWomenCategories);
+  const [menShoeSizes, setMenShoeSizes] = useState<string[]>(staticMenShoeSizes);
+  const [womenShoeSizes, setWomenShoeSizes] = useState<string[]>(staticWomenShoeSizes);
+  const [menNumericSizes, setMenNumericSizes] = useState<string[]>(staticMenNumericSizes);
+  const [womenNumericSizes, setWomenNumericSizes] = useState<string[]>(staticWomenNumericSizes);
+  const [alphaSizes, setAlphaSizes] = useState<string[]>(staticAlphaSizes);
+  // New product structure/interface
   const [newProduct, setForm] = useState<ProductForm>({
     productName: '',
     price: 0,
@@ -181,25 +53,14 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
     category: '',
     brand: '',
     gender: '',
-    // kids: '',
     colors: [],
-    // sizes: '',
     sizes: {},
     author: '',
     inStock: false,
   });
-  const menSizes = useRef<HTMLDivElement>(null);
-  const womenSizes = useRef<HTMLDivElement>(null);
+  // Selectors   
   const categories = useRef<HTMLSelectElement>(null);
-  const menCategories = ['Jackets', 'Jeans', 'Pants', 'Shoes', 'Sweaters', 'Tees'];
-  const WomenCategories = ['Dresses', 'Jackets', 'Jeans', 'Pants', 'Shoes', 'Skirts', 'Sweaters', 'Tops',];
-  const menShoeSizes = ['8', '9', '9_5', '10', '10_5', '11', '12'];
-  const womenShoeSizes = ['6', '7', '8', '9', '10'];
-  const menNumericSizes = ['28', '30', '32', '34', '36', '38']
-  const womenNumericSizes = ['24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34',];
-  const productColors = ['White', 'Black', 'Yellow', 'yellowgreen', 'Red', 'orangered', 'Orange', 'Violet', 'blueviolet', 'Blue', 'Blue Green', 'Green',]
-  // We asign all Alpha size in one array and then use it based on (Switch Cases)
-  const alphaSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+  const colorInput = useRef<HTMLInputElement | null>(null);
   // Women and Men category states
   const [menCategoryItems, setMenItems] = useState<any>([]);
   const [womenCategoryItems, setWomenItems] = useState<any>([]);
@@ -224,45 +85,63 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
     womenSweaters: [],
     womenTops: [],
   });
-  // next up: set up quantity for the product AND find a way to limit the number of item can be add at the < input > and it should not go over 999, for it accepts 999 but visually we can place as many number as we can
-  // const [quantity, setQuantity] = useState<number>(Number);
-  // const [newQuantity, setNewQuantity] = useState([{ quantity: Number, index: Number }]);
   const [newQuantity, setNewQuantity] = useState<QuantityItem[]>([]);
-  // const [newColor, setNewColor] = useState([{ color: String, index: Number }]);
   const [newColor, setNewColor] = useState<ColorItem[]>([]); // Start with an empty array
-  // const [imgFile, setImgFile] = useState<FileList | null>(null);
   const [imgFile, setImgFile] = useState<File[]>([]);
-
   const [colorArray, setColorArray] = useState<ColorArray>({
-    // colorsData: [],
     colorElements: [],
   });
+  // Reset all hooks. This function is callled when form is submitted and was successfull.
+  const resetFormState = () => {
+    setErrors({});
+    setMessage("");
+    // Reset category selections
+    setMenItems([]);
+    setWomenItems([]);
+    // Reset size items for men and women
+    setSizeItemsForAll({
+      menJackets: [],
+      menJeans: [],
+      menPants: [],
+      menShoes: [],
+      menSweaters: [],
+      menTees: [],
+      womenDresses: [],
+      womenJackets: [],
+      womenJeans: [],
+      womenPants: [],
+      womenShoes: [],
+      womenSkirts: [],
+      womenSweaters: [],
+      womenTops: [],
+    });
+    // Reset quantity and color
+    setNewQuantity([]);
+    setNewColor([]);
+    setImgFile([]); // Reset image files    
+    setColorArray({ colorElements: [] }); // Reset color array    
+    setIsHidden(true); // Reset visibility
+
+  };
   // Handle setting the sizes
   const sizeElements = (arg: string[]) => {
     return arg.map((elem, i) => {
       return (
-        < div key={i} className="inline-block w-20 ">
-          <label htmlFor={elem} className="inline-block">{elem}</label>
-          <input type="checkbox" name={elem} className="inline-block w-10 ahahha" onChange={handleChange} />
+        < div key={i} className="flex  items-center ">
+          <label htmlFor={elem} className="m-0 w-12 text-left" >{elem} :</label>
+          <input type="checkbox" name={elem} className="w-7 h-7 rounded-lg" onChange={handleChange} />
         </div>
       )
     })
   };
-
-  const colorInput = useRef<HTMLInputElement | null>(null);
-  // add colors
-  const addMoreColor = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // we raw current Date as a key of eleemnts
-    const newKey = Date.now();
+  // Add colors elements 
+  const addMoreColor = (e: React.MouseEvent<HTMLButtonElement | HTMLInputElement>) => {
+    const newKey = Date.now(); // we raw current Date as a key of eleemnts
     const newColorInput = (
-      <div className="inline" key={newKey} >
-        {/* <input type="color" name="colors" key={newKey} className="w-1/2 inline" ref={colorInput} onChange={handleChange} /> */}
-        <input type="color" name="color" key={newKey} className="w-1/2 inline border" ref={colorInput} onChange={(e) => handleColorNQuantity(e, newKey)} required />
-        <button type="button" className="inline-block btn mt-0" onClick={() => deleteColor(newKey)}>Delete</button>
-        <label htmlFor="quantity" >quantity</label>
-        {/* <input type="number" name="quantity" id="" onChange={handleChange} /> */}
-        <input type="number" name="quantity" id="" className="border" onChange={(e) => handleColorNQuantity(e, newKey)} required />
-
+      <div key={newKey} className="flex gap-2 col-span-3 mb-2 ">
+        <input type="color" name="color" key={newKey} className="border   rounded-lg cursor-pointer" ref={colorInput} onChange={(e) => handleColorNQuantity(e, newKey)} required />
+        <input type="number" name="quantity" id="quantity" className="border rounded-lg  pl-0.5" placeholder="Quantity" onChange={(e) => handleColorNQuantity(e, newKey)} required />
+        <button type="button" className=" border rounded-lg bg-red-500  text-white px-2  " onClick={() => deleteColor(newKey)}><BsTrash /></button>
       </div>
     )
     // Setting the state
@@ -274,18 +153,11 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
   // Remove color elements 
   const deleteColor = (key: Number) => {
     setColorArray((prevState) => {
-      // // Loop over color elements in the page
-      // prevState.colorElements.forEach((elem, i) => {
-      //   if (elem.key === key.toString()) {
-      //     // remove a value from colorsData[] based on matching index of a removed color HTML elements           
-      //     prevState.colorsData.splice(i, 1)
-      //   }
-      // });
       // Returning updated state with filtered elements
       return {
         ...prevState,
         colorElements: prevState.colorElements.filter((element, index) => {
-          // return elements that does not match the `key`
+          // return elements that does not match the `key`. Meaning: delete the clicked color and return the rest. 
           return element.key !== key.toString();
         })
       };
@@ -311,8 +183,7 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
         ...prevState,
         { color: value, index: index }
       ]);
-      // we would disable the <input> so we get one color per <input>
-      e.target.disabled = true;
+      e.target.disabled = true; // we would disable the <input> so we get one color per <input>
     } else if (name === 'quantity') {
       // <input type='number'> values are always string so we need to convert to an integer.  
       const numericValue = Number(value);
@@ -326,412 +197,153 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
       }
     }
   }
-  // Submit product
-  // const postProduct = async (newProduct: Products[]) => {
-  //   try {
-  //     // const res = await fetch("/api/pets", {
-  //     const res = await fetch("/api/products", {
-  //       method: "POST",
-  //       headers: {
-  //         Accept: contentType,
-  //         "Content-Type": contentType,
-  //       },
-  //       body: JSON.stringify(newProduct),
-  //     });
-  //     // Throw error with status code in case Fetch API req failed
-  //     if (!res.ok) {
-  //       throw new Error(res.status.toString());
-  //     }
-  //     router.push("/");
-  //   } catch (error) {
-  //     setMessage("Failed to add pet");
-  //   };
-  // }  
+
   // onChange event we are processing the data and setting it.
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,) => {
     let getValues = e.target.value;
-    // console.log('============getValues', getValues)
-    // next up add all sizes for men and women to HTML
     switch (e.target.name) {
-      // case 'productImg':
-      //   // console.log('============getValues', getValues)
-      //   const input = e.target as HTMLInputElement;
-      //   const files = input.files;
-      //   setImgFile(files);
-      //   console.log('============files', files)
-
-      //   break;
       case 'gender':
         switch (getValues) {
           case 'Men':
-            // Reset all sizes back to null
-            setSizeItemsForAll([null]);
-            // Reset women categories to null
-            setWomenItems([null])
+            setSizeItemsForAll([null]); // Reset all sizes back to null            
+            setWomenItems([null]); // Reset women categories to null
             setMenItems([...menCategoryItems, menCategories.map((elem, index) => <option key={index} value={`m${elem}`}>{elem}</option>)]);
-            // setMenItems([menCategories.map((elem, index) => <option key={index} value={`m${elem}`}>{elem}</option>)]);
-            // When user select genders it should be hidden 
-            setIsHidden(true);
+            setIsHidden(true); // When user select genders size elements should be hidden 
             break;
           case 'Women':
-            // Reset all sizes back to null
-            setSizeItemsForAll([null])
-            // Reset men categories to null
-            setMenItems([null]);
-            setWomenItems([...womenCategoryItems, WomenCategories.map((elem, index) => <option key={index} value={`w${elem}`}>{elem}</option>)]);
-            // When user select genders it should be hidden 
-            setIsHidden(true);
+            setSizeItemsForAll([null]); // Reset all sizes back to null           
+            setMenItems([null]);  // Reset men categories to null
+            setWomenItems([...womenCategoryItems, womenCategories.map((elem, index) => <option key={index} value={`w${elem}`}>{elem}</option>)]);
+            setIsHidden(true); // When user select genders size elements should be hidden 
             break;
         }
         break;
       case 'category':
-        // when Category is selected then display sizes elements.
-        setIsHidden(false);
+        setIsHidden(false); // when Category is selected then display sizes elements.
         switch (getValues) {
           case 'mJackets':
-            setSizeItemsForAll({
-              // sizeElements function is defined above. 
-              menJackets: sizeElements(alphaSizes)
-            });
+            // Set men jackets sizes input elements       
+            setSizeItemsForAll({ menJackets: sizeElements(alphaSizes) }); // sizeElements function is defined above.            
             break;
           case 'mJeans':
-            // Set men jeans sizes input elements            
-            setSizeItemsForAll({
-              // sizeElements function is defined above. 
-              menJeans: sizeElements(menNumericSizes)
-            });
+            // Set men jeans sizes input elements 
+            setSizeItemsForAll({ menJeans: sizeElements(menNumericSizes) });
             break;
           case 'mPants':
-            // Set men pants sizes input elements                        
-            setSizeItemsForAll({
-              // sizeElements function is defined above. 
-              menPants: sizeElements(menNumericSizes)
-            });
+            // Set men pants sizes input elements                   
+            setSizeItemsForAll({ menPants: sizeElements(menNumericSizes) });
             break;
           case "mShoes":
-            // Set men shoes sizes input elements                        
-            setSizeItemsForAll({
-              // sizeElements function is defined above. 
-              menShoes: sizeElements(menShoeSizes)
-            });
+            // Set men shoes sizes input elements                   
+            setSizeItemsForAll({ menShoes: sizeElements(menShoeSizes) });
             break;
           case 'mSweaters':
-            // Set men sweaters sizes input elements                                    
-            setSizeItemsForAll({
-              // sizeElements function is defined above. 
-              menSweaters: sizeElements(alphaSizes)
-            });
+            // Set men sweaters sizes input elements             
+            setSizeItemsForAll({ menSweaters: sizeElements(alphaSizes) });
             break;
           case 'mTees':
-            // Set men tees sizes input elements                                    
-            setSizeItemsForAll({
-              // sizeElements function is defined above.
-              menTees: sizeElements(alphaSizes)
-            });
+            // Set men tees sizes input elements                       
+            setSizeItemsForAll({ menTees: sizeElements(alphaSizes) });
             break;
           case 'wDresses':
-            // Set women dress sizes input elements                                    
-            setSizeItemsForAll({
-              // sizeElements function is defined above.
-              womenDresses: sizeElements(alphaSizes)
-            });
+            // Set women dress sizes input elements                 
+            setSizeItemsForAll({ womenDresses: sizeElements(alphaSizes) });
             break;
           case 'wJackets':
-            // Set women jackets sizes input elements   
-            setSizeItemsForAll({
-              // sizeElements function is defined above.
-              womenJackets: sizeElements(alphaSizes)
-            });
+            // Set women jackets sizes input elements              
+            setSizeItemsForAll({ womenJackets: sizeElements(alphaSizes) });
             break;
           case 'wJeans':
-            // Set women jeans sizes input elements               
-            setSizeItemsForAll({
-              // sizeElements function is defined above.
-              womenJeans: sizeElements(womenNumericSizes)
-            });
+            // Set women jeans sizes input elements                     
+            setSizeItemsForAll({ womenJeans: sizeElements(womenNumericSizes) });
             break;
           case 'wPants':
             // Set women pants sizes input elements               
-            setSizeItemsForAll({
-              // sizeElements function is defined above.
-              womenPants: sizeElements(womenNumericSizes)
-            });
+            setSizeItemsForAll({ womenPants: sizeElements(womenNumericSizes) });
             break;
           case 'wShoes':
-            // Set women shoes sizes input elements               
-            setSizeItemsForAll({
-              // sizeElements function is defined above.
-              womenShoes: sizeElements(womenShoeSizes)
-            });
+            // Set women shoes sizes input elements                  
+            setSizeItemsForAll({ womenShoes: sizeElements(womenShoeSizes) });
             break;
           case 'wSkirts':
-            // Set women skirt sizes input elements               
-            setSizeItemsForAll({
-              // sizeElements function is defined above.
-              womenSkirts: sizeElements(alphaSizes)
-            });
+            // Set women skirt sizes input elements                       
+            setSizeItemsForAll({ womenSkirts: sizeElements(alphaSizes) });
             break;
           case 'wSweaters':
             // Set women sweater sizes input elements               
-            setSizeItemsForAll({
-              // sizeElements function is defined above.
-              womenSweaters: sizeElements(alphaSizes)
-            });
+            setSizeItemsForAll({ womenSweaters: sizeElements(alphaSizes) });
             break;
           case 'wTops':
-            // Set women top sizes input elements               
-            setSizeItemsForAll({
-              // sizeElements function is defined above.
-              womenTops: sizeElements(alphaSizes)
-            });
+            // Set women top sizes input elements                       
+            setSizeItemsForAll({ womenTops: sizeElements(alphaSizes) });
             break;
-          // next up: send an error message if user did not select any which will be the default case
           default:
-            // alert('default switch')
             break;
         }
         break;
-      case 'colorOnHold':
-        const selectedColor = e.target.value;
-
-        // console.log('=========e.target', e.target)
-        // // =======================on hold 3 ==================================
-
-        // Use the *latest* value of quantity directly from state or event
-        // const newColorEntry = {
-        //   color: selectedColor,
-        //   quantity: quantity, // 🔥 This is stale unless you set it *before* adding color
-        // };
-        // Push directly
-        // const updatedColors = [...colorArray.colorsData, newColorEntry];
-
-
-
-
-        // // =======================on hold 4 ==================================
-        // setColorArray((prevState) => ({
-        //   ...prevState,
-        //   colorsData: updatedColors,
-        // }));
-        // // =======================on hold 4 ==================================
-
-        // // =======================on hold 3 ==================================
-
-        // We are disabling the input element after getting it's value, so ONLY one value should come per input element.
-        e.target.disabled = true;
-        // // =======================on hold 2==================================
-        // set the color state
-        // setColorArray((prevState) => {
-        //   // const updatedColors = [...prevState.colorsData, selectedColor];
-        //   return {
-        //     ...prevState,
-        //     // // =======================on hold 1==================================
-
-        //     //     // colorsData: updatedColors,
-        //     //     colorsData: [...prevState.colorsData, selectedColor],
-        //     // // =======================on hold 1==================================
-        //     colorsData: [
-        //       ...prevState.colorsData,
-        //       { color: selectedColor, }
-        //     ],
-        //   }
-        // });
-        // // =======================on hold 2 ==================================
-        // let updatedColorData: ColorEntry | null = null; // Variable to hold the updated color entry
-        // i guess we conitue tomorrow
-        // console.log('=========quantity inside color', quantity)
-        // isUpdated = true;
-        // so far its working tomorrow i should tested in many ways
-        // =======================on hold ==================================
-        // set the color state
-        // setColorArray((prevState) => ({
-        //   ...prevState,  // Retaining existing state properties
-        //   // colorsData: storeColors,  // Setting the new colorsData
-        //   colorsData: [e.target.value],  // Setting the new colorsData
-        // }));
-        // =======================on hold ==================================       
+      default:
         break;
-      // work on quantity tomorrow: for now the fisrt value is always 0 and second value is the first value
-      case 'quantityONHOld':
-        // console.log('=========quantity case ', e.target.value)
-        // let quantityValue = e.target.value;
-
-        // //Convert value to a number and check if it's within the allowed range
-        // //value = Number(value);
-        // const numericValue = Number(quantityValue);
-        // console.log('=========quantity value case ', quantityValue)
-        // console.log('=========numericValue case ', numericValue)
-
-        // //Check if the value is a valid number and within the max range
-        // if (!isNaN(numericValue) && numericValue <= 999) {
-        //   setQuantity(numericValue);
-
-        // }
-        // console.log('=========quantity inside quantity case', quantity)
-
-
-        break;
-      // default:
-      //   // alert('default switch')
-      //   break;
-
-
     };
 
-
-    // If the color or quantity was updated, apply the change to the state
-    // if (isUpdated && updatedColorData) {
-    //   // setColorArray((prevState) => ({
-    //   //   ...prevState,
-    //   //   colorsData: prevState.colorsData.map((colorEntry, idx) =>
-    //   //     idx === index ? updatedColorData : colorEntry
-    //   //   ),
-    //   //   colorsData
-    //   // }));
-
-    //   setColorArray((prevState) => ({
-    //     ...prevState,
-    //     colorsData: [
-    //       ...prevState.colorsData,
-    //       updatedColorData
-    //     ],
-    //   }));
-    // }
     // merge all sizes arrays
     const concatSizesArray = menShoeSizes.concat(womenShoeSizes, menNumericSizes, womenNumericSizes, alphaSizes);
     // find a size value in concatSizesArray[] that is matching the name of <input>
     const found = concatSizesArray.find((element) => element === e.target.name);
-    console.log('==========found for size', found?.toString());
     // if Found = true; then treat the elem as a checkbox otherwise as a normal value.
-    // const value = found ? (e.target as HTMLInputElement).checked : e.target.value;    
     let value = found ? (e.target as HTMLInputElement).checked : e.target.value;
-    // console.log('==========value for size', value);
-
-
     // Capitalize the first letter of below input fields
     const capitalizeFields = ['productName', 'brand', 'author'];
     if (capitalizeFields.includes(e.target.name) && typeof value === 'string') {
       value = value.charAt(0).toUpperCase() + value.slice(1);
     };
-
-    // set the Product state
+    // set the Product data
     setForm((prevState) => {
-      console.log('==========value for size inside', value);
       if (typeof value === 'string') {
-        console.log('The value is a string', value);
         return {
           ...prevState,
-          [e.target.name]: value // Directly assign boolean to inStock
+          [e.target.name]: value // Directly assign string values
         };
-      } else if (typeof value === 'boolean') {
-        console.log('The value is a boolean', value);
-        if (e.target.name !== "inStock") {
-          return {
-            ...prevState,
-            sizes: {
-              ...prevState.sizes,
-              [e.target.name]: value, // Add/update size dynamically
-            },
-          }
-        } else {
-          return {
-            ...prevState,
-            [e.target.name]: value // Directly assign boolean to inStock
-          };
+      } else if (typeof value === 'boolean') {  // if it's boolean              
+        return {
+          ...prevState,
+          sizes: {
+            ...prevState.sizes,
+            [e.target.name]: value, // Add/update size dynamically
+          },
         }
-
       }
       return prevState;
-      // ======================Onhold original =========
-
-      // return {
-      //   ...prevState,
-      //   // if targeted element name is color then add the colorArray.colorsData else the Value.
-      //   // [e.target.name]: e.target.name === "colors" ? colorArray.colorsData : value       
-      //   [e.target.name]: value
-      // };
-      // ======================Onhold original =========                
-
     });
   };
-
-  console.log('============newProduct', newProduct)
-
+  // Handle uploading images 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      // const input = e.target as HTMLInputElement;
-      // const files = input.files;
-      const fileArray = Array.from(e.target.files); // Convert FileList to File[]
+      const fileArray = Array.from(e.target.files); // Convert FileList to File[]. Meaning we can now loop through it fileArray      
       setImgFile(fileArray);
-      // setImgFile(e.target.files[0]);
     }
   };
-
 
   // onSubmit we are send data to backend.  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    // if (imgFile) {
-
-    //   Array.from(imgFile).forEach((file, index) => {
-    //     formDataToSend.append('productImg', file); // You can use 'files[]' or 'file' based on your backend
-    //   });
-    // }
-
-
-    //========================on hold =============================
-    // setColorArray({
-    //   colorsData: newColor.map((colorItem) => {
-    //     const matchingQuantity = newQuantity.find(q => q.index === colorItem.index);
-    //     return {
-    //       color: colorItem.color,
-    //       quantity: matchingQuantity ? matchingQuantity.quantity : 1,
-    //     };
-    //   }),
-    //   colorElements: [] // populate as needed
-    // });
-    //========================on hold =============================
-
-    // Build colorsData directly
+    // Handle colorsData
     const updatedColorsData = newColor.map((colorItem) => {
+      // find color and it's quantity by corresponding index. 
       const matchingQuantity = newQuantity.find(q => q.index === colorItem.index);
-      return {
+      return { // return the data
         color: colorItem.color,
         quantity: matchingQuantity ? matchingQuantity.quantity : 1,
       };
     });
-    // //========================on hold =============================
-
-    // // so far its working with below method
-    // const formData = {
-    //   ...newProduct,
-    //   colors: colorArray.colorsData, // Use latest colors here
-    // };
-    // //========================on hold =============================
-    // setColorArray({
-    //   colorsData: updatedColorsData,
-    //   colorElements: [],
-    // });
-    // //========================on hold important=============================
-
-    const formData = {
-      ...newProduct,
-      colors: updatedColorsData, // Use latest colors here
-      // colors: colorArray.colorsData, // Use latest colors here
-    };
-
-    // //========================on hold =============================
+    // create FormData object.
     const formDataToSend = new FormData();
+    // Adding a key/value pairs to FormData(); using append():
     formDataToSend.append('productName', newProduct.productName);
     formDataToSend.append('price', newProduct.price.toString());
-    // //========================on hold =============================
-
+    // append() image files to FormData()
     imgFile.forEach((file, index) => {
       formDataToSend.append('productImg', file); // Or 'productImgs[]' if your backend expects an array
     });
-    // //========================on hold =============================
-    // formDataToSend.append('productImg', newProduct.productImg);
     formDataToSend.append('category', newProduct.category)
     formDataToSend.append('brand', newProduct.brand)
     formDataToSend.append('gender', newProduct.gender)
@@ -739,30 +351,7 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
     formDataToSend.append('sizes', JSON.stringify(newProduct.sizes))
     formDataToSend.append('author', newProduct.author)
     formDataToSend.append('inStock', newProduct.inStock.toString())
-
-    // // =========================ONHOLD original=========================== 8********************
-    // const res = await fetch("/api/products", {
-    //   method: "POST",
-    //   headers: {
-    //     Accept: contentType,
-    //     "Content-Type": contentType,
-    //   },
-    //   // body: JSON.stringify(newProduct),
-    //   body: JSON.stringify(formData),
-    // });
-    // const data = await res.json(); // Parse the JSON response    
-    // // Throw error with status code in case Fetch API req failed
-    // if (!res.ok) {
-    //   throw new Error(res.status.toString());
-    // }
-    // if (data.success) {
-    //   // redirect to newly created product
-    //   router.push({
-    //     pathname: '/' + data.productID,
-    //   });
-    // }
-    // // =========================ONHOLD original===========================*******************
-
+    // Submit the Form       
     try {
       const res = await fetch('/api/products', {
         method: 'POST',
@@ -773,89 +362,100 @@ const Form = ({ formId, forNewProduct = true, }: Props) => {
         throw new Error(res.status.toString());
       }
       const data = await res.json();
-      console.log('Response:', data);
       if (data.success) {
+        resetFormState(); // reset all hooks/useState here
         // redirect to newly created product
-        router.push({
-          pathname: '/' + data.productID,
-        });
+        router.push({ pathname: '/' + data.productID, });
       }
     } catch (err) {
       console.error('Error submitting form:', err);
     }
-
   };
 
   return (
     <>
-      <div className="grid">
-        <form id={formId} onSubmit={handleSubmit} className="w-96" >
-          <label htmlFor="productName">Name</label>
-          {/* <label for="productName">Name</label> */}
-          <input type="text" maxLength={20} name="productName" id="productName" className="capitalize border" onChange={handleChange} />
-          <label htmlFor="price">Price</label>
-          <input type="number" name="price" id="price" className="border" onChange={handleChange} />
-          <label htmlFor="productImg">Product Image</label>
-          {/* <input type="text" name="productImg" id="productImg" className="border" onChange={handleChange} required /> */}
-          <input type="file" name="productImg" id="productImg" onChange={handleFileChange} accept="image/*" multiple />
-          <label htmlFor="gender">Gender</label>
-          <select name="gender" id="gender" className="border rounded-lg" onChange={handleChange} required  >
-            <option value="" >choose one</option>
-            <option value="Men" >Men</option>
-            <option value="Women">Women</option>
-          </select>
-
-          <label htmlFor="category">Category</label>
-          <select name="category" id="category" ref={categories} className="border rounded-lg" onChange={handleChange} required >
-            <option value="" >Choose Category</option>
-            {menCategoryItems}
-            {womenCategoryItems}
-          </select>
-          <div className={isHidden ? 'hidden' : " "} id="sizes">
-            <p>Choose Sizes</p>
-            {sizeItemsForAll.womenDresses}
-            {sizeItemsForAll.womenJackets}
-            {sizeItemsForAll.womenJeans}
-            {sizeItemsForAll.womenPants}
-            {sizeItemsForAll.womenShoes}
-            {sizeItemsForAll.womenSkirts}
-            {sizeItemsForAll.womenSweaters}
-            {sizeItemsForAll.womenTops}
-            {sizeItemsForAll.menJackets}
-            {sizeItemsForAll.menJeans}
-            {sizeItemsForAll.menPants}
-            {sizeItemsForAll.menShoes}
-            {sizeItemsForAll.menSweaters}
-            {sizeItemsForAll.menTees}
-          </div>
-          <label htmlFor="brand">Brand</label>
-          <input type="text" name="brand" id="brand" className="capitalize border" onChange={handleChange} />
-          <label htmlFor="kids">Kids</label>
-          <select name="kids" id="kids" className="border rounded-lg" onChange={handleChange}   >
-            <option value="" >choose one</option>
-            <option value="Boys" >Boys</option>
-            <option value="Girls">Girls</option>
-          </select>
-          <div className="color-picker">
-            {/* <div className="inline" >
-              <input type="color" name="color"  ref={colorInput} className="w-1/2 block" onChange={handleChange}  />
-              <button type="button" className="inline-block btn mt-0" onClick={() => deleteColor(Date.now())}>Delete</button>
-
-            </div> */}
-            {colorArray.colorElements}
-            <button type="button" className="btn" onClick={addMoreColor}>Add Color</button>
-          </div>
-
-          <label htmlFor="author">Author</label>
-          <input type="text" name="author" id="author" className="capitalize border" onChange={handleChange} />
-          <label htmlFor="inStock">In Stock</label>
-          <select name="inStock" id="inStock" className="border rounded-lg" onChange={handleChange}   >
-            <option value="" >choose one</option>
-            <option value="true" >True </option>
-            <option value="false">false</option>
-          </select>
-          <button type="submit" className="btn"> Submit</button>
-        </form>
+      <div className=" relative top-[40px] md:top-0 md:top-0  border-t md:border-none pt-4 ">
+        <div className="w-[90%] md:w-[60%] mx-auto ">
+          <h1 className="text-xl font-semibold text-center">Add New Product</h1>
+          {message && <div className='text-red-500'>{message}</div>}
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-3" >
+            <div className="flex items-center ">
+              <label htmlFor="productName" className="w-20">Name:</label>
+              <input type="text" maxLength={20} name="productName" id="productName" className="capitalize border flex-1 pl-2 rounded-lg " placeholder="Product Name" onChange={handleChange} />
+            </div>
+            <div className="flex items-center">
+              <label htmlFor="price" className="w-20">Price:</label>
+              <input type="number" name="price" id="price" className="border flex-1 pl-2 rounded-lg" placeholder="Price" onChange={handleChange} />
+            </div>
+            <div className="flex items-center">
+              <label htmlFor="brand" className="w-20">Brand:</label>
+              <input type="text" name="brand" id="brand" className="capitalize border flex-1 pl-2 rounded-lg" placeholder="Brand Name" onChange={handleChange} />
+            </div>
+            <div className="flex items-center h-[30px]">
+              <label htmlFor="productImg" className="w-20 ">Images:</label>
+              <div className="border flex-1  rounded-[10px] text-sm">
+                <input type="file" name="productImg" id="productImg"
+                  className="file:h-[30px] file:mr-4 file:py-0 file:px-2 file:rounded-lg file:border-0 file:text-sm 
+                             file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100 " onChange={handleFileChange} accept="image/*" multiple />
+              </div>
+            </div>
+            <div className="flex items-center">
+              <label htmlFor="gender" className="w-20">Gender:</label>
+              <select name="gender" id="gender" className="border rounded-lg flex-1 pl-2 bg-white h-[30px]" onChange={handleChange} required  >
+                <option value="" >choose one</option>
+                <option value="Men" >Men</option>
+                <option value="Women">Women</option>
+              </select>
+            </div>
+            <div className="flex items-center">
+              <label htmlFor="category" className="w-20">Category:</label>
+              <select name="category" id="category" ref={categories} className="border rounded-lg flex-1 pl-2 bg-white h-[30px]" onChange={handleChange} required >
+                <option value="" >Choose Category:</option>
+                {menCategoryItems}
+                {womenCategoryItems}
+              </select>
+            </div>
+            <div className={isHidden ? 'hidden' : "flex items-start "} id="sizes">
+              <label htmlFor="sizes" className="w-20">Sizes:</label>
+              < div className="grid grid-cols-3 gap-2 border rounded-lg p-1 flex-1">
+                {sizeItemsForAll.womenDresses}
+                {sizeItemsForAll.womenJackets}
+                {sizeItemsForAll.womenJeans}
+                {sizeItemsForAll.womenPants}
+                {sizeItemsForAll.womenShoes}
+                {sizeItemsForAll.womenSkirts}
+                {sizeItemsForAll.womenSweaters}
+                {sizeItemsForAll.womenTops}
+                {sizeItemsForAll.menJackets}
+                {sizeItemsForAll.menJeans}
+                {sizeItemsForAll.menPants}
+                {sizeItemsForAll.menShoes}
+                {sizeItemsForAll.menSweaters}
+                {sizeItemsForAll.menTees}
+              </div>
+            </div>
+            <div className="flex items-start ">
+              <label htmlFor="pickColor" className="w-20">Color:</label>
+              <div className="grid grid-cols-1 flex-1 border rounded-lg p-1">
+                {colorArray.colorElements}
+                <input type="button" className="capitalize border pl-2 text[#0b81fa] text-violet-700 bg-violet-50 hover:bg-violet-100 flex-1 rounded-lg" placeholder="Brand Name" onClick={addMoreColor} value="Add Color" />
+              </div>
+            </div>
+            <div className="flex items-center">
+              <label htmlFor="author" className="w-20">Author:</label>
+              <input type="text" name="author" id="author" className="capitalize border flex-1 pl-2 rounded-lg" placeholder="Author" onChange={handleChange} />
+            </div>
+            <div className="flex items-center">
+              <label htmlFor="inStock" className="w-20">In Stock:</label>
+              <select name="inStock" id="inStock" className="border rounded-lg flex-1 pl-2 bg-white h-[30px]" onChange={handleChange} required  >
+                <option value="" >choose one</option>
+                <option value="true" >True </option>
+                <option value="false">false</option>
+              </select>
+            </div>
+            <button type="submit" className="btn bg-slate-700 text-white border-none md:w-1/2 md:mx-auto">Submit Post</button>
+          </form>
+        </div>
       </div>
     </>
   )

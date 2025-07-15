@@ -21,7 +21,8 @@ const NewPet = ({ }: Props) => {
   return (
     // // **********************WORKING ONE *******************
     // < PostProduct formId="add-pet-form" product={data} />
-    < PostProduct formId="add-pet-form" />
+    // < PostProduct formId="add-pet-form" />
+    < PostProduct />
     // < PostProduct formId="add-pet-form" />
   );
 };

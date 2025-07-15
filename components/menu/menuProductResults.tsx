@@ -118,7 +118,7 @@ const MenuProductResults = ({ menuProductData, queryName }: Props) => {
                 )}
                 <Link href={'../' + product._id}>
                   <div className="h-4/5 w-full aspect-[4/3] overflow-hidden">
-                    <img className="w-full h-full object-cover" src={product.productImg[0]} alt={product.productName[1]} />
+                    <img className="w-full h-full object-cover" src={product.productImg[0].imageURL} alt={product.productImg[0].imageURL} />
                   </div>
                   <div className="mt-1 mx-2">
                     <p>{product.productName}</p>

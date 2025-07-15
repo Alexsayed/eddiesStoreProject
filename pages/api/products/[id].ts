@@ -6,6 +6,8 @@ import Product from "../../../models/products";
 import Size from "../../../models/sizes";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
+import { v2 as cloudinary } from 'cloudinary';
+
 
 // import User from "../../models/Users";
 
@@ -64,51 +66,78 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       break;
 
     case "PUT" /* Edit a model by its ID */:
-      try {
-        // console.log('==========method from api/pet/[id] PUT HIT', method);
-        // console.log('==========req.body', req.body);
+      if (req.body.imagePubID) {
+        // next up: remove the image / s from the products Models when deleting image / s        
+        // next up: check if the functions structure is okay
+        try {
+          // Deleting image from Cloudinary
+          await cloudinary.uploader.destroy(req.body.imagePubID, { invalidate: true }, function (error, result) {
+            console.log('result error', result, error)
+          });
 
-        // Product.findById({ _id: id },
-        //   Product.findById(id)
-        //     .then((foundProduct) => {
-        //       console.log('==========foundProduct', foundProduct);
-        //       res.status(200).json({ success: true, data: foundProduct });
-        //     })
-        //     .catch((err) => {
-        //       console.log('=======err from index', err);
-        //     })
-        // // ================================ONHOLD====================================
-        // update a product.
-        const updateProduct = await Product.findByIdAndUpdate(
-          { _id: id },
-          {
-            productName: req.body.productName,
-            price: req.body.price,
-            productImg: req.body.productImg,
-            category: req.body.category,
-            brand: req.body.brand,
-            gender: req.body.gender,
-            kids: req.body.kids,
-            colors: req.body.colors,
-            // size: req.body.size,
-            author: req.body.author,
-            inStock: req.body.inStock,
-          },
-          { new: true }
-        );
-        // Updating product sizes model by it's ID. req.body.sizes: has all the info of the size interface which is coming from editForm.tsx
-        await Size.findByIdAndUpdate(
-          { _id: req.body.sizes._id },
-          req.body.sizes,
-          { new: true }
-        );
-        if (!updateProduct) {
-          return res.status(400).json({ success: false });
+          // removing image URL from product document.  
+          const pullImage = await Product.findOneAndUpdate(
+            { _id: id },
+            { $pull: { productImg: { imagePub_id: req.body.imagePubID } } }
+          )
+          return res.status(200).json({ success: true, data: 'da334someBSID' });
+        } catch (error) {
+          res.status(400).json({ success: false });
         }
-        res.status(200).json({ success: true, data: updateProduct });
-        // // ================================ONHOLD====================================
-      } catch (error) {
-        res.status(400).json({ success: false });
+      } else {
+        console.log('==========req.body', req.body);
+
+
+        try {
+          // console.log('==========method from api/pet/[id] PUT HIT', method);
+          console.log('==========id [id]/PUT', id);
+          // console.log('==========req.body', req.body);
+
+
+          // Product.findById({ _id: id },
+          //   Product.findById(id)
+          //     .then((foundProduct) => {
+          //       console.log('==========foundProduct', foundProduct);
+          //       res.status(200).json({ success: true, data: foundProduct });
+          //     })
+          //     .catch((err) => {
+          //       console.log('=======err from index', err);
+          //     })
+          // // ================================ONHOLD====================================
+          // update a product.
+          const updateProduct = await Product.findByIdAndUpdate(
+            { _id: id },
+            {
+              productName: req.body.productName,
+              price: req.body.price,
+              // productImg: req.body.productImg,
+              category: req.body.category,
+              brand: req.body.brand,
+              gender: req.body.gender,
+              kids: req.body.kids,
+              colors: req.body.colors,
+              // size: req.body.size,
+              author: req.body.author,
+              inStock: req.body.inStock,
+            },
+            { new: true }
+          );
+          // Updating product sizes model by it's ID. req.body.sizes: has all the info of the size interface which is coming from editForm.tsx
+          await Size.findByIdAndUpdate(
+            { _id: req.body.sizes._id },
+            req.body.sizes,
+            { new: true }
+          );
+          if (!updateProduct) {
+            return res.status(400).json({ success: false });
+          }
+          res.status(200).json({ success: true, data: updateProduct });
+          // // ================================ONHOLD====================================
+
+          return res.status(200).json({ success: true, data: 'da334someBSID' });
+        } catch (error) {
+          res.status(400).json({ success: false });
+        }
       }
 
       break;
