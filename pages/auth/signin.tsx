@@ -56,7 +56,7 @@ const SignInPage = ({ csrfToken }: Props) => {
       router.push(redirectURL as string);
     }
   };
-so the fucking footer is bitch.on small sceen is hidden under the sign in page and on lorge sceen its fine.i need to send mf footer at the fing bottom
+
   if (status === 'unauthenticated') {
     return (
       <>
