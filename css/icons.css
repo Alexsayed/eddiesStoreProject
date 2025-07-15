@@ -1,0 +1,90 @@
+.close-icon {
+  /* position: relative; */
+  /* top: -38px; */
+  /* left: 85px; */
+  width: 15px !important;
+  height: 15px !important;
+  cursor: pointer;
+
+}
+
+.close-icon::before,
+.close-icon::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 15px;
+  height: 2px;
+  /* background-color: #000; */
+  transform-origin: center;
+  background-color: red;
+}
+
+.close-icon::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.close-icon::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.tooltip-text {
+  visibility: hidden;
+  background-color: red;
+  color: #fff;
+  text-align: center;
+  border-radius: 4px;
+  padding: 4px 8px;
+  position: absolute;
+  top: 0px;
+  left: -30px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 12px;
+  overflow: visible;
+}
+
+/* .close-icon:hover .tooltip-text {
+  overflow: visible;
+  visibility: visible;
+  opacity: 1;
+} */
+
+.css-arrow-down {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid currentColor;
+  display: inline-block;
+}
+
+.chevron-down {
+  width: 11.32px;
+  height: 11.32px;
+  border-bottom: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  color: #0b81fa;
+}
+
+/* Arrow head down  */
+.chevron-down90Deg {
+  transform: rotate(45deg);
+}
+
+/* Arrow head up */
+.chevron-down225Deg {
+  transform: rotate(225deg);
+}
+
+/* below is to work :hover ONLY desktops NOT touchscreen devices */
+@media (hover: hover) and (pointer: fine) {
+  .close-icon:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+  }
+}

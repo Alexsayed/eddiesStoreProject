@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.cart-container {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+}
+
+.cart-container svg {
+  width: 100%;
+  height: auto;
+  display: inline-block;
+}
+
+.cart-notification-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: red;
+  color: white;
+  width: 15px;
+  height: 15px;
+  font-size: 10px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* Hamburger Menu  */
+.menuContainer {
+  position: absolute;
+  top: 66.5px;
+  left: 12px;
+
+}
+
+.menuButton {
+  width: 30px;
+  height: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.bar {
+  height: 4px;
+  background-color: #333;
+  border-radius: 2px;
+  transition: 0.3s;
+}
+
+/* Animate to X */
+.open1 {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.open2 {
+  opacity: 0;
+}
+
+.open3 {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 27px;
+  background-color: #fff;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  min-width: 250px;
+  border-radius: 5px;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* .dropdownMenu a {
+  display: block;
+  padding: 12px 16px;
+  text-decoration: none;
+  color: #333;
+  transition: background-color 0.2s;
+} */
+
+.dropdownMenu li {
+  display: block;
+  /* padding: 12px 40px 12px 16px; */
+  /* text-decoration: none; */
+  color: #333;
+  transition: background-color 0.2s;
+
+}
+
+.dropdownMenu a:hover {
+  /* background-color: #f1f1f1; */
+  /* text-underline-offset: 1px; */
+  /* text-underline-offset: 3px; */
+  /* text-decoration-color: purple; */
+
+
+}
