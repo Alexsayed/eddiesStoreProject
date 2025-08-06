@@ -13,7 +13,6 @@ import Footer from "../components/footer/footer";
 import Navbar from "../components/navbar/navbar";
 import MenuBar from "../components/menu/menu";
 import HomePage from "../components/home/landingPage";
-import User from "../models/Users";
 import PostProduct from "../components/postProduct/postProduct";
 import { CartProvider } from '../state/CartContext'
 import Product, { Products } from "../models/products";
