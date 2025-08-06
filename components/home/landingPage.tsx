@@ -64,8 +64,6 @@ const HomePage = ({ getAllProducts, }: Props) => {
     }
     router.push('/');
   };
-  // console.log('=========window.location.origin', window.location.origin)
-  // console.log('=========window.location', window.location)
   return (
     <>
       <div className="w-full  flex justify-end px-4  py-1.5 border-b ">
@@ -81,35 +79,39 @@ const HomePage = ({ getAllProducts, }: Props) => {
           </select>
         </div>
       </div>
-      <div className="  pt-2 ">
-        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto justify-items-center px-4">
+      <div className="  py-2  min-h-[calc(100vh-270px)] min-[376px]:min-h-[calc(100vh-185px)]">
+        <ul className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto justify-items-center px-4">
           {productsData.map((item: any, i: any) => (
             <li key={i} className="border h-72 w-full max-w-xs rounded-lg truncate" >
-              {/* {status === 'authenticated' && ( */}
-              <div className="relative w-0 h-0 float-right ">
-                <div className="absolute bg-slate-50 rounded-full w-6 h-6 cursor-pointer text-indigo-500 right-1/4 flex items-center justify-center" >
-                  <Link href={`${item._id}/edit`} className="">
-                    <BsPen />
-                  </Link>
+              {status === 'authenticated' && (
+                <div className="relative w-0 h-0 float-right ">
+                  <div className="absolute bg-slate-50 rounded-full w-6 h-6 cursor-pointer text-indigo-500 right-1/4 flex items-center justify-center" >
+                    <Link href={`${item._id}/edit`} className="">
+                      <BsPen />
+                    </Link>
+                  </div>
+                  <div className="absolute bg-slate-50 rounded-full w-6 h-6  mr-2 cursor-pointer text-red-500 flex items-center justify-center right-[24px]" onClick={() => handleDeleteClick(item._id)}>
+                    <BsTrash />
+                  </div>
                 </div>
-                <div className="absolute bg-slate-50 rounded-full w-6 h-6  mr-2 cursor-pointer text-red-500 flex items-center justify-center right-[24px]" onClick={() => handleDeleteClick(item._id)}>
-                  <BsTrash />
-                </div>
-              </div>
-              {/* )} */}
+              )}
               <Link href={item._id}>
                 <div className="h-4/5 w-full aspect-[4/3] overflow-hidden">
                   <img className="w-full h-full object-cover" src={item.productImg[0].imageURL} alt={item.productName[1].imageURL} />
                 </div>
                 <div className="mt-1 mx-2">
-                  <p>H&M Slim {item.productName}</p>
+                  <p>{item.productName}</p>
                 </div>
                 <div className="mx-2 block  text-start  ">
                   <div className="inline">
                     <span>${item.price}</span>
                   </div>
                   <div className="inline float-right">
-                    <span className="text-emerald-600">In stock: {item.inStock}</span>
+                    {item.inStock ? (
+                      <span className="text-emerald-600 text-sm">In Stock</span>
+                    ) : (
+                      <span className="text-red-500 text-sm">Out of Stock</span>
+                    )}
                   </div>
                 </div>
               </Link>

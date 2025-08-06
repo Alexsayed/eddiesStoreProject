@@ -41,7 +41,7 @@ const Navbar = () => {
         </div>
         <div className=" overflow-hidden  w-auto ">
           <form action="" className="" onSubmit={handleSearchSubmit}>
-            <input type="text" className="w-40 h-8 rounded-md pl-2 inline border border-gray-400" maxLength={20} name="search" id="search" ref={inputRef} placeholder="Search Products" onChange={handleSearchInputChange} value={query} required />
+            <input type="text" className="w-40 h-8 rounded-md pl-2 inline border border-gray-400 " maxLength={20} name="search" id="search" ref={inputRef} placeholder="Search Products" onChange={handleSearchInputChange} value={query} required />
             <button type="submit" className=" border border-gray-400 mt-0 inline w-12 ml-2 rounded-md h-8 text-center ">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="4 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5  inline text-slate-700">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 3a7.5 7.5 0 006.15 13.65z" />

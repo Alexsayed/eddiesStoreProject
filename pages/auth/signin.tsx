@@ -23,8 +23,6 @@ const SignInPage = ({ csrfToken }: Props) => {
   if (status === "loading") {
     return <div>Loading...</div>;
   }
-  console.log('=======================status ', status)
-
   // if user is already signed in 
   if (status === 'authenticated') {
     router.push(redirectURL as string);
@@ -60,7 +58,7 @@ const SignInPage = ({ csrfToken }: Props) => {
   if (status === 'unauthenticated') {
     return (
       <>
-        <div className=" relative top-[40px] md:top-0 md:top-0  border-t md:border-none pt-4 h-[300px] border">
+        <div className=" mt-10 md:mt-0 border-t md:border-none pt-4  min-h-[calc(100vh-230px)] min-[376px]:min-h-[calc(100vh-150px)] ">
           <div className="w-[90%] md:w-[60%] mx-auto ">
             <h1 className="text-xl font-semibold text-center">Sign In</h1>
             <form method="POST" onSubmit={handleSubmit} className="flex flex-col gap-4 mt-3">
@@ -84,7 +82,6 @@ const SignInPage = ({ csrfToken }: Props) => {
 };
 // `getServerSideProps` to fetch csrfToken and callbackUrl
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  console.log('================context sign in', context)
   // csrfToken come the server-side.
   const csrfToken = await getCsrfToken(context); // Fetch CSRF token
   // const callbackUrl = (context.query.callbackUrl as string) || '/'; // Default to '/' if no callbackUrl

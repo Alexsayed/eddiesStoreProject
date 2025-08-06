@@ -12,114 +12,69 @@ type Props = {
   order: OrderHistoryInterface
   orderID?: string;
 };
-// const SuccessPage = ({ order, orderID }: Props) => { //------- original-------------
+// handle successful payment page
 const SuccessPage = () => {
   const { setCart } = useCart(); // getting  const [cart, setCart] = useState<CartItem[]>([]); from CartContext.tsx so we can update Cart in Navbar  
   const router = useRouter();
-  const { query } = useRouter();
-  // const { orderID } = router.query;
-  const { payment_intent, redirect_status } = router.query;
   const [orderId, setOrderID] = useState<string | null>(null)
   const [clientEmail, setClientEmail] = useState<string | null>(null);
-  // // ======================== NEW HOLD for payment +++++++++++++++++++++++++++++++++++
-
-  // useEffect(() => {
-  //   // Clear localStorage after payment is successful 
-  //   if (typeof window !== 'undefined') {
-  //     localStorage.removeItem("items");
-  //     setCart([]); // Update/clear the context, triggers re-render
-  //   }
-  // }, []);
-  // // if order is null or order has been viewed before.
-  // if (!order) {
-  //   return <p>Order not found or already viewed.</p>;
-  // }
-
-  // // ======================== NEW HOLD for payment +++++++++++++++++++++++++++++++++++
-  console.log('=============router.query', router.query)
-  // console.log('=============query', query)
-  // console.log('=============order', order)
-
+  const [checkingQuery, setCheckingQuery] = useState(true);
   const [status, setStatus] = useState('');
 
   useEffect(() => {
+    if (!router.isReady) return; // Wait until query params are available
+    const { orderID, email, payment_intent, redirect_status } = router.query;
+
+    if (!redirect_status) {  // stop users from manually viewing /success route.                 
+      router.replace('/'); // go to landing page
+      return;
+    };
+
     if (redirect_status === 'succeeded') {
-      const { orderID, email } = router.query;
-      // console.log('=========clientEmail ', clientEmail);
+      // validate OrderID and Email 
+      const validOrderID = typeof orderID === 'string' && orderID.trim() !== '';
+      const validEmail = typeof email === 'string' && email.trim() !== '';
 
-      if (typeof orderID === 'string') {
-        setOrderID(orderID);
+      if (validOrderID) {
+        setOrderID(orderID as string);
+      }
+      if (validEmail) {
+        setClientEmail(email as string);
+      }
 
+      // Only proceed to clear cart when both values are true/present
+      if (validOrderID && validEmail) {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem("items");
+          setCart([]); // Update/clear the context
+        }
       }
-      if (typeof email === 'string') {
-        setClientEmail(email);
-      }
-      console.log('=========succeeded: ', redirect_status)
-      console.log('=========email: ', email)
-      const { pathname } = router;
-      console.log('=========succeeded.pathname: ', pathname);
-      // setOrderID(router.query.orderID)
-      router.replace(pathname, undefined, { shallow: true });
       setStatus('Payment successful!');
+      // Replace URL to avoid exposing query parameters on refresh
+      router.replace(router.pathname, undefined, { shallow: true });
+
     } else if (redirect_status === 'failed') {
-      console.log('=========failed: ', redirect_status)
-
       setStatus('Payment failed. Please try again.');
-    } else if (redirect_status) {
-      console.log('=========last Payment status: ', redirect_status)
-
+    } else {
       setStatus(`Payment status: ${redirect_status}`);
     }
-  }, [redirect_status]);
+
+    setCheckingQuery(false); // mark query check as done. 
+  }, [router.isReady]);
+
+  // Prevent any render until the redirect logic is resolved
+  if (checkingQuery) {
+    return null; // or return <LoadingSpinner />
+  }
 
   return (
-    <div>
-      {/* <h1>Thank you dear {order.shippingInfo.shippingFirstname} for shpping with us.</h1>
-      <p>Your order ID is: {orderID} </p>
-      <p>An Email has been sent to:  🎉{order.shippingInfo.shippingEmail} address.</p>
-      <p>Your payment was successful 🎉{JSON.stringify(order)} </p> */}
-      <div style={{ textAlign: 'center', marginTop: '50px' }}>
-
-        <h1>{status}</h1>
-        <p>Your order ID is: {orderId} </p>
-        <p>An Email has been sent to this address: {clientEmail}</p>
+    <div className="w-full  mt-10 md:mt-0 border-t md:border-none text-center ">
+      <div className="pt-4 min-h-[calc(100vh-230px)] min-[376px]:min-h-[calc(100vh-150px)]   ">
+        <h1 className='text-lg leading-9'>{status} Payment successful!</h1>
+        <p className='leading-7'>Your order ID is: {orderId} ahahshhshdhashd </p>
+        <p className='leading-7'>An email has been sent to this address: {clientEmail} farid-qaher@yahoo.com</p>
       </div>
     </div>
   );
 };
-// // ======================== NEW HOLD for payment +++++++++++++++++++++++++++++++++++
-
-// export async function getServerSideProps(context: GetServerSidePropsContext) {
-//   await dbConnect();
-//   const { orderID } = context.query;
-//   if (!orderID || typeof orderID !== 'string' || !mongoose.Types.ObjectId.isValid(orderID.toString())) {
-//     return {
-//       notFound: true,
-//     };
-//   }
-//   // Find order from DB
-//   const orderResult = await Orders.findById({ _id: orderID });
-//   // if no orderResult or orderResult.viewed = TRUE, then  we will return nothing. (this way we are not allowing user to visit same again)
-//   if (!orderResult || orderResult.viewed) {
-//     return {
-//       props: {
-//         order: null,
-//       },
-//     };
-//   }
-//   // now that user visiting this page for first time, we will mark the orderResult.viewed flag to True. to provent revisiting this page with it's data.
-//   orderResult.viewed = true;
-//   // save the DB.
-//   await orderResult.save();
-//   const stringifyOrderResult = JSON.parse(JSON.stringify(orderResult));
-//   // next up: update  Orders viewed to True so user wont be able to visit same page again.
-//   return {
-//     props: {
-//       order: stringifyOrderResult,
-//       orderID: orderID || null,
-//     },
-//   };
-// };
-// // ======================== NEW HOLD for payment +++++++++++++++++++++++++++++++++++
-
 export default SuccessPage;

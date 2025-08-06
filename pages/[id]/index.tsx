@@ -2,10 +2,8 @@ import { createContext, useState } from "react";
 import { useRouter } from "next/router";
 import ProductPage from "../../components/home/product";
 import Navbar from "../../components/navbar/navbar";
-
 import Link from "next/link";
 import dbConnect from "../../lib/dbConnect";
-// import Pet, { Pets } from "../../models/Pet";
 import Product, { Products } from "../../models/products";
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { ParsedUrlQuery } from "querystring";

@@ -67,10 +67,7 @@ export const staticMenNumericSizes = ['28', '30', '32', '34', '36', '38'];
 export const staticWomenNumericSizes = ['24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34',];
 export const staticAlphaSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
-
-
-
-
+// Export type/structure of USA States
 export type USAStates = typeof usaStates;
 
 

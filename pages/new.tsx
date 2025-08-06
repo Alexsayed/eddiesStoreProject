@@ -1,41 +1,24 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { GetServerSidePropsContext } from "next";
 import { getSession } from 'next-auth/react';
-// import Product, { Products } from "../models/products";
-
-
-// import Form from "../components/Form";
 import PostProduct from "../components/postProduct/postProduct";
-// import HomePage from "../components/home/landingPage";
 
-// import { GetServerSideProps } from "next";
-// type Props = {
-//   data: any;
-// };
 type Props = {};
 
-// const NewPet = ({ data }: Props) => {
+// Handle /new route/page 
 const NewPet = ({ }: Props) => {
-  // const data = {} as Products;
-  // const data = {} as any;
   return (
-    // // **********************WORKING ONE *******************
-    // < PostProduct formId="add-pet-form" product={data} />
-    // < PostProduct formId="add-pet-form" />
     < PostProduct />
-    // < PostProduct formId="add-pet-form" />
   );
 };
 export async function getServerSideProps(context: GetServerSidePropsContext) {
+  // Get sign in authentication 
   const session = await getSession(context);
-  console.log('=============================== session /new', session)
+  // if not signed in
   if (!session) {
-    console.log('=============================== context.resolvedUrl from new', context.resolvedUrl)
-
+    // get the URL we are intended to visit
     const callbackUrl = encodeURIComponent(context.resolvedUrl);
-    // const callbackUrl = context.resolvedUrl;
-    console.log('=============================== callbackUrl /new', callbackUrl)
-
+    // redirect to signin page and provide call back URL, in our case would be /new
     return {
       redirect: {
         destination: `/auth/signin?callbackUrl=${callbackUrl}`,
@@ -43,10 +26,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   }
-
+  // return /new if user is signed in.
   return {
     props: {}
-  };
+  }
 }
 
 export default NewPet;

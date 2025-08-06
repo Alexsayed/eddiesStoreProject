@@ -8,7 +8,7 @@ const envPassword = process.env.ADMIN_PASSWORD;
 if (!envUsername || !envPassword || envUsername.trim() === '' || envPassword.trim() === '') {
   throw new Error('Missing required environment variables: ADMIN_USERNAME or ADMIN_PASSWORD');
 }
-// next up: clean this page
+// define user
 const users = { id: '1', username: envUsername, password: envPassword, role: 'admin', };
 // Handle user authentication 
 export const authOptions: NextAuthOptions = {

@@ -40,6 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (!paymentIntent.client_secret) {
         return res.status(400).json({ success: false, message: 'No client secret returned' });
       };
+      console.log('===============paymentIntent.client_secret', paymentIntent.client_secret)
       // Return paymentIntent.client_secret to frontend.
       return res.status(200).json({
         success: true,

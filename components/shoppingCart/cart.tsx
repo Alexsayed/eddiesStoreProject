@@ -4,7 +4,6 @@ import { useCart } from '../../state/CartContext';
 import Link from "next/link";
 import { BsPen, BsTrash } from "react-icons/bs";
 
-
 interface CartItem {
   id: string;
   productName: string;
@@ -54,13 +53,13 @@ const Cart = () => {
   }
 
   // Removing an Item from shopping cart.
-  const removeAnItem = (id: String) => {
+  const removeAnItem = (id: String, color: String, size: String) => {
     let items: string | null = localStorage.getItem('items');
     if (items !== null) {
-      // CartItem[]: is to define the shape of the data.
+      //   // CartItem[]: is to define the shape of the data.
       let parsedItems: CartItem[] = JSON.parse(items);
-      // remove an item from parsedItems[] that matches IDs.
-      parsedItems = parsedItems.filter((item) => item.id !== id);
+      // This removes only the object where all three fields match. Array.filter() is return element that are NOT matching below contitions. !(conditions) is the key to it.
+      parsedItems = parsedItems.filter((item) => !(item.id === id && item.colors === color && item.size === size));
       // set the updates items to useState.
       setStoredItems(parsedItems);
       // Save the updated items back to localStorage.
@@ -71,12 +70,15 @@ const Cart = () => {
   return (
     <>
       {storedItems.length === 0 ? (
-        <p>Shopping Cart is Empty</p>
+        <div className=' mt-10 md:mt-0 border-t  md:border-none p-2 min-h-[calc(100vh-230px)] min-[376px]:min-h-[calc(100vh-150px)]'>
+          <p>No Items</p>
+        </div>
+
       ) : (
         <>
-          <div className=" relative top-[40px] md:top-0 md:top-0  border-t md:border-none overflow-hidden">
+          <div className="  mt-10 md:mt-0  border-t md:border-none overflow-hidden">
             <div className=" w-full   ">
-              <div className="md:grid md:grid-cols-3 md:gap-2  ">
+              <div className="md:grid md:grid-cols-3 md:gap-2  min-h-[calc(100vh-230px)] min-[376px]:min-h-[calc(100vh-150px)]">
                 <div className="md:col-span-2  h-auto">
                   <div className='grid grid-cols-4 gap-2 border-b p-2'>
                     <h1 className="text-xl font-semibold col-span-3 ">Shopping Bag</h1>
@@ -90,8 +92,8 @@ const Cart = () => {
                             <img className=' w-36 h-36  min-w-36 min-h-36  sm:w-[200px] sm:h-[200px]  sm:min-w-[200px] sm:min-h-[200px] object-cover rounded ' src={item.productImg} alt="" />
                           </Link>
                           <div className='flex flex-col ml-2'>
-                            <Link href={item.id} className=' h-[40px] sm:h-[100px] overflow-hidden  line-clamp-2 sm:line-clamp-4'>
-                              <p className='  '>{item.productName} ahahah ahhahaha ddjhadj jdjadhj ahhaha hahahah aajjaj aajjaj aajjaj aajjaj aajjaj aajjaj aajjaj aajjaj aajjaj aajjaj FARID</p>
+                            <Link href={item.id} className=' min-h-auto max-h-[40px] sm:min-h-auto sm:max-h-[100px]  overflow-hidden  line-clamp-2 sm:line-clamp-4'>
+                              <p className='  '>{item.productName} </p>
                             </Link>
                             {item.inStock ? (
                               <p className='text-green-500 text-xs mb-auto'>In Stock</p>
@@ -110,7 +112,7 @@ const Cart = () => {
                         </div>
                         <div className=' flex flex-col sm:col-span-1 py-1  items-end justify-between h-full '>
                           <p>${item.price}.00</p>
-                          <button className='border rounded-lg bg-red-500  text-white text-center py-1 px-2 w-[35px] mr-2 ' onClick={() => removeAnItem(item.id)}><BsTrash className='mx-auto ' /></button>
+                          <button className='border rounded-lg bg-red-500  text-white text-center py-1 px-2 w-[35px] mr-2 ' onClick={() => removeAnItem(item.id, item.colors, item.size)}><BsTrash className='mx-auto ' /></button>
                         </div>
                       </li>
                     ))}
@@ -132,42 +134,5 @@ const Cart = () => {
     </>
   )
 }
-
-// const CartContext = createContext();
-// interface CartContextType {
-//   addToCart: () => void;
-//   // Other properties...
-// }
-// export const CartProvider = ({ children }) => {
-//   const [cartItems, setCartItems] = useState([]);
-
-//   useEffect(() => {
-//     // Load cart items from local storage on component mount
-//     const storedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-//     setCartItems(storedCartItems);
-//   }, []);
-
-//   useEffect(() => {
-//     // Save cart items to local storage whenever they change
-//     localStorage.setItem('cartItems', JSON.stringify(cartItems));
-//   }, [cartItems]);
-
-//   const addToCart = (product) => {
-//     setCartItems([...cartItems, product]);
-//   };
-
-//   const removeFromCart = (productId) => {
-//     setCartItems(cartItems.filter((item) => item.id !== productId));
-//   };
-//   const clearCart = () => {
-//     setCartItems([]);
-//   };
-
-//   return (
-//     <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, clearCart }}>
-//       {children}
-//     </CartContext.Provider>
-//   );
-// };
 
 export default Cart;

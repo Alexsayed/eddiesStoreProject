@@ -17,7 +17,7 @@ label {
 form button,
 input,
 textarea {
-  outline: none;
+  outline: none !important;
 }
 
 input,

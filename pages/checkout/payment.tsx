@@ -36,7 +36,6 @@ const appearance = {
 //   billingInfo: OrderHistoryInterface['billingInfo'];
 // };
 export default function PaymentPage() {
-  // const PaymentPage = () => {
   const [clientSecret, setClientSecret] = useState('');
   const contentType = "application/json";
   const { cart } = useCart();
@@ -99,5 +98,3 @@ export default function PaymentPage() {
     </>
   );
 };
-
-// export default PaymentPage;

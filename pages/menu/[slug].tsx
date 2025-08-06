@@ -1,9 +1,7 @@
 import { createContext, useState } from "react";
 import { GetServerSidePropsContext } from "next";
 import React from 'react';
-// import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import dbConnect from "../../lib/dbConnect";
-import Link from "next/link";
 import Product, { Products } from "../../models/products";
 import { ParsedUrlQuery } from "querystring";
 import MenuProductResults from "../../components/menu/menuProductResults";
@@ -15,6 +13,7 @@ type Props = {
   menuResults: Products[];
   slugName: string;
 };
+
 // Helper function to format the slug into the category format.
 const formatSlug = (slug: string): string => {
   // slug = 'mtees', 'mjacket', 'mshoes', wshoes etc...     
@@ -30,51 +29,46 @@ const menuRoutes = ({ menuResults, slugName }: Props) => {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   await dbConnect();
   const { slug } = context.params as Params;
+  // Store product results 
   let productResults: Products[] = [];
   if (!slug) {
     return {
       notFound: true,
     };
   }
-  // if we want get newest posted products
-  if (slug === 'newItems') {
-    // Getting current data again
+
+  if (slug === 'newItems') { // if we want to get newest products
+    // Getting current data 
     const thirtyDaysAgo = new Date();
     // setDate: changes the day of the month for this date according to local time.
-    // HOW IT WORKS: thirtyDaysAgo = today's data.setDate(today's date - 30 days), so if today is 03/25/2025, the result will be 02/25/2025
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    productResults = await Product.find({
-      created: { $gte: thirtyDaysAgo }
-    })
-      // Descending/newest first sort
-      .sort({ created: -1 });
-    // if it starts with 'm' it mean we are looking for men categories
-  } else if (slug.startsWith('m')) {
-    const modifiedSlug = formatSlug(slug);
+    // HOW IT WORKS: thirtyDaysAgo = today's data. data.setDate(today's date - 30 days), so if today is 03/25/2025, the result will be 02/25/2025
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30); // go back 30 days
+    // find products that are new but not more than 30 days old. Sort: Descending/newest first sort
+    productResults = await Product.find({ created: { $gte: thirtyDaysAgo } }).sort({ created: -1 });
+
+  } else if (slug.startsWith('m')) { // if it starts with 'm' it mean we are looking for men categories
+    const modifiedSlug = formatSlug(slug); // format the slug
+    // find product where the gender is Men
     productResults = await Product.find({ gender: "Men", category: modifiedSlug });
-    // if it starts with 'w' it mean we are looking for women categories
-  } else if (slug.startsWith('w')) {
+
+  } else if (slug.startsWith('w')) { // if it starts with 'w' it mean we are looking for women categories
     const modifiedSlug = formatSlug(slug);
+    // find product where the gender is Women
     productResults = await Product.find({ gender: "Women", category: modifiedSlug });
-    // looking by Brand name.
-  } else {
+
+  } else { // looking by Brand name.
+    // find product by it's Brand name
     productResults = await Product.find({ brand: slug });
+
   }
-  // console.log('=====slug from [slug]', slug)
-  // parses a JSON string data and then convert a JavaScript value to a JSON string. 
+  // Parse and stringify  data 
   const stringifyProduct = JSON.parse(JSON.stringify(productResults));
-  // console.log('=====stringifyProduct from [slug]', stringifyProduct)
-
-  // const cleanedBrand = slug.trim();
-  // console.log('=====cleanedBrand from [slug]', cleanedBrand)
-
 
   return {
     props: {
-      // assign stringifyProduct to menuResults.
+      // assign stringifyProduct to menuResults and slug to slugName.
       menuResults: stringifyProduct,
       slugName: slug
-      // slugName: cleanedBrand
     },
   };
 }

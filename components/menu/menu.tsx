@@ -11,6 +11,8 @@ import usaStates, { staticMenCategories, staticWomenCategories, staticMenShoeSiz
 type Props = {
   menuData: string
 }
+
+
 const contentType = "application/json";
 const MenuBar = ({ menuData }: Props) => {
   const router = useRouter();
@@ -134,8 +136,8 @@ const MenuBar = ({ menuData }: Props) => {
               <ul className=" hidden group-hover:block group-hover:relative bg-white w-48  z-10 top-1.5 p-2 border rounded ">
                 <p className="font-bold text-lg mb-2">Shop by Category</p>
                 {menCategories.map((elem, index) => (
-                  <li key={index} className="p-0.5 m-1 hover:text-slate-400">
-                    <Link href={'/menu/' + 'm' + elem.toLowerCase()}> {elem}
+                  <li key={index} className="p-0.5 m-1 hover:text-slate-400 ">
+                    <Link href={'/menu/' + 'm' + elem.toLowerCase()} className="w-full block"> {elem}
                     </Link>
                   </li>
                 ))}
@@ -147,7 +149,7 @@ const MenuBar = ({ menuData }: Props) => {
                 <p className="font-bold text-lg mb-2">Shop by Category</p>
                 {womenCategories.map((elem, index) => (
                   <li key={index} className=" p-0.5 m-1 hover:text-slate-400">
-                    <Link href={'/menu/' + 'w' + elem.toLowerCase()}> {elem}
+                    <Link href={'/menu/' + 'w' + elem.toLowerCase()} className="w-full block"> {elem}
                     </Link>
                   </li>
                 ))}
@@ -155,9 +157,9 @@ const MenuBar = ({ menuData }: Props) => {
             </li>
             <li className="inline mr-16 group w-12 hover:border-t-2 border-slate-400 ">
               <span>Brands</span>
-              <div className={` hidden group-hover:block group-hover:relative flex-col bg-white ${secondColumn.length > 0 ? 'w-80' : 'w-48'}  z-10 top-1.5 p-2 border rounded`}  >
+              <div className={` hidden  group-hover:block group-hover:relative flex-col bg-white ${secondColumn.length > 0 ? 'w-80' : 'w-48'}  z-10 top-1.5 p-2 border rounded `}  >
                 <p className="font-bold text-lg mb-2">Shop by Brand</p>
-                <div className="flex gap-4">
+                <div className="flex gap-4 overflow-hidden">
                   {loading && <p className="text-gray-500">Loading...</p>}
                   {error && <p className="text-red-500">{error}</p>}
                   {!loading && !error && (
@@ -165,7 +167,7 @@ const MenuBar = ({ menuData }: Props) => {
                       <ul>
                         {firstColumn.map((elem, index) => (
                           <li key={index} className=" p-0.5 m-1 hover:text-slate-400">
-                            <Link href={`/menu/${encodeURIComponent(elem.trim())}`}>{elem} {encodeURIComponent(elem.trim())}</Link>
+                            <Link href={`/menu/${encodeURIComponent(elem.trim())}`} className="w-full block">{elem}</Link>
                           </li>
                         ))}
                       </ul>
@@ -173,7 +175,7 @@ const MenuBar = ({ menuData }: Props) => {
                         <ul>
                           {secondColumn.map((elem, index) => (
                             <li key={index} className=" p-0.5 m-1 hover:text-slate-400">
-                              <Link href={`/menu/${encodeURIComponent(elem.trim())}`}>{elem}</Link>
+                              <Link href={`/menu/${encodeURIComponent(elem.trim())}`} className="w-full block">{elem}</Link>
                             </li>
                           ))}
                           {productBrands.length > 15 && (
@@ -218,7 +220,7 @@ const MenuBar = ({ menuData }: Props) => {
                   <ul className={`${activeContent === 'Mens' ? ' ' : "hidden"}  bg-white w-48 z-10 top-1.5 p-2 border rounded text-sm`}>
                     {menCategories.map((elem, index) => (
                       <li key={index} className="m-1 hover:text-slate-400 p-1.5 border-b">
-                        <Link href={'/menu/' + 'm' + elem.toLowerCase()}> {elem}
+                        <Link href={'/menu/' + 'm' + elem.toLowerCase()} className="w-full block"> {elem}
                         </Link>
                       </li>
                     ))}
@@ -230,7 +232,7 @@ const MenuBar = ({ menuData }: Props) => {
                   <ul className={`${activeContent === 'Womens' ? ' ' : "hidden"}  bg-white w-48 z-10 top-1.5 p-2 border rounded text-sm`}>
                     {womenCategories.map((elem, index) => (
                       <li key={index} className="m-1 hover:text-slate-400 p-1.5 border-b">
-                        <Link href={'/menu/' + 'w' + elem.toLowerCase()}> {elem}
+                        <Link href={'/menu/' + 'w' + elem.toLowerCase()} className="w-full block"> {elem}
                         </Link>
                       </li>
                     ))}
@@ -240,10 +242,9 @@ const MenuBar = ({ menuData }: Props) => {
                   <span className="underline-offset-2 decoration-slate-400 decoration-2 hover:underline">Brands</span>
                   <span className="float-right text-2xl leading-6 ">{activeContent === 'Brands' ? '−' : '+'}</span>
                   <ul className={`${activeContent === 'Brands' ? ' ' : "hidden"}  bg-white w-48 z-10 top-1.5 p-2 border rounded text-sm `}>
-
                     {productBrands.map((elem, index) => (
                       <li key={index} className="m-1 hover:text-slate-400 p-1.5 border-b ">
-                        <Link href={`/menu/${encodeURIComponent(elem.trim())}`}> {elem}
+                        <Link href={`/menu/${encodeURIComponent(elem.trim())}`} className="w-full block"> {elem}
                         </Link>
                       </li>
                     ))}

@@ -374,7 +374,7 @@ const Form = () => {
 
   return (
     <>
-      <div className=" relative top-[40px] md:top-0 md:top-0  border-t md:border-none pt-4 ">
+      <div className="  mt-10 md:mt-0  border-t md:border-none pt-4 ">
         <div className="w-[90%] md:w-[60%] mx-auto ">
           <h1 className="text-xl font-semibold text-center">Add New Product</h1>
           {message && <div className='text-red-500'>{message}</div>}

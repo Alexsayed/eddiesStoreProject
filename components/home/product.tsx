@@ -170,7 +170,7 @@ const ProductPage = ({ productData, }: Props,) => {
 
   return (
     <>
-      <div className="w-full mt-9 md:mt-0 border-t pt-2 flex flex-wrap   ">
+      <div className="w-full mt-10 md:mt-0 border-t md:border-none py-2 flex flex-wrap   ">
         <div ref={thumbRef} className=" w-[20%] sm:w-[13.5%] px-1.5 sm:px-3  order-1  rounded text-center overflow-x-scroll  sm:overflow-auto max-h-[450px] " >
           <ul className=' '>
             {productData.productImg.map((image, index) =>
@@ -239,7 +239,12 @@ const ProductPage = ({ productData, }: Props,) => {
               )}
             </select>
           </div>
-          <button className="rounded-lg w-24 h-8 border bg-black text-white mt-4" onClick={handleAddToCart}>Add to Cart</button>
+          {productData.inStock ? (
+            <button className="rounded-lg w-32 h-8 border bg-black text-white my-4 float" onClick={handleAddToCart}>Add to Cart</button>
+          ) : (
+            <p className='text-red-500  h-8 mt-4 '>This item is out of stock</p>
+          )}
+
         </div>
       </div >
     </>

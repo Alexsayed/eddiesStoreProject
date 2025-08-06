@@ -335,7 +335,7 @@ const PaymentForm = () => {
 
   return (
     <>
-      <div className=" relative top-[40px] md:top-0 md:top-0  border-t md:border-none pt-4  overflow-hidden">
+      <div className="  mt-10 md:mt-0  border-t md:border-none pt-4  overflow-hidden">
         <div className="w-[90%] md:w-[60%] mx-auto">
           <h1 className="text-xl font-semibold text-center">Payment Information</h1>
           <h1 className="text-base font-semibold text-center">Shipping Information</h1>
@@ -371,7 +371,7 @@ const PaymentForm = () => {
                     </option>
                     {country.name === 'United States' && (
                       // key={`${country.code}-divider`}: gives the below <option> its own unique key, so it won't create conflict with real <options>. bc its used for Border-bottom purpose. 
-                      < option key={`${country.code}-divider`} disabled>────────────</option>
+                      < option key={`${country.code}-divider`} disabled>───────────</option>
                     )}
                   </React.Fragment>
                 ))}

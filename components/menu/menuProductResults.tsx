@@ -45,6 +45,7 @@ const MenuProductResults = ({ menuProductData, queryName }: Props) => {
     setSortedProductData(sorted);
   }, [selectedSortOption, menuProductData]);
 
+
   // handle sort changes.
   // HOW IT WORKS: we are setting the (setSelectSortOption) and then the data will be sort with userEffect() method.
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -82,10 +83,12 @@ const MenuProductResults = ({ menuProductData, queryName }: Props) => {
     router.push('../');
   };
 
+
+
   return (
     <>
-      <div className="w-full relative top-[40px] md:top-0 border-t md:border-none">
-        <div className="  py-2 text-sm border-b">
+      <div className="w-full mt-10 md:mt-0 border-t md:border-none  ">
+        <div className="  py-2 text-sm border-b ">
           <p className="inline ml-3">{formatqueryName(queryName)}</p>
           <p className="inline ml-3">{menuProductData.length} Products</p>
           <div className="text-right inline-block float-right mx-4 ">
@@ -100,7 +103,10 @@ const MenuProductResults = ({ menuProductData, queryName }: Props) => {
             </select>
           </div>
         </div>
-        <div className="pt-2">
+        <div className="py-2 min-h-[calc(100vh-270px)] min-[376px]:min-h-[calc(100vh-185px)] ">
+          {sortedProductData.length === 0 && (
+            <div className=" "><p>No Product found.</p></div>
+          )}
           <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto justify-items-center px-4">
             {sortedProductData.map((product, i) => (
               <li key={i} className="border h-72 w-full max-w-xs rounded-lg truncate" >

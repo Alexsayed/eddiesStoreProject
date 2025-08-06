@@ -181,6 +181,7 @@ const editProduct = ({ product, }: Props) => {
       },
       body: JSON.stringify({ imagePubID: selectedId }),
     });
+    const retDataImg = await res.json()
     // Set to fasle to hide delete popup.
     setShowDeletePopup(false);
     // Remove/clear the ID.
@@ -218,6 +219,7 @@ const editProduct = ({ product, }: Props) => {
       if (!res.ok) {
         throw new Error(res.status.toString());
       }
+      const retData = await res.json()
       // rerouter to home page
       router.push('/');
     } catch (error) {
@@ -231,7 +233,7 @@ const editProduct = ({ product, }: Props) => {
 
   return (
     <>
-      <div className=" relative top-[40px] md:top-0 md:top-0  border-t md:border-none pt-4 ">
+      <div className="  mt-10 md:mt-0  border-t md:border-none pt-4 ">
         <div className="w-[90%] md:w-[60%] mx-auto ">
           <h1 className="text-xl font-semibold text-center">Edit Product</h1>
           <form onSubmit={handleEditSubmit} className="flex flex-col gap-4 mt-3">
