@@ -1,25 +1,5 @@
-// import mongoose from "mongoose";
 import mongoose, { Document } from 'mongoose';
-// export interface Sizes {
-//   _id: string,
-//   productName?: string;
-//   price: number;
-//   productImg: string;
-//   category: string,
-//   brand: string,
-//   gender: string,
-//   kids: string,
-//   color: string,
-//   // size: string,
-//   size: {
-//     menSizes: { pantsOrJeans: boolean, shoe: boolean, tees: boolean, },
-//     womenSizes: { dresses: boolean, pantsOrJeans: boolean, skirts: boolean, shoes: boolean, tops: boolean, }
-//   },
-//   author: string;
-//   inStock: boolean;
-//   created: Date;
-// }
-// next up: try to use below interface in products.ts models just by importing this model: like(import { IUser } from './user'; ) // Import the IUser interface
+
 export interface ISizes extends Document {
   menSizes: {
     jackets: {
@@ -129,33 +109,7 @@ export interface ISizes extends Document {
   },
 
 }
-// const sizeSchema = new mongoose.Schema<ISizes>({
-//   menSizes: {
-//     jackets: [
-//       { size: XS, available: Boolean },
-//       { size: 'S', available: Boolean },
-//       { size: 'M', available: Boolean },
-//       { size: 'L', available: Boolean },
-//       { size: 'XL', available: Boolean },
-//       { size: 'XXL', available: Boolean },
-//     ],
-//     shoes: [
-//       { size: '8', available: Boolean },
-//       { size: '9', available: Boolean },
-//       { size: '9/5', available: Boolean },
-//       { size: '10', available: Boolean },
-//       { size: '10/5', available: Boolean },
-//       { size: '11', available: Boolean },
-//       { size: '12', available: Boolean },
-//     ]
-//   }
-// })
-// const Size = mongoose.models?.Size || mongoose.model<ISizes>('Size', sizeSchema);
 
-// export default Size;
-
-// const sizeSchema = new mongoose.Schema({
-// size: {
 const sizeSchema = new mongoose.Schema<ISizes>({
   menSizes: {
     jackets: {
@@ -275,6 +229,4 @@ const Size = mongoose.models?.Size || mongoose.model<ISizes>('Size', sizeSchema)
 
 export default Size;
 
-
-// export default mongoose.models.Size || mongoose.model<ISizes>("Size", sizeSchema); 
 

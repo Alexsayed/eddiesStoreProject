@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { v2 as cloudinary } from 'cloudinary';
 import formidable from 'formidable';
 import dbConnect from "../../../lib/dbConnect";
-import User from "../../../models/Users";
 import Product from "../../../models/products";
 import Size, { ISizes } from "../../../models/sizes";
 
