@@ -84,7 +84,7 @@ const MenuProductResults = ({ menuProductData, queryName }: Props) => {
   };
 
 
-
+  // sm: min - h - [calc(100vh - 185px)] min - [376px]: min - h - [calc(100vh - 145px)]
   return (
     <>
       <div className="w-full mt-10 md:mt-0 border-t md:border-none  ">

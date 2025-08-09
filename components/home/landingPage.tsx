@@ -1,5 +1,5 @@
-import dbConnect from "../../lib/dbConnect";
-import { useState, useEffect } from "react";
+// import dbConnect from "../../lib/dbConnect";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { mutate } from "swr";
 import Link from "next/link";
@@ -19,14 +19,21 @@ const HomePage = ({ getAllProducts, }: Props) => {
   const [selectedSortOption, setSelectSortOption] = useState<SortOption>("default");
   // const [sortedProductData, setSortedProductData] = useState<Products[]>(getAllProducts);
   const [productsData, setProductsData] = useState<Products[]>(getAllProducts);
+  // const [productsData, setProductsData] = useState<string>('');
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const categories = useRef<HTMLDivElement>(null);
+
   // handle sort options
   useEffect(() => {
     // OnChange event we would select a sort value, pass it to /utils/sortProducts file. sortProducts file we would execute sort function and return sorted data back.
     const sorted = sortProducts(getAllProducts, selectedSortOption);
     // Setting the sorted data
     setProductsData(sorted);
+    // alert(categories.current?.offsetHeight);
+    // alert(window.innerHeight)
+
   }, [selectedSortOption, getAllProducts])
   // handle sort changes.
   // HOW IT WORKS: we are setting the (setSelectSortOption) and then the data will be sort with userEffect() method.
@@ -64,6 +71,9 @@ const HomePage = ({ getAllProducts, }: Props) => {
     }
     router.push('/');
   };
+
+  // console.log('======getAllProducts', getAllProducts)
+  // console.log('======productsData', productsData)
   return (
     <>
       <div className="w-full  flex justify-end px-4  py-1.5 border-b ">
@@ -79,7 +89,11 @@ const HomePage = ({ getAllProducts, }: Props) => {
           </select>
         </div>
       </div>
-      <div className="  py-2  min-h-[calc(100vh-270px)] min-[376px]:min-h-[calc(100vh-185px)]">
+      <div className="  py-2  sm:min-h-[calc(100vh-185px)] min-[376px]:min-h-[calc(100vh-145px)] " >
+        {/* <div className="  py-2 min-h-[calc(100vh-230px)] min-[376px]:min-h-[calc(100vh-150px)]"> */}
+        {productsData.length === 0 && (
+          <p className=" text-center">No Product</p>
+        )}
         <ul className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto justify-items-center px-4">
           {productsData.map((item: any, i: any) => (
             <li key={i} className="border h-72 w-full max-w-xs rounded-lg truncate" >

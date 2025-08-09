@@ -216,13 +216,7 @@ const sizeSchema = new mongoose.Schema<ISizes>({
       XL: { type: Boolean, default: false },
       XXL: { type: Boolean, default: false },
     },
-
-
-
   }
-
-  // },
-
 })
 
 const Size = mongoose.models?.Size || mongoose.model<ISizes>('Size', sizeSchema);
