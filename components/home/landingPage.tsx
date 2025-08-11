@@ -23,14 +23,11 @@ const HomePage = ({ getAllProducts, }: Props) => {
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const categories = useRef<HTMLDivElement>(null);
-
   // handle sort options
   useEffect(() => {
     // OnChange event we would select a sort value, pass it to /utils/sortProducts file. sortProducts file we would execute sort function and return sorted data back.
     const sorted = sortProducts(getAllProducts, selectedSortOption);
-    // Setting the sorted data
-    // setProductsData(sorted);
+    // Setting the sorted data   
     setProductsData(sorted);
   }, [selectedSortOption, getAllProducts])
   // handle sort changes.
@@ -85,10 +82,9 @@ const HomePage = ({ getAllProducts, }: Props) => {
           </select>
         </div>
       </div>
-      {/* <div className="  py-2  sm:min-h-[calc(100vh-185px)] min-[376px]:min-h-[calc(100vh-145px)] " > */}
-      <div className="  py-2 min-h-[calc(100vh-230px)] min-[376px]:min-h-[calc(100vh-150px)]">
+      <div className="  py-2  md:min-h-[calc(100vh-185px)] max-[767px]:min-h-[calc(100vh-145px)] max-[449px]:min-h-[calc(100vh-230px)] ">
         {productsData.length === 0 && (
-          <p className=" text-center">No Product</p>
+          <p className=" text-center">No Product.</p>
         )}
         <ul className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto justify-items-center px-4">
           {productsData.map((item: any, i: any) => (
