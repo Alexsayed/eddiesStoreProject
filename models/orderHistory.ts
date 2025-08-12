@@ -6,7 +6,6 @@ export interface OrderHistoryInterface extends Document {
   product: Products[],
   totalAmount: Number,
   paid: boolean,
-  // viewed: boolean,
   shippingInfo: {
     shippingFirstname: string,
     shippingLastname: string,
@@ -36,7 +35,6 @@ const orderHistorySchema = new mongoose.Schema<OrderHistoryInterface>({
   product: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
   totalAmount: Number,
   paid: { type: Boolean, default: false },
-  // viewed: Boolean,
   shippingInfo: {
     shippingFirstname: String,
     shippingLastname: String,
@@ -66,5 +64,5 @@ const orderHistorySchema = new mongoose.Schema<OrderHistoryInterface>({
   },
 });
 const Orders = mongoose.models.Orders || mongoose.model<OrderHistoryInterface>('Orders', orderHistorySchema);
-// const Product = mongoose.model<Products>('Product', productSchema);
+
 export default Orders;

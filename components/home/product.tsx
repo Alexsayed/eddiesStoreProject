@@ -180,22 +180,6 @@ const ProductPage = ({ productData, }: Props,) => {
                 </div>
               </li>
             )}
-            <li className="mb-1" >
-              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
-                <img onClick={previewImage} className=" h-full w-full object-cover rounded" src="https://n.nordstrommedia.com/it/1b64d345-fd65-4db9-a635-b966b30e9497.jpeg?h=368&w=240&dpr=2" alt="" />
-              </div>
-            </li>
-            <li className="mb-1" >
-              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
-                <img onClick={previewImage} className=" h-full w-full object-cover rounded" src="https://www.ohpolly.com/cdn/shop/files/6172_8_Sloane-Black-Thigh-Split-MaxiDress.jpg?v=1683187303&width=920" alt="" />
-              </div>
-            </li>
-            <li className="mb-1" >
-              <div className="w-full aspect-[1/1] flex items-center justify-center cursor-pointer">
-                <img onClick={previewImage} className=" h-full w-full object-cover rounded" src="https://us.ohpolly.com/cdn/shop/products/5891_3_Teal-Cut-Out-Maxi-Dress_39687738-3e71-4760-8d26-2a6d283048c3.jpg?v=1689364855&width=1244" alt="" />
-              </div>
-            </li>
-
           </ul>
         </div>
         <div className="w-[75%] sm:w-[62.5%]  mx-auto   overflow-hidden  order-2 rounded max-h-[450px]" >

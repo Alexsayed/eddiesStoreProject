@@ -263,55 +263,6 @@ const editProduct = ({ product, }: Props) => {
 
                     </li>
                   ))}
-
-                  <li className="h-24 w-24 border rounded-[10px] mx-auto overflow-hidden flex items-center">
-                    <img src='https://n.nordstrommedia.com/it/1b64d345-fd65-4db9-a635-b966b30e9497.jpeg?h=368&w=240&dpr=2' alt="" />
-                    <div className="w-4 h-4 border relative top-[-38px] left-[-15px]" >
-                      <div className="close-icon" title="Delete Image" >
-                        <div className="tooltip-text">Delete</div>
-                      </div>
-                    </div>
-                  </li>
-                  <li className="h-24 w-24 border rounded-[10px] mx-auto overflow-hidden flex items-center">
-                    <img src='https://n.nordstrommedia.com/it/1b64d345-fd65-4db9-a635-b966b30e9497.jpeg?h=368&w=240&dpr=2' alt="" />
-                    <div className="w-4 h-4 border relative top-[-38px] left-[-15px]" >
-                      <div className="close-icon" title="Delete Image" >
-                        <div className="tooltip-text">Delete</div>
-                      </div>
-                    </div>
-                  </li>
-                  <li className="h-24 w-24 border rounded-[10px] mx-auto overflow-hidden flex items-center">
-                    <img src='https://n.nordstrommedia.com/it/1b64d345-fd65-4db9-a635-b966b30e9497.jpeg?h=368&w=240&dpr=2' alt="" />
-                    <div className="w-4 h-4 border relative top-[-38px] left-[-15px]" >
-                      <div className="close-icon" title="Delete Image" >
-                        <div className="tooltip-text">Delete</div>
-                      </div>
-                    </div>
-                  </li>
-                  <li className="h-24 w-24 border rounded-[10px] mx-auto overflow-hidden flex items-center">
-                    <img src='https://n.nordstrommedia.com/it/1b64d345-fd65-4db9-a635-b966b30e9497.jpeg?h=368&w=240&dpr=2' alt="" />
-                    <div className="w-4 h-4 border relative top-[-38px] left-[-15px]" >
-                      <div className="close-icon" title="Delete Image" >
-                        <div className="tooltip-text">Delete</div>
-                      </div>
-                    </div>
-                  </li>
-                  <li className="h-24 w-24 border rounded-[10px] mx-auto overflow-hidden flex items-center">
-                    <img src='https://n.nordstrommedia.com/it/1b64d345-fd65-4db9-a635-b966b30e9497.jpeg?h=368&w=240&dpr=2' alt="" />
-                    <div className="w-4 h-4 border relative top-[-38px] left-[-15px]" >
-                      <div className="close-icon" title="Delete Image" >
-                        <div className="tooltip-text">Delete</div>
-                      </div>
-                    </div>
-                  </li>
-                  <li className="h-24 w-24 border rounded-[10px] mx-auto overflow-hidden flex items-center">
-                    <img src='https://n.nordstrommedia.com/it/1b64d345-fd65-4db9-a635-b966b30e9497.jpeg?h=368&w=240&dpr=2' alt="" />
-                    <div className="w-4 h-4 border relative top-[-38px] left-[-15px]" >
-                      <div className="close-icon" title="Delete Image" >
-                        <div className="tooltip-text">Delete</div>
-                      </div>
-                    </div>
-                  </li>
                 </ul>
               </div>
             </div>
@@ -375,7 +326,7 @@ const editProduct = ({ product, }: Props) => {
                 <option value="false">False</option>
               </select>
             </div>
-            <button type="submit" className="btn bg-slate-700 text-white border-none w-1/2 mx-auto "> Edit Product</button>
+            <button type="submit" className="btn bg-slate-700 text-white border-none w-1/2 mx-auto mb-4"> Edit Product</button>
           </form>
 
         </div >

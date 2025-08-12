@@ -453,7 +453,7 @@ const Form = () => {
                 <option value="false">false</option>
               </select>
             </div>
-            <button type="submit" className="btn bg-slate-700 text-white border-none md:w-1/2 md:mx-auto">Submit Post</button>
+            <button type="submit" className="btn bg-slate-700 text-white border-none md:w-1/2 md:mx-auto mb-4">Submit Post</button>
           </form>
         </div>
       </div>

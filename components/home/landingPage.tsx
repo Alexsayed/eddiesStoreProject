@@ -22,7 +22,6 @@ const HomePage = ({ getAllProducts, }: Props) => {
   // const [productsData, setProductsData] = useState<string[]>([]);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-
   // handle sort options
   useEffect(() => {
     // OnChange event we would select a sort value, pass it to /utils/sortProducts file. sortProducts file we would execute sort function and return sorted data back.
@@ -82,7 +81,7 @@ const HomePage = ({ getAllProducts, }: Props) => {
           </select>
         </div>
       </div>
-      <div className="  py-2  md:min-h-[calc(100vh-185px)] max-[767px]:min-h-[calc(100vh-145px)] max-[449px]:min-h-[calc(100vh-230px)] ">
+      <div className="  py-2  " >
         {productsData.length === 0 && (
           <p className=" text-center">No Product.</p>
         )}
@@ -140,8 +139,7 @@ const HomePage = ({ getAllProducts, }: Props) => {
             </div>
           </div>
         </div>
-      )
-      }
+      )}
     </>
   )
 }

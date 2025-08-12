@@ -121,9 +121,9 @@ const SearchResults = () => {
             </select>
           </div>
         </div>
-        <div className="py-2 min-[376px]:min-h-[calc(100vh-185px)] min-h-[calc(100vh-270px)] ">
+        <div className="py-2  ">
           {displayResults.length === 0 && (
-            <p>No Product found.</p>
+            <p className='text-center'>No Product found.</p>
           )}
           <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto justify-items-center px-4">
             {displayResults.map((result, i) => (
@@ -141,7 +141,6 @@ const SearchResults = () => {
                   </div>
                 )}
                 <Link href={result._id}>
-                  {/* <div className="h-56 w-full"> */}
                   <div className="h-4/5 w-full aspect-[4/3] overflow-hidden">
                     <img className="w-full h-full object-cover" src={result.productImg[0].imageURL} />
                   </div>

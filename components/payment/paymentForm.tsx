@@ -482,7 +482,7 @@ const PaymentForm = () => {
               </div>
               {error && <div>{error}</div>}
             </div>
-            <div className="flex items-start ">
+            <div className="flex items-start mb-4">
               <button type="submit" className='btn w-36 mx-auto bg-slate-800 color text-white' disabled={!stripe || isProcessing}>
                 {isProcessing ? 'Processing...' : 'Pay'}
               </button>

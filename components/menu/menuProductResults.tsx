@@ -83,8 +83,6 @@ const MenuProductResults = ({ menuProductData, queryName }: Props) => {
     router.push('../');
   };
 
-
-  // sm: min - h - [calc(100vh - 185px)] min - [376px]: min - h - [calc(100vh - 145px)]
   return (
     <>
       <div className="w-full mt-10 md:mt-0 border-t md:border-none  ">
@@ -103,9 +101,9 @@ const MenuProductResults = ({ menuProductData, queryName }: Props) => {
             </select>
           </div>
         </div>
-        <div className="py-2 min-h-[calc(100vh-270px)] min-[376px]:min-h-[calc(100vh-185px)] ">
+        <div className="py-2  ">
           {sortedProductData.length === 0 && (
-            <div className=" "><p>No Product found.</p></div>
+            <div className=" text-center"><p>No Product found.</p></div>
           )}
           <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto justify-items-center px-4">
             {sortedProductData.map((product, i) => (

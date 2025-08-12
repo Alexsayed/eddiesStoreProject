@@ -78,7 +78,7 @@ const Cart = () => {
         <>
           <div className="  mt-10 md:mt-0  border-t md:border-none overflow-hidden">
             <div className=" w-full   ">
-              <div className="md:grid md:grid-cols-3 md:gap-2  min-h-[calc(100vh-230px)] min-[376px]:min-h-[calc(100vh-150px)]">
+              <div className="md:grid md:grid-cols-3 md:gap-2  ">
                 <div className="md:col-span-2  h-auto">
                   <div className='grid grid-cols-4 gap-2 border-b p-2'>
                     <h1 className="text-xl font-semibold col-span-3 ">Shopping Bag</h1>

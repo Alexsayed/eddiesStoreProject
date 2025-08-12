@@ -12,6 +12,7 @@ type Props = {
 const SignInPage = ({ csrfToken }: Props) => {
   const router = useRouter();
   const { data: session, status } = useSession();
+  const [error, setError] = useState<string | null>(null);
 
   // Extract callbackUrl from query params/browser URL section (if not provided, fallback to '/');
   //HOW IT WORKS: when we are attempting to visit restrected pages like: edit, delete or new post, we will attach callbackUrl to it's params. 
@@ -49,6 +50,7 @@ const SignInPage = ({ csrfToken }: Props) => {
     if (res?.error) {
       // Handle error if needed
       console.log('Error during login:', res.error);
+      setError(res.error);
     } else {
       // Redirect after successful login
       router.push(redirectURL as string);
@@ -58,8 +60,11 @@ const SignInPage = ({ csrfToken }: Props) => {
   if (status === 'unauthenticated') {
     return (
       <>
-        <div className=" mt-10 md:mt-0 border-t md:border-none pt-4  min-h-[calc(100vh-230px)] min-[376px]:min-h-[calc(100vh-150px)] ">
+        <div className=" mt-10 md:mt-0 border-t md:border-none pt-4   ">
           <div className="w-[90%] md:w-[60%] mx-auto ">
+            {error &&
+              <p className=" bg-red-200 bg-transparent w-fit rounded h-10 mx-auto  py-2 px-8">{error}</p>
+            }
             <h1 className="text-xl font-semibold text-center">Sign In</h1>
             <form method="POST" onSubmit={handleSubmit} className="flex flex-col gap-4 mt-3">
               <input name="csrfToken" type="hidden" defaultValue={csrfToken} />

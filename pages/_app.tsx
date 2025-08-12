@@ -36,10 +36,12 @@ function MyApp({ Component, pageProps }: AppProps) {
           <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
         </Head>
         <CartProvider> {/* spreading addToCart function throughout components */}
-          <Navbar />
-          <MenuBar menuData={''} />
-          <div className="wrapper  w-full ">
-            <Component {...pageProps} />
+          <div className='flex flex-col min-h-screen '>
+            <Navbar />
+            <MenuBar menuData={''} />
+            <div className="wrapper  w-full  ">
+              <Component {...pageProps} />
+            </div>
           </div>
         </CartProvider >
         <Footer />

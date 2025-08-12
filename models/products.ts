@@ -1,16 +1,5 @@
-
 import mongoose, { Schema, Document, Model } from 'mongoose';
 import { ISizes } from './sizes';
-// export interface Products extends mongoose.Document {
-//   productName: string;
-//   price: number;
-//   productImg: string;
-//   author: string;
-//   inStock: boolean;
-//   created: Date;
-// }
-
-
 
 export interface Products extends Document {
   _id: string,
@@ -26,10 +15,7 @@ export interface Products extends Document {
   author: string;
   inStock: boolean;
   created: Date;
-
 }
-
-
 
 const productSchema = new mongoose.Schema<Products>({
   productName: String,

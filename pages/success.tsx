@@ -69,10 +69,10 @@ const SuccessPage = () => {
 
   return (
     <div className="w-full  mt-10 md:mt-0 border-t md:border-none text-center ">
-      <div className="pt-4 min-h-[calc(100vh-230px)] min-[376px]:min-h-[calc(100vh-150px)]   ">
-        <h1 className='text-lg leading-9'>{status} Payment successful!</h1>
-        <p className='leading-7'>Your order ID is: {orderId} ahahshhshdhashd </p>
-        <p className='leading-7'>An email has been sent to this address: {clientEmail} farid-qaher@yahoo.com</p>
+      <div className="pt-4   ">
+        <h1 className='text-lg leading-9'>Thank You For Your Purchase!</h1>
+        <p className='leading-7'>Your order ID is: {orderId}  </p>
+        <p className='leading-7'>An email has been sent to this address: {clientEmail}</p>
       </div>
     </div>
   );
